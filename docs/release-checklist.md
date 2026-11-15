@@ -28,7 +28,7 @@ The state of `main` when this was written (2026-11-13): every bolt B0 to B17 is 
 | 6 | Pinned shrinkwrap with no install scripts | **done locally, with one finding, open maintainer decision** | exact direct pins and integrity hashes on all 123 packages of the shrinkwrap; one dev-only optional package is flagged; see "The shrinkwrap" below |
 | 7 | Schema-valid SARIF | **done as the build-plan fallback; deviation from the acceptance criterion recorded** | The acceptance criterion asks for validation against a repo-kept schema; the schema is not vendored because its licence (OASIS IPR Policy, RF on RAND Terms Mode, read 2026-11-13, `docs/lookups-b16.txt`) is not MIT, Apache-2.0 or BSD. Instead, one-off on 2026-11-12: every SARIF golden and the SARIF of `demo/` and `demo-fixed/` validate against the official SARIF 2.1.0 JSON schema (`docs/release-check-run-b16.txt`); see "SARIF validity" below |
 | 8 | The docs | **done locally** (written in B15) | README, rules, how defaults were measured, add an entry, CI and SARIF, security, CHANGELOG, this page; `test/docs/docs.test.ts` checks diagrams, quotes and sourced numbers |
-| 9 | Every bolt's review closed | **done for B0 to B26** (see "Reviews" below; updated 2026-11-15) | see "Reviews" below |
+| 9 | Every bolt's review closed | **done for B0 to B27** (see "Reviews" below; updated 2026-11-15) | see "Reviews" below |
 | 10 | Release-quality dry run (metric 5): a fresh session adds an entry using only the docs | **done 2026-11-13: partial success** (the maintainer reviews it; it may want a re-run against the fixed guide) | `docs/add-a-knowledge-base-entry.md`, section 9; the record is below, "The metric-5 dry run (2026-11-13)" |
 | 11 | A fresh re-check of the npm name | **done locally on 2026-11-12; repeat on the day of the go** | `npm view tripcurve` returned 404 at 2026-11-12T20:21Z (`docs/lookups-b15.txt`) |
 | 12 | The hosted CI workflow runs | **done 2026-11-15**: `.github/workflows/verify.yml` ran on the first push; run 43682221175 succeeded on Ubuntu (Node 22.12.0, 24, 26) and macOS (Node 22.12.0), the first run of the suite on Linux | `docs/evidence/gh-hosted-runs.txt`; `docs/evidence/gh-linux-verify.txt`; `docs/ci-and-sarif.md`; `test/action/workflows.test.ts` |
@@ -176,7 +176,7 @@ The unsupported-Node message, run on 2026-11-12 with the older binary first on `
 | 20.20.2 | `tripcurve needs Node 22.12.0 or later; this is Node 20.20.2.` then `Nothing was checked.` | 2 |
 | 18.20.8 | `tripcurve needs Node 22.12.0 or later; this is Node 18.20.8.` then `Nothing was checked.` | 2 |
 
-**Linux: run once, on GitHub.** Every local run above is darwin-arm64. The suite ran on Linux for the first time on 2026-11-15, in the hosted verify run 43682221175 (Ubuntu with Node 22.12.0, 24 and 26), and every job succeeded; the source audit below was written before that run.
+**Linux: run on GitHub.** Every local run above is darwin-arm64. The suite ran on Linux for the first time on 2026-11-15, in the hosted verify run 43682221175 (Ubuntu with Node 22.12.0, 24 and 26), and every job succeeded; the second push's run 43686256521 passed the three Linux jobs again (its macOS job failed one closed-pipe test; the fix is made in B27 and not yet re-run on GitHub); the source audit below was written before that run.
 
 ### Platform audit of `src/` (B16, 2026-11-12)
 
@@ -273,6 +273,7 @@ Every bolt gets one independent read-only adversarial review, with a second pass
 | B24 | closed | review: MERGE (`BUILD-NOTES.md`, "B24") |
 | B25 | closed | review 2: FIX-FIRST items fixed before merge, the stale `limits.md` upload sentence among them (`BUILD-NOTES.md`, "B25") |
 | B26 | closed | review: FIX-FIRST on wording (the busy-sample count, an end time not in the file, "quiet host"), fixed before merge (`BUILD-NOTES.md`, "B26") |
+| B27 | closed | two passes: FIX-FIRST (over-claims of a verified fix and of a cause, no wiring test), then FIX-FIRST on three leftover wordings; all fixed before merge (`BUILD-NOTES.md`, "B27") |
 
 Minor findings carried, not fixed, each recorded in `BUILD-NOTES.md`: B10 (`--runs=3` and `--cli=x` with an `=` are silently ignored by the timed check, and cannot fake a pass), B12 (two clauses of `couldBeCfnFlow` overlap, so neither is pinned by its own test).
 
@@ -285,7 +286,7 @@ None is hidden; each is stated where it matters:
 - The `minimatch` override was checked by one call and by the test suite, not on every `ts-morph` code path. (above, "npm audit")
 - Linux values are inferred, not measured; every measurement is darwin-arm64. (`docs/how-defaults-were-measured.md`)
 - Locally nothing was run on Linux: the source audit of B16 found no host-dependent code, but that is reading, not running; the hosted Linux run of 2026-11-15 (run 43682221175) is the first running. (above, "Platform audit of `src/`")
-- The GitHub Action, the hosted workflow and the SARIF upload ran once, on 2026-11-15, and every job succeeded (runs 43682221175 and 43682221183); they were not tried on a pull request, from a fork or in a private repository, and runner details beyond the self-test's assertions are unverified. (`docs/action.md`; `docs/ci-and-sarif.md`)
+- The GitHub Action, the hosted workflow and the SARIF upload ran on both pushes of 2026-11-15: every job succeeded on the first (runs 43682221175 and 43682221183); on the second, the Action's self-test succeeded again (43686256564) and the verify workflow failed its macOS job in one closed-pipe test (43686256521; the fix is made in B27 and not yet re-run on GitHub); they were not tried on a pull request, from a fork or in a private repository, and runner details beyond the self-test's assertions are unverified. (`docs/action.md`; `docs/ci-and-sarif.md`)
 - Whether GitHub's viewer decodes the doubled braces `{{` in SARIF messages back to `{` has not been checked. (`docs/ci-and-sarif.md`)
 - The official SARIF schema was applied once, on 2026-11-12, to the goldens and the demo output, not to a real upload. (above, "SARIF validity")
 - The release-quality dry run (metric 5) was run once, on 2026-11-13, against the guide before its B16 fixes; it has not been re-run against the fixed guide. (row 10)

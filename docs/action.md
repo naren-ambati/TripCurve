@@ -1,6 +1,6 @@
 # The tripcurve GitHub Action
 
-Status: **written, checked locally, and run once on GitHub.** Its self-test ran on the first push, on 2026-11-15, in run 43682221183, and all three jobs succeeded (B25; the verify workflow ran in run 43682221175); publishing the Action for others waits for the maintainer's go. Licence: decided by the maintainer before release.
+Status: **written, checked locally, and run on GitHub.** Its self-test ran on both pushes of 2026-11-15, runs 43682221183 and 43686256564, and all three jobs succeeded each time (B25, B27; the verify workflow ran in runs 43682221175 and 43686256521, the second failing its macOS job in a test unrelated to the Action; the fix is made in B27 and not yet re-run on GitHub); publishing the Action for others waits for the maintainer's go. Licence: decided by the maintainer before release.
 
 The Action is a composite Action defined in `action.yml`; all its shell logic is in `action/run.sh`, which is tested without GitHub (`test/action/`).
 
@@ -103,7 +103,7 @@ To enable it, the calling workflow needs:
 
 Paths in the SARIF are relative to the directory that was checked (`SRCROOT`), so with a `path` other than `.` they do not match files in the repository; see `docs/ci-and-sarif.md`.
 
-The upload is an external write to a repository's code-scanning data. It ran once, on 2026-11-15, in the `upload` job of `.github/workflows/action-selftest.yml` (run 43682221183): GitHub created an analysis at 2026-11-15T05:42:42Z (tool tripcurve 0.1.0, 6 results, 7 rules) and six alerts are open (`docs/evidence/gh-code-scanning.txt`). Tests check the condition, the default and that it is the only conditional step.
+The upload is an external write to a repository's code-scanning data. It ran on both pushes of 2026-11-15 in the `upload` job of `.github/workflows/action-selftest.yml` (runs 43682221183 and 43686256564, both successful); after the first, GitHub created an analysis at 2026-11-15T05:42:42Z (tool tripcurve 0.1.0, 6 results, 7 rules) and six alerts are open (`docs/evidence/gh-code-scanning.txt`). Tests check the condition, the default and that it is the only conditional step.
 
 ## The self-test workflow
 

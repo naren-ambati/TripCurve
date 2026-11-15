@@ -25,4 +25,4 @@ Defects this found, all fixed: a non-existent `tripcurve check` command named in
 
 ## What was not run
 
-At the time of the testing nothing had been run on GitHub, and Linux had not been run on this machine. The hosted runs came after, on 2026-11-15, and every job succeeded (runs 43682221175 and 43682221183; `docs/evidence/gh-hosted-runs.txt`). The fuzzing base (`demo/`) always exits 1, so it could not expose a false clean; the manifest-form equivalence tests added in B21 cover `demo-fixed/` for that.
+At the time of the testing nothing had been run on GitHub, and Linux had not been run on this machine. The hosted runs of the first push came after, on 2026-11-15, and every job succeeded (runs 43682221175 and 43682221183; `docs/evidence/gh-hosted-runs.txt`). The fuzzing base (`demo/`) always exits 1, so it could not expose a false clean; the manifest-form equivalence tests added in B21 cover `demo-fixed/` for that.

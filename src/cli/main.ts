@@ -3,16 +3,18 @@
 // is loaded, so an unsupported Node prints one fixed message and exits 2 having
 // read nothing.
 
+import { isClosedReaderCode } from './closed-reader.js';
 import { nodeIsSupported, unsupportedNodeMessage } from './node-check.js';
 
 // A closed pipe (`| head`, `| cmp - file`, a closed terminal) is a normal condition. On POSIX a write to
-// one fails later, as an 'error' event with code 'EPIPE' on the stream, and Node ignores SIGPIPE. Without a
-// listener that event is thrown as a stack trace. Here the writing stops, nothing more is printed, and the
-// exit code is the one the run computed (1 when it was not yet known).
+// one fails later, as an 'error' event on the stream with code 'EPIPE' (or, seen once on hosted macOS,
+// 'ENOTCONN'), and Node ignores SIGPIPE. Without a listener that event is
+// thrown as a stack trace. Here the writing stops, nothing more is printed, and the exit code is the one the
+// run computed (1 when it was not yet known). The codes are listed in closed-reader.ts.
 let closed = false;
 let computedExitCode: number | undefined;
 const onStreamError = (error: NodeJS.ErrnoException): void => {
-  if (error.code !== 'EPIPE') throw error;
+  if (!isClosedReaderCode(error.code)) throw error;
   closed = true;
   process.exitCode = computedExitCode ?? 1;
 };
@@ -20,6 +22,7 @@ process.stdout.on('error', onStreamError);
 process.stderr.on('error', onStreamError);
 
 if (!nodeIsSupported(process.versions.node)) {
+  computedExitCode = 2;
   process.stderr.write(unsupportedNodeMessage(process.versions.node));
   process.exitCode = 2;
 } else {

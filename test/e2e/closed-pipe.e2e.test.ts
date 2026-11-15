@@ -39,7 +39,7 @@ function run(
 const expectQuiet = (o: Outcome): void => {
   expect(o.stderr).not.toMatch(/Error/);
   expect(o.stderr).not.toMatch(/^\s+at /m);
-  expect(o.stderr).not.toMatch(/EPIPE/);
+  expect(o.stderr).not.toMatch(/EPIPE|ENOTCONN/);
   expect(o.stderr).toBe('');
   expect([0, 1, 2, 3]).toContain(o.code);
 };

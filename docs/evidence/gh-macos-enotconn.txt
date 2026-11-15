@@ -1,0 +1,56 @@
+# The hosted macOS failure that B27 addresses: verify run 43686256521 (push 9e2206b, B25), job 'verify (macos-latest, 22.12.0)' 132727249280; the three Linux jobs passed. Read with the GitHub REST API on 2026-11-15T07:05:50Z; colour codes removed; the runner's checkout path is written `<runner>`. The first macOS run (43682221175, cf55f77) had passed the same test; why the two runs differ is not established.
+
+job verify (ubuntu-latest, 26): success
+job verify (ubuntu-latest, 22.12.0): success
+job verify (macos-latest, 22.12.0): failure
+job verify (ubuntu-latest, 24): success
+
+$ gh run view --job 132727249280 --log   (the failing test, verbatim excerpt)
+ FAIL  test/e2e/closed-pipe.e2e.test.ts > a reader that closes the pipe early > sarif: closed after the first bytes, no trace and a computed exit code
+AssertionError: expected 'file://<runner>…' not to match /Error/
+
+- Expected:
+/Error/
+
++ Received:
+"file://<runner>/.cache/e2e-build/cli/main.js:14
+        throw error;
+        ^
+
+Error: write ENOTCONN
+    at WriteWrap.onWriteComplete [as oncomplete] (node:internal/stream_base_commons:87:19) {
+  errno: -57,
+  code: 'ENOTCONN',
+  syscall: 'write'
+}
+
+Node.js v22.12.0
+"
+
+ ❯ expectQuiet test/e2e/closed-pipe.e2e.test.ts:40:24
+     38|
+     39| const expectQuiet = (o: Outcome): void => {
+     40|   expect(o.stderr).not.toMatch(/Error/);
+       |                        ^
+     41|   expect(o.stderr).not.toMatch(/^\s+at /m);
+     42|   expect(o.stderr).not.toMatch(/EPIPE/);
+ ❯ test/e2e/closed-pipe.e2e.test.ts:53:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 141 passed (142)
+
+# The second push (9e2206b, B25) and its two runs (read with the GitHub REST API, 2026-11-15T07:10:22Z)
+
+$ gh api repos/naren-ambati/TripCurve/actions/runs   (newest first)
+total_count 4
+43686256564  action-selftest  push  9e2206b  run_attempt 1  completed success  created 2026-11-15T06:37:02Z
+43686256521  verify  push  9e2206b  run_attempt 1  completed failure  created 2026-11-15T06:37:02Z
+43682221183  action-selftest  push  cf55f77  run_attempt 1  completed success  created 2026-11-15T05:42:22Z
+43682221175  verify  push  cf55f77  run_attempt 1  completed success  created 2026-11-15T05:42:22Z
+
+$ gh api repos/naren-ambati/TripCurve/actions/runs/43686256564/jobs   (action-selftest on 9e2206b)
+job failing: success
+job clean: success
+job upload: success
