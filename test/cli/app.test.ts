@@ -79,7 +79,7 @@ describe('runCli: what it does before reading anything', () => {
   });
 
   it('--version prints the version and exits 0', () => {
-    expect(run(['--version'])).toEqual({ code: 0, stdout: '0.1.0\n', stderr: '' });
+    expect(run(['--version'])).toEqual({ code: 0, stdout: '0.1.1\n', stderr: '' });
   });
 
   it('the help text is the expected report layout', () => {
@@ -203,7 +203,7 @@ describe('runCli: a run', () => {
     expect(r.stdout).toContain('Workload "web" (Deployment) in "k8s/web.yaml"');
     expect(r.stdout).toContain('Summary: 1 failed, 1 unresolved, 1 passed; not a clean result');
     // the header names the path as typed
-    expect(r.stdout.split('\n')[0]).toMatch(/^tripcurve 0\.1\.0 {3}checked "/);
+    expect(r.stdout.split('\n')[0]).toMatch(/^tripcurve 0\.1\.1 {3}checked "/);
   });
 
   it('--verbose is accepted, keeps every line of a FAIL (its chain is always shown) and adds the chain under a PASS', () => {
@@ -320,7 +320,7 @@ describe('the library export', () => {
 
   it('render writes the three formats, and refuses a format that does not exist', () => {
     const report = buildReport();
-    expect(render(report, 'human')).toContain('tripcurve 0.1.0');
+    expect(render(report, 'human')).toContain('tripcurve 0.1.1');
     expect(JSON.parse(render(report, 'json')).schemaVersion).toBe(1);
     expect(JSON.parse(render(report, 'sarif')).version).toBe('2.1.0');
     expect(() => render(report, 'xml' as never)).toThrow(TypeError);

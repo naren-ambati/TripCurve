@@ -499,29 +499,36 @@ It ran on all three pushes of 2026-11-15 in the `upload` job of `.github/workflo
 **The SARIF upload is opt-in and has run on all three pushes of 2026-11-15.** `action.yml` contains the standard code-scanning upload step.
 The GitHub Action, the hosted workflow and the SARIF upload ran on all three pushes of 2026-11-15: every job succeeded on the first (runs 43682221175 and 43682221183);
 that run's macOS job failed one CPU-time ratio test instead, made robust in B28 and not yet re-run on GitHub;
-*In GitHub Actions:** `uses: naren-ambati/TripCurve@v0.1.0` (see [docs/action.md](docs/action.md)).
 tripcurve is not published to npm, so there is no `npm install tripcurve`:
 **B29, the container image and the 0.1.0 tag (2026-11-15).** The maintainer chose not to publish to npm.
 the usage example in `docs/action.md` names it.
 moot since 2026-11-15 (no npm publish, row 15)** | `npm view tripcurve` returned 404 at 2026-11-12T20:21Z (`docs/lookups-b15.txt`) |
-The `v0.1.0` tag makes the Action usable as `naren-ambati/TripCurve@v0.1.0` and starts the release workflow, which builds, smoke-tests and pushes the image `ghcr.io/naren-ambati/tripcurve:0.1.0`;
 the runtime stage installs only the three runtime dependencies from `npm-shrinkwrap.json`, which pins `minimatch` 11.0.8, so the image carries the tree whose advisory check is clean: `docs/lookups-b29.txt`) and smoke-tested with no network before it is pushed (`scripts/docker-smoke.mjs`, `.github/workflows/release.yml`).
-*tripcurve 0.1.0 is tagged `v0.1.0` on 2026-11-15 and ships as the GitHub Action ref `naren-ambati/TripCurve@v0.1.0` and as a container image, `ghcr.io/naren-ambati/tripcurve:0.1.0`, which the release workflow publishes from that tag (B29;
 A two-stage `Dockerfile` from a digest-pinned `node:22-alpine` builds `dist/` and installs the three runtime dependencies from the shrinkwrap (the shrinkwrap pins `minimatch` 11.0.8, and the advisory check inside the image found 0 vulnerabilities, `docs/lookups-b29.txt`);
 `.github/workflows/release.yml` builds, smoke-tests and pushes the image to GHCR on a `v*` tag with the workflow's own token;
 it refuses a tag that is not the package version or not on `main`, never overwrites a published version, and pushes no `latest`.
-The Action's ref is `naren-ambati/TripCurve@v0.1.0`, the 0.1.0 tag (B29, 2026-11-15);
-# Release checklist: tripcurve 0.1.0 (tagged 2026-11-15;
-publish the Action | **decided by the maintainer on 2026-11-15: no npm.** 0.1.0 is distributed as the Action ref `naren-ambati/TripCurve@v0.1.0` and as a container image, `ghcr.io/naren-ambati/tripcurve:0.1.0`, which `.github/workflows/release.yml` builds, smoke-tests and pushes when the `v0.1.0` tag lands;
 The tarball gap of row 5b does not apply to the image: its runtime tree is installed from the shrinkwrap and its advisory check inside the image found 0 vulnerabilities (`docs/lookups-b29.txt`) | `Dockerfile`;
 *Decided on 2026-11-15 (B29).** The maintainer chose a container image and a tagged Action over npm (row 15), so publishing to npm and reserving the name are closed as not wanted.
-Two steps follow the merge of B29 and are recorded in the CHANGELOG when done: push the `v0.1.0` tag (the release workflow then publishes the image) and make the GHCR package public.
 Enabling the SARIF upload anywhere but this repository's own self-test stays with whoever adopts the Action.
-The commands below work once the release workflow has pushed the image and the owner has opened the package;
 it is distributed as a GitHub Action ref and, once the release workflow has run, as a container image;
 not on npm.** The source is at https://github.com/naren-ambati/TripCurve.
 an Action ref, and a container image published from the tag;
 not npm)
-after that run the owner opens the GHCR package if it is private (we expect a new package to be private and that no workflow step changes that;
-tripcurve 0.1.0 is tagged (2026-11-15) as a GitHub Action ref, and its container image is published by the release workflow from that tag (B29;
-B30 records the result), not on npm;
+The `v0.1.1` tag makes the Action usable as `naren-ambati/TripCurve@v0.1.1` and starts the release workflow, which builds, smoke-tests and pushes the image `ghcr.io/naren-ambati/tripcurve:0.1.1`;
+`v0.1.0` stays a valid Action ref with no image.
+The commands below work once the release workflow has pushed the image;
+*In GitHub Actions:** `uses: naren-ambati/TripCurve@v0.1.1` (see [docs/action.md](docs/action.md)).
+*tripcurve 0.1.1 is tagged `v0.1.1` on 2026-11-15 and ships as the GitHub Action ref `naren-ambati/TripCurve@v0.1.1` and as a container image, `ghcr.io/naren-ambati/tripcurve:0.1.1`, which the release workflow publishes from that tag (B30 records whether that push happened).
+0.1.0 was tagged the same day (`v0.1.0`, a valid Action ref) but its release run was refused by the registry, so no `0.1.0` image exists;
+0.1.1 is the same code with the release workflow corrected (B30).** A bolt is one build step: B7 is build step 7.
+**B30, the release workflow corrected and 0.1.1 (2026-11-15).** The first release run (tag `v0.1.0`, run 43745004839) passed its guards, build and smoke test, logged in, uploaded every layer, and was then refused the tagged manifest with `denied`.
+The workflow now builds with `--provenance=false --sbom=false`, so a plain image is pushed.
+The Action's ref is `naren-ambati/TripCurve@v0.1.1`, the 0.1.1 tag (B30, 2026-11-15;
+`v0.1.0` also exists and works as a ref, but its release run published no image);
+# Release checklist: tripcurve 0.1.1 (tagged 2026-11-15;
+publish the Action | **decided by the maintainer on 2026-11-15: no npm.** 0.1.1 is distributed as the Action ref `naren-ambati/TripCurve@v0.1.1` and as a container image, `ghcr.io/naren-ambati/tripcurve:0.1.1`, which `.github/workflows/release.yml` builds, smoke-tests and pushes when the `v0.1.1` tag lands.
+The first release run (`v0.1.0`) created the package public and linked to the repository, then was refused the tagged manifest (B30, `docs/evidence/gh-release-run1.txt`);
+its release run created the GHCR package (public, linked to the repository) and was refused the manifest push, so B30 corrects the workflow and tags `v0.1.1`;
+tripcurve 0.1.1 is tagged (2026-11-15) as a GitHub Action ref, and its container image is published by the release workflow from that tag (B29, B30), not on npm;
+The GHCR package `tripcurve` exists with public visibility, created by the first release run of 2026-11-15, whose own push was refused (B30);
+not read further), no `0.1.0` tag, and nothing pullable (`docs/evidence/gh-release-run1.txt`).

@@ -249,7 +249,7 @@ describe.skipIf(!HAS_SYSCTL)('on the recorded machine (a stand-in for it: this m
         '  if (s.isDirectory()) walk(p); else { n++; biggest = Math.max(biggest, s.size); } } };',
         "walk('.');",
         'writeFileSync(seen, JSON.stringify({ n, biggest, cwd: process.cwd() }));',
-        'process.stdout.write("tripcurve 0.1.0   checked \\".\\"   " + n + " files read\\n");',
+        'process.stdout.write("tripcurve 0.1.1   checked \\".\\"   " + n + " files read\\n");',
         'process.exitCode = 1;',
       ].join('\n'),
     );
@@ -289,7 +289,7 @@ describe.skipIf(!HAS_SYSCTL)('on the recorded machine (a stand-in for it: this m
 
   it('a tree run that did not read 1,000 files fails', () => {
     const t = scratch();
-    const short = stub(t, 'tripcurve 0.1.0   checked "."   3 files read\n', 1, 0);
+    const short = stub(t, 'tripcurve 0.1.1   checked "."   3 files read\n', 1, 0);
     const r = run(['--machine-file', identity(t, MODEL, CPU), '--cli', short, '--only', 'tree']);
     expect(r.status).toBe(1);
     expect(r.stderr).toContain('did not read 1000 files');

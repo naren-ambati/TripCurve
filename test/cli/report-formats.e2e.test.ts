@@ -183,7 +183,7 @@ describe('the formats on the command line', () => {
     const asJson = runBuilt(['.', '--format', 'json'], { cwd: tree.root });
     expect(human.status).toBe(1);
     expect(asJson.status).toBe(1);
-    expect(human.stdout.startsWith('tripcurve 0.1.0   checked "."')).toBe(true);
+    expect(human.stdout.startsWith('tripcurve 0.1.1   checked "."')).toBe(true);
     expect(JSON.parse(asJson.stdout).schemaVersion).toBe(1);
   });
 

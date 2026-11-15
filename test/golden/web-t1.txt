@@ -1,4 +1,4 @@
-tripcurve 0.1.0   checked "."   4 files read
+tripcurve 0.1.1   checked "."   4 files read
 
 Workload "web" (Deployment) in "k8s/web.yaml"
   FAIL T1  idle close 6 s is not longer than LB idle 60 s

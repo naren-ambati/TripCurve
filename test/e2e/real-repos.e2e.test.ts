@@ -90,7 +90,7 @@ describe.each(COPIES)('real repository $dir', (copy) => {
 
   it('reads the files of the copy and ends with the expected summary', () => {
     expect(expected.split('\n')[0]).toBe(
-      `tripcurve 0.1.0   checked "."   ${copy.files} files read`,
+      `tripcurve 0.1.1   checked "."   ${copy.files} files read`,
     );
     expect(expected.replace(/\s+/g, ' ')).toContain(copy.summary);
   });

@@ -1,4 +1,4 @@
-tripcurve 0.1.0   checked "."   14 files read
+tripcurve 0.1.1   checked "."   14 files read
 
 Workload "api" (Deployment) in "k8s/api.yaml"
   FAIL T1  idle close 2 s is not longer than LB idle 60 s

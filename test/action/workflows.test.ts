@@ -233,7 +233,7 @@ describe('release.yml (B29): the container image, published on a version tag', (
   });
 
   it('builds, smoke-tests with scripts/docker-smoke.mjs, logs in, then pushes, in that order', () => {
-    const build = at(/docker build -t "tripcurve:\$TAG" \./);
+    const build = at(/docker build --provenance=false --sbom=false -t "tripcurve:\$TAG" \./);
     const smoke = at(/node scripts\/docker-smoke\.mjs "tripcurve:\$TAG"/);
     const login = at(/docker login ghcr\.io/);
     const push = at(/docker push/);

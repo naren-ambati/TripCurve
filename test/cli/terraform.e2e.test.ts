@@ -59,7 +59,7 @@ describe('terraform show -json on standard input', () => {
     expect(run.status).toBe(1);
     expect(run.stdout).toBe(
       [
-        'tripcurve 0.1.0   checked <stdin>   1 stream, 1 document read',
+        'tripcurve 0.1.1   checked <stdin>   1 stream, 1 document read',
         '',
         'Workload "orders" (event source mapping) in <stdin> document 1',
         '  FAIL T4  visibility 60 s is less than 6 x 30 s + 5 s = 185 s',

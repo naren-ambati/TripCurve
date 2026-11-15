@@ -49,7 +49,7 @@ describe('the document', () => {
       'summary',
     ]);
     expect(doc.schemaVersion).toBe(1);
-    expect(doc.tool).toEqual({ name: 'tripcurve', version: '0.1.0' });
+    expect(doc.tool).toEqual({ name: 'tripcurve', version: '0.1.1' });
     expect(doc.checked).toEqual({ path: '.', filesRead: 3 });
   });
 

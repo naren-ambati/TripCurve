@@ -1,4 +1,4 @@
-tripcurve 0.1.0   checked "."   15 files read
+tripcurve 0.1.1   checked "."   15 files read
 
 Workload "admin" (Deployment) in "k8s/admin.yaml"
   N/A  T1  gunicorn sync worker closes after every response

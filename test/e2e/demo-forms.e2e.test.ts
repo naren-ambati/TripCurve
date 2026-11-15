@@ -43,7 +43,7 @@ for (const twin of TWINS) {
     });
 
     it('reads 14 files and has the same findings and summary as the plain YAML demo (lines apart)', () => {
-      expect(run.stdout.split('\n')[0]).toBe('tripcurve 0.1.0   checked "."   14 files read');
+      expect(run.stdout.split('\n')[0]).toBe('tripcurve 0.1.1   checked "."   14 files read');
       expect(withoutLines(run.stdout)).toBe(withoutLines(first));
     });
 

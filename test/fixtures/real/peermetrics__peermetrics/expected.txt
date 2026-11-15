@@ -1,4 +1,4 @@
-tripcurve 0.1.0   checked "."   4 files read
+tripcurve 0.1.1   checked "."   4 files read
 
 Workload "peermetrics-web" (Deployment) in "k8s/base/web.yaml"
   FAIL T2  no drain delay before SIGTERM

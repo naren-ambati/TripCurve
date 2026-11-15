@@ -1,4 +1,4 @@
-tripcurve 0.1.0   checked "."   9 files read
+tripcurve 0.1.1   checked "."   9 files read
 
 Workload "frontend" (Deployment) in "k8s/frontend.yaml"
   UNRESOLVED T1  idle close not established: the server is not identified as a

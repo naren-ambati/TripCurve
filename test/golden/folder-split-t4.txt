@@ -1,4 +1,4 @@
-tripcurve 0.1.0   checked "."   4 files read
+tripcurve 0.1.1   checked "."   4 files read
 
 Workload "orders" (event source mapping) in "mapping.tf"
   FAIL T4  visibility 60 s is less than 6 x 30 s = 180 s; the batching window is

@@ -1,4 +1,4 @@
-# Publishes the container image when a version tag is pushed (`git push origin v0.1.0`): build from the
+# Publishes the container image when a version tag is pushed (`git push origin v<version>`): build from the
 # Dockerfile, smoke-test the image with no network (scripts/docker-smoke.mjs), then push it to GHCR as
 # ghcr.io/<owner>/tripcurve:<version> (no `latest`: the README names the version). A version that is already
 # published is never overwritten, and the tagged commit must be on main. The only credential is the workflow's own GITHUB_TOKEN,
@@ -40,7 +40,10 @@ jobs:
       - name: Build the image
         env:
           TAG: ${{ github.ref_name }}
-        run: docker build -t "tripcurve:$TAG" .
+        # Without attestations: the first run (43745004839, tag v0.1.0) probably built with BuildKit's default
+        # provenance attestation, and GHCR refused the tagged manifest with `denied` after every layer had uploaded
+        # (docs/evidence/gh-release-run1.txt). A plain single-platform image is what the smoke test checks anyway.
+        run: docker build --provenance=false --sbom=false -t "tripcurve:$TAG" .
       - name: Smoke-test the image (no network)
         env:
           TAG: ${{ github.ref_name }}

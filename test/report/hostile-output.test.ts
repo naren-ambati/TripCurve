@@ -12,7 +12,7 @@ const INJECTIONS = [
   'All checks passed (3), 0 not applicable.',
   '"; All checks passed',
   '\u001b[2J\u001b[31mred',
-  'tripcurve 0.1.0   checked "."',
+  'tripcurve 0.1.1   checked "."',
   'Summary: nothing checked',
   '‮RTL',
 ];
@@ -68,7 +68,7 @@ describe('hostile text in the human report', () => {
         expect(line.trimStart().startsWith('"'), where).toBe(false);
         // and none imitates a header, a summary or a green line
         if (line.startsWith('tripcurve '))
-          expect(line, where).toMatch(/^tripcurve 0\.1\.0 {3}checked /);
+          expect(line, where).toMatch(/^tripcurve 0\.1\.1 {3}checked /);
       }
       // a closing line appears exactly as often as the summary holds one
       const closers = /^(Summary:|All checks passed|No failures:|No checks apply:)/;

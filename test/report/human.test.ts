@@ -31,7 +31,7 @@ function oneBlock(findings = [finding('FAIL')], subject = workload('web')): stri
 describe('the report layout', () => {
   it('header, blank line, block, blank line, Assumptions, blank line, summary', () => {
     const out = oneBlock([finding('FAIL', 'T1', workload('web'), 'idle close 6 s is not longer')]);
-    expect(out[0]).toBe('tripcurve 0.1.0   checked "."   3 files read');
+    expect(out[0]).toBe('tripcurve 0.1.1   checked "."   3 files read');
     expect(out[1]).toBe('');
     expect(out[2]).toBe('Workload "web" (Deployment) in "k8s/web.yaml"');
     expect(out[3]).toBe('  FAIL T1  idle close 6 s is not longer');
@@ -48,10 +48,10 @@ describe('the report layout', () => {
 
   it('the header counts one file in the singular', () => {
     expect(
-      renderHuman(buildReport({ filesRead: 1 })).startsWith('tripcurve 0.1.0   checked ".."'),
+      renderHuman(buildReport({ filesRead: 1 })).startsWith('tripcurve 0.1.1   checked ".."'),
     ).toBe(false);
     expect(lines(renderHuman(buildReport({ filesRead: 1 })))[0]).toBe(
-      'tripcurve 0.1.0   checked "."   1 file read',
+      'tripcurve 0.1.1   checked "."   1 file read',
     );
   });
 });
@@ -492,7 +492,7 @@ describe('Files not checked, Assumptions and the not-checked workloads', () => {
       ),
     );
     expect(out).toEqual([
-      'tripcurve 0.1.0   checked "."   3 files read',
+      'tripcurve 0.1.1   checked "."   3 files read',
       '',
       'Assumptions',
       '  - No load balancer found in the checked files for 2 workloads, T1 to T3 not',
@@ -532,7 +532,7 @@ describe('the no-files case, the config-error case and the stdin header', () => 
       renderHuman(buildReport({ noRecognisedFiles: true, filesRead: 0, checked: './docs' })),
     ).toBe(
       [
-        'tripcurve 0.1.0   checked "./docs"   0 files read',
+        'tripcurve 0.1.1   checked "./docs"   0 files read',
         '',
         'No Kubernetes, server or Terraform files found under "./docs".',
         'Summary: nothing checked; not a clean result',
@@ -589,7 +589,7 @@ describe('the no-files case, the config-error case and the stdin header', () => 
           header: { ...r.header, checked: '<stdin>', stream: { documents: 6 } },
         }),
       )[0],
-    ).toBe('tripcurve 0.1.0   checked <stdin>   1 stream, 6 documents read');
+    ).toBe('tripcurve 0.1.1   checked <stdin>   1 stream, 6 documents read');
   });
 
   it('a block in a stdin document names the document', () => {

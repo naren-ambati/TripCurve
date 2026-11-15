@@ -29,7 +29,7 @@ describe('no recognised files (exit 2)', () => {
     const run = runBuilt(['.'], { cwd: t.root });
     expect(run.stdout).toBe(
       [
-        'tripcurve 0.1.0   checked "."   0 files read',
+        'tripcurve 0.1.1   checked "."   0 files read',
         '',
         'No Kubernetes, server or Terraform files found under ".".',
         'Summary: nothing checked; not a clean result',
@@ -218,7 +218,7 @@ describe('standard input', () => {
       .map((f) => `${DEMO_FILES[f] as string}\n---\n`)
       .join('');
     const run = runBuilt(['-'], { input });
-    expect(run.stdout).toContain('tripcurve 0.1.0   checked <stdin>   1 stream, 4 documents read');
+    expect(run.stdout).toContain('tripcurve 0.1.1   checked <stdin>   1 stream, 4 documents read');
     expect(run.stdout).toContain('Workload "web" (Deployment) in <stdin> document 3');
     expect(run.status).toBe(1);
   });

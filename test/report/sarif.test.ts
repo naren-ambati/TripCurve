@@ -115,7 +115,7 @@ describe('the rules', () => {
     expect(rules[0]?.help.text).toContain('tripcurve --explain T1');
     expect(rules[0]?.shortDescription.text).toContain('idle close');
     expect(run.tool.driver.name).toBe('tripcurve');
-    expect(run.tool.driver.version).toBe('0.1.0');
+    expect(run.tool.driver.version).toBe('0.1.1');
   });
 });
 

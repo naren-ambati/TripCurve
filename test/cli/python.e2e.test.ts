@@ -78,7 +78,7 @@ describe('standard input: rendered Helm output', () => {
   it('reads several documents from `-`, names sources <stdin> document n, line m, and shows the Helm comment only quoted after its label', () => {
     const run = runBuilt(['-'], { input });
     const expected = [
-      'tripcurve 0.1.0   checked <stdin>   1 stream, 5 documents read',
+      'tripcurve 0.1.1   checked <stdin>   1 stream, 5 documents read',
       '',
       'Workload "api" (Deployment) in <stdin> document 4',
       '           (Helm source comment "chart/templates/api.yaml")',

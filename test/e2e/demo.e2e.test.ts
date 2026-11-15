@@ -43,7 +43,7 @@ describe('first run: tripcurve . inside demo/ (exit 1)', () => {
   });
 
   it('reads 14 files and ends with the summary of', () => {
-    expect(first.split('\n')[0]).toBe('tripcurve 0.1.0   checked "."   14 files read');
+    expect(first.split('\n')[0]).toBe('tripcurve 0.1.1   checked "."   14 files read');
     expect(first.replace(/\s+/g, ' ')).toContain(
       'Summary: 4 failed, 1 unresolved, 1 not evaluated, 1 not applicable, 3 passed; not a clean result',
     );

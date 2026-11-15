@@ -1,4 +1,4 @@
-tripcurve 0.1.0   checked "."   10 files read
+tripcurve 0.1.1   checked "."   10 files read
 
 Workload "frontend" (Deployment) in "k8s/frontend.yaml"
   UNRESOLVED T2  the search for a drain is not complete

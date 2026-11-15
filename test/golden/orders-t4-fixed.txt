@@ -1,4 +1,4 @@
-tripcurve 0.1.0   checked "."   1 file read
+tripcurve 0.1.1   checked "."   1 file read
 
 Workload "orders" (event source mapping) in "infra/queue.tf"
   PASS T4  visibility 190 s covers 185 s ("infra/queue.tf":3)

@@ -99,7 +99,7 @@ describe('the Report', () => {
       unchecked: [unchecked('k8s/broken.yaml', 'parse-error', 14)],
       filesRead: 5,
     });
-    expect(r.header.version).toBe('0.1.0');
+    expect(r.header.version).toBe('0.1.1');
     expect(r.header.filesRead).toBe(5);
     expect(r.blocks).toHaveLength(1);
     expect(r.unchecked).toHaveLength(1);

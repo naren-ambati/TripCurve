@@ -1,4 +1,4 @@
-tripcurve 0.1.0   checked "."   4 files read
+tripcurve 0.1.1   checked "."   4 files read
 
 Workload "orders" (event source mapping) in "mapping.tf"
   UNRESOLVED T4  visibility timeout not established: more than one aws_sqs_queue

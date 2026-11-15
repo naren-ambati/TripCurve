@@ -9,7 +9,7 @@ tripcurve is a command-line checker. It reads the files of a repository (Kuberne
 
 Where a setting is not written down, tripcurve fills in the default from a sourced, dated knowledge base, and prints where every number came from. Where it cannot establish a number, it says UNRESOLVED instead of guessing. The rules are in [docs/rules.md](docs/rules.md).
 
-**Status: 0.1.0 is tagged (`v0.1.0`, 2026-11-15); it is distributed as a GitHub Action ref and, once the release workflow has run, as a container image; not on npm.** The source is at https://github.com/naren-ambati/TripCurve. The `v0.1.0` tag makes the Action usable as `naren-ambati/TripCurve@v0.1.0` and starts the release workflow, which builds, smoke-tests and pushes the image `ghcr.io/naren-ambati/tripcurve:0.1.0`; whether that push has happened, and whether the package can be pulled without a login yet, is recorded in [CHANGELOG.md](CHANGELOG.md) (we expect a new GHCR package to be private until its owner opens it; not verified, B30 records what happened). tripcurve is not published to npm. `package.json` stays `"private": true` and `"license": "UNLICENSED"`: no licence is granted until the maintainer decides one. This README describes the code in this checkout, built bolt by bolt (see [CHANGELOG.md](CHANGELOG.md)).
+**Status: 0.1.1 is tagged (`v0.1.1`, 2026-11-15); it is distributed as a GitHub Action ref and, once the release workflow has run, as a container image; not on npm.** The source is at https://github.com/naren-ambati/TripCurve. The `v0.1.1` tag makes the Action usable as `naren-ambati/TripCurve@v0.1.1` and starts the release workflow, which builds, smoke-tests and pushes the image `ghcr.io/naren-ambati/tripcurve:0.1.1`; whether that push has happened is recorded in [CHANGELOG.md](CHANGELOG.md). The GHCR package `tripcurve` exists with public visibility, created by the first release run of 2026-11-15, whose own push was refused (B30); `v0.1.0` stays a valid Action ref with no image. tripcurve is not published to npm. `package.json` stays `"private": true` and `"license": "UNLICENSED"`: no licence is granted until the maintainer decides one. This README describes the code in this checkout, built bolt by bolt (see [CHANGELOG.md](CHANGELOG.md)).
 
 ## What it looks like
 
@@ -60,16 +60,16 @@ Medium. The research estimated 5-7 days of coding for the MVP, one person with C
 
 ## Run it
 
-**As a container** (no Node needed; the image runs as the unprivileged user `node`, uid 1000, and needs no network). The commands below work once the release workflow has pushed the image and the owner has opened the package; the CHANGELOG records when that is so. The checked directory must be readable by uid 1000 (most checkouts are; a 0700 directory is not, so add `--user "$(id -u)"` then):
+**As a container** (no Node needed; the image runs as the unprivileged user `node`, uid 1000, and needs no network). The commands below work once the release workflow has pushed the image; the CHANGELOG records when that is so. The checked directory must be readable by uid 1000 (most checkouts are; a 0700 directory is not, so add `--user "$(id -u)"` then):
 
 ```sh
-docker run --rm -v "$PWD:/repo:ro" ghcr.io/naren-ambati/tripcurve:0.1.0
-docker run --rm -v "$PWD:/repo:ro" ghcr.io/naren-ambati/tripcurve:0.1.0 /repo --format sarif > tripcurve.sarif
+docker run --rm -v "$PWD:/repo:ro" ghcr.io/naren-ambati/tripcurve:0.1.1
+docker run --rm -v "$PWD:/repo:ro" ghcr.io/naren-ambati/tripcurve:0.1.1 /repo --format sarif > tripcurve.sarif
 ```
 
 The image is built from the `Dockerfile` here (two stages from a digest-pinned `node:22-alpine`; the runtime stage installs only the three runtime dependencies from `npm-shrinkwrap.json`, which pins `minimatch` 11.0.8, so the image carries the tree whose advisory check is clean: `docs/lookups-b29.txt`) and smoke-tested with no network before it is pushed (`scripts/docker-smoke.mjs`, `.github/workflows/release.yml`).
 
-**In GitHub Actions:** `uses: naren-ambati/TripCurve@v0.1.0` (see [docs/action.md](docs/action.md)).
+**In GitHub Actions:** `uses: naren-ambati/TripCurve@v0.1.1` (see [docs/action.md](docs/action.md)).
 
 **From a checkout** (Node 22.12.0 or later, `package.json` `engines`); tripcurve is not published to npm, so there is no `npm install tripcurve`:
 

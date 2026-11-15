@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@<full commit SHA>   # pin by commit, comment the tag
-      - uses: naren-ambati/TripCurve@v0.1.0        # or pin the tag's full commit SHA and comment the tag
+      - uses: naren-ambati/TripCurve@v0.1.1        # or pin the tag's full commit SHA and comment the tag
         with:
           path: .
           format: human
