@@ -22,13 +22,13 @@ The state of `main` when this was written (2026-11-13): every bolt B0 to B17 is 
 | 1 | One local command passes: typecheck (tests included), Biome, unit, golden and end-to-end tests with the 80% coverage floor, measurement self-test, build and timed check | **done locally** | `npm run verify`: see "What ran" below |
 | 2 | v0.1.0 definition, item by item | see the next table | |
 | 3 | Pinned measurement lane (`npm run verify:measure`) | **done locally**: passed on a quiet host | 110 of 110 cases including the nine stated-reason entries, run 2026-11-12 from 20:27Z to 21:07Z; raw output in `measure/results/2026-11-12-lanes-pinned-b15.txt` and `.jsonl`, and in `docs/release-check-run-b15.txt` |
-| 4 | Latest measurement lane (`node measure/lanes.mjs latest`) | **done in B8 on 2026-11-12, before B12; not re-run in B15; must be run again on the day of the go** | 65 of 65 cases, no drift (`measure/results/2026-11-12-lanes-latest.txt`), which predates the three CloudFormation entries; it needs the network (GET only) and installs into `.cache/` |
+| 4 | Latest measurement lane (`node measure/lanes.mjs latest`) | **done 2026-11-15 (B26), no busy sample per the lane's own check, exit 0; run it again on the day of the go** | 65 of 65 cases within tolerance, 9 stated reasons (the CloudFormation entries included), 3 deferred, 0 drift findings against node 26.13.1, gunicorn 27.0.1, uvicorn 0.54.0, uvicorn-worker 0.4.0, lightship 9.1.0 (`measure/results/2026-11-15-lanes-latest-b26.txt`); two busy-host runs the same day are evidence only (`...-loaded-run.*`, `...-busy.*`); it needs the network (GET only) and installs into `.cache/` |
 | 5 | `npm audit`, checkout and `npm ci` from `npm-shrinkwrap.json` | **done locally, 0 vulnerabilities (B16, 2026-11-12; rerun B21, 2026-11-14)**; not the same as row 5b | `npm audit` printed `found 0 vulnerabilities`, with an npm `overrides` entry that pins `minimatch` to 11.0.8; see "npm audit" below |
 | 5b | Fresh-install audit of the packed tarball | **NOT CLEAN; must be clean before any npm publish** | 4 moderate findings, `minimatch` 10.2.6 (B21, 2026-11-14; `docs/release-check-run-b21.txt`); closed only by a ts-morph release that allows `minimatch` 11 or by replacing ts-morph; the package is private and not published to npm, so no such consumer exists today; see "npm audit" below |
 | 6 | Pinned shrinkwrap with no install scripts | **done locally, with one finding, open maintainer decision** | exact direct pins and integrity hashes on all 123 packages of the shrinkwrap; one dev-only optional package is flagged; see "The shrinkwrap" below |
 | 7 | Schema-valid SARIF | **done as the build-plan fallback; deviation from the acceptance criterion recorded** | The acceptance criterion asks for validation against a repo-kept schema; the schema is not vendored because its licence (OASIS IPR Policy, RF on RAND Terms Mode, read 2026-11-13, `docs/lookups-b16.txt`) is not MIT, Apache-2.0 or BSD. Instead, one-off on 2026-11-12: every SARIF golden and the SARIF of `demo/` and `demo-fixed/` validate against the official SARIF 2.1.0 JSON schema (`docs/release-check-run-b16.txt`); see "SARIF validity" below |
 | 8 | The docs | **done locally** (written in B15) | README, rules, how defaults were measured, add an entry, CI and SARIF, security, CHANGELOG, this page; `test/docs/docs.test.ts` checks diagrams, quotes and sourced numbers |
-| 9 | Every bolt's review closed | **done for B0 to B25** (see "Reviews" below; updated 2026-11-15) | see "Reviews" below |
+| 9 | Every bolt's review closed | **done for B0 to B26** (see "Reviews" below; updated 2026-11-15) | see "Reviews" below |
 | 10 | Release-quality dry run (metric 5): a fresh session adds an entry using only the docs | **done 2026-11-13: partial success** (the maintainer reviews it; it may want a re-run against the fixed guide) | `docs/add-a-knowledge-base-entry.md`, section 9; the record is below, "The metric-5 dry run (2026-11-13)" |
 | 11 | A fresh re-check of the npm name | **done locally on 2026-11-12; repeat on the day of the go** | `npm view tripcurve` returned 404 at 2026-11-12T20:21Z (`docs/lookups-b15.txt`) |
 | 12 | The hosted CI workflow runs | **done 2026-11-15**: `.github/workflows/verify.yml` ran on the first push; run 43682221175 succeeded on Ubuntu (Node 22.12.0, 24, 26) and macOS (Node 22.12.0), the first run of the suite on Linux | `docs/evidence/gh-hosted-runs.txt`; `docs/evidence/gh-linux-verify.txt`; `docs/ci-and-sarif.md`; `test/action/workflows.test.ts` |
@@ -272,6 +272,7 @@ Every bolt gets one independent read-only adversarial review, with a second pass
 | B23 | closed | review 2: MERGE; review 1 fixed the lanes row and found the closed-pipe trace that became B24 (`BUILD-NOTES.md`, "B23") |
 | B24 | closed | review: MERGE (`BUILD-NOTES.md`, "B24") |
 | B25 | closed | review 2: FIX-FIRST items fixed before merge, the stale `limits.md` upload sentence among them (`BUILD-NOTES.md`, "B25") |
+| B26 | closed | review: FIX-FIRST on wording (the busy-sample count, an end time not in the file, "quiet host"), fixed before merge (`BUILD-NOTES.md`, "B26") |
 
 Minor findings carried, not fixed, each recorded in `BUILD-NOTES.md`: B10 (`--runs=3` and `--cli=x` with an `=` are silently ignored by the timed check, and cannot fake a pass), B12 (two clauses of `couldBeCfnFlow` overlap, so neither is pinned by its own test).
 
@@ -288,7 +289,7 @@ None is hidden; each is stated where it matters:
 - Whether GitHub's viewer decodes the doubled braces `{{` in SARIF messages back to `{` has not been checked. (`docs/ci-and-sarif.md`)
 - The official SARIF schema was applied once, on 2026-11-12, to the goldens and the demo output, not to a real upload. (above, "SARIF validity")
 - The release-quality dry run (metric 5) was run once, on 2026-11-13, against the guide before its B16 fixes; it has not been re-run against the fixed guide. (row 10)
-- The latest lane was last run (in B8) before the three CloudFormation default entries existed; the B15 pinned run includes them. (`docs/how-defaults-were-measured.md`)
+- The latest lane of 2026-11-15 (B26) and the B15 pinned run both include the three CloudFormation default entries as stated reasons; the B8 latest run predates them. (`docs/how-defaults-were-measured.md`)
 
 ## Open questions for the maintainer
 

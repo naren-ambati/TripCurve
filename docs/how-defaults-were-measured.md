@@ -73,10 +73,16 @@ Verbatim from `measure/results/2026-11-12-lanes-pinned.txt` (B8, pinned lane):
 LANE PASS: 110 of 110 cases within tolerance, 36 entries planned, 36 entries passing, 6 carry a stated reason, 3 deferred and not measured, 0 release blockers, 0 drift findings
 ```
 
-Verbatim from `measure/results/2026-11-12-lanes-latest.txt` (B8, latest lane; **not re-run since**):
+Verbatim from `measure/results/2026-11-12-lanes-latest.txt` (B8, latest lane):
 
 ```text
 LANE PASS: 65 of 65 cases within tolerance, 36 entries planned, 36 entries passing, 6 carry a stated reason, 3 deferred and not measured, 0 release blockers, 0 drift findings
+```
+
+Verbatim from `measure/results/2026-11-15-lanes-latest-b26.txt` (B26, latest lane, started 06:37:26Z on 2026-11-15, no busy sample per the lane's own check, `--jobs=1`, exit 0; the newest releases found were node 26.13.1, gunicorn 27.0.1, uvicorn 0.54.0, uvicorn-worker 0.4.0 and lightship 9.1.0):
+
+```text
+LANE PASS: 65 of 65 cases within tolerance, 36 entries planned, 36 entries passing, 9 carry a stated reason, 3 deferred and not measured, 0 release blockers, 0 drift findings
 ```
 
 Verbatim from `measure/results/2026-11-12-lanes-pinned-b15.txt` (B15, pinned lane, 20:27Z to 21:07Z, quiet host, exit 0):
@@ -85,7 +91,7 @@ Verbatim from `measure/results/2026-11-12-lanes-pinned-b15.txt` (B15, pinned lan
 LANE PASS: 110 of 110 cases within tolerance, 36 entries planned, 36 entries passing, 9 carry a stated reason, 3 deferred and not measured, 0 release blockers, 0 drift findings
 ```
 
-The B8 runs say 6 stated reasons and the B15 run says 9, because B12 added the three CloudFormation entries in between. The B15 file is classified as evidence only in `test/kb/tolerance-evidence.test.ts`: it is not a basis for any tolerance. The latest lane was last run before B12, so it must be run again on the day of the maintainer's go. The pre-release record is the run on the day of the maintainer's go (`docs/release-checklist.md`). What a lane run does not cover is listed in `docs/limits.md` ("What a lane run does not cover"): one run per case rather than three, the smallest explicit value of the Python entries (the largest, 300 s, only with `--full`), a K between the measured values, the interior of a version range, and platforms other than the one the lane runs on.
+The B8 runs say 6 stated reasons and the B15 run says 9, because B12 added the three CloudFormation entries in between. The B15 file is classified as evidence only in `test/kb/tolerance-evidence.test.ts`: it is not a basis for any tolerance. The latest lane was run again in B26 on 2026-11-15, after B12, and is classified as evidence only in the same test; two earlier runs that day with busy samples (`2026-11-15-lanes-latest-loaded-run.*`, `LANE FAIL 61 of 65`, and `2026-11-15-lanes-latest-busy.*`, 65 of 65 but 13 busy samples) are kept as evidence and are not official runs. The lane must be run once more on the day of the go. The pre-release record is the run on the day of the maintainer's go (`docs/release-checklist.md`). What a lane run does not cover is listed in `docs/limits.md` ("What a lane run does not cover"): one run per case rather than three, the smallest explicit value of the Python entries (the largest, 300 s, only with `--full`), a K between the measured values, the interior of a version range, and platforms other than the one the lane runs on.
 
 ## Entries with no script: documented only
 

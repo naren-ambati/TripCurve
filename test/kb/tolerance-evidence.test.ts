@@ -48,6 +48,8 @@ const EVIDENCE_ONLY = new Set([
   '2026-11-12-lanes-pinned-review-run1-fail.jsonl',
   // the B15 release-check run: quiet host, --jobs=1, but added after the tolerances were derived; kept as evidence, not as a basis
   '2026-11-12-lanes-pinned-b15.jsonl',
+  // the B26 release-check run of the latest lane (2026-11-15, quiet host, --jobs=1, LANE PASS, exit 0): added after the tolerances were derived; evidence, not a basis
+  '2026-11-15-lanes-latest-b26.jsonl',
 ]);
 
 /** A run made while the host load was high (or aborted for it) is evidence, never a basis. */
