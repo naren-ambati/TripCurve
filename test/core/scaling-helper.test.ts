@@ -1,7 +1,12 @@
 // The scaling check replaces wall-clock budgets, so it must itself be able
 // to fail: quadratic work has to exceed the limit and linear work stay under.
 import { describe, expect, it } from 'vitest';
-import { LINEAR_RATIO_LIMIT, SCALING_TEST_TIMEOUT_MS, scalingRatio } from '../support/scaling.js';
+import {
+  constantFactorRatio,
+  LINEAR_RATIO_LIMIT,
+  SCALING_TEST_TIMEOUT_MS,
+  scalingRatio,
+} from '../support/scaling.js';
 
 function linear(n: number): number {
   let x = 0;
@@ -84,5 +89,52 @@ describe('scalingRatio with a simulated clock (B16)', () => {
   it('plain linear work reads 4', () => {
     const sim = simulate((n) => n / 10);
     expect(scalingRatio(sim.work, 1000, sim.now)).toBeCloseTo(4, 5);
+  });
+});
+
+// B28: the constant-factor check (two works at one size) must itself be able to fail and to ignore noise.
+describe('constantFactorRatio', () => {
+  it(
+    'the same work twice reads about 1',
+    () => {
+      expect(constantFactorRatio(linear, linear, 50_000, 2)).toBeLessThan(1.5);
+    },
+    SCALING_TEST_TIMEOUT_MS,
+  );
+  it(
+    'work that costs three times as much reads at least 2: the remeasure cannot rescue a real factor',
+    () => {
+      const triple = (n: number) => {
+        linear(n);
+        linear(n);
+        linear(n);
+      };
+      expect(constantFactorRatio(triple, linear, 50_000, 2)).toBeGreaterThanOrEqual(2);
+    },
+    SCALING_TEST_TIMEOUT_MS,
+  );
+  it('with a simulated clock, one slow round of the first work is filtered: the fastest round counts', () => {
+    let t = 0;
+    let roundsOfA = 0;
+    const now = () => t;
+    const a = (n: number) => {
+      roundsOfA += 1;
+      t += roundsOfA === 1 ? n * 3 : n; // the first round is three times slower (a cold cache, a GC)
+    };
+    const b = (n: number) => {
+      t += n;
+    };
+    expect(constantFactorRatio(a, b, 60, 2, now)).toBeCloseTo(1, 5);
+  });
+  it('with a simulated clock, a real factor of 2.5 is read as 2.5 at every round', () => {
+    let t = 0;
+    const now = () => t;
+    const a = (n: number) => {
+      t += n * 2.5;
+    };
+    const b = (n: number) => {
+      t += n;
+    };
+    expect(constantFactorRatio(a, b, 60, 2, now)).toBeCloseTo(2.5, 5);
   });
 });

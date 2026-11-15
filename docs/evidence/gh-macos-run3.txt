@@ -1,0 +1,31 @@
+# The third push (2d85663: B26, B27) and its two runs (read with the GitHub REST API, 2026-11-15T07:38:13Z; colour codes removed; the runner's checkout path is written `<runner>`)
+
+$ gh api repos/naren-ambati/TripCurve/actions/runs   (newest first)
+total_count 6
+43690003393  verify  push  2d85663  run_attempt 1  completed failure  created 2026-11-15T07:27:10Z
+43690003381  action-selftest  push  2d85663  run_attempt 1  completed success  created 2026-11-15T07:27:10Z
+43686256564  action-selftest  push  9e2206b  run_attempt 1  completed success  created 2026-11-15T06:37:02Z
+43686256521  verify  push  9e2206b  run_attempt 1  completed failure  created 2026-11-15T06:37:02Z
+43682221183  action-selftest  push  cf55f77  run_attempt 1  completed success  created 2026-11-15T05:42:22Z
+43682221175  verify  push  cf55f77  run_attempt 1  completed success  created 2026-11-15T05:42:22Z
+
+$ gh api repos/naren-ambati/TripCurve/actions/runs/43690003381/jobs
+job upload: success
+job failing: success
+job clean: success
+
+$ gh api repos/naren-ambati/TripCurve/actions/runs/43690003393/jobs
+job verify (ubuntu-latest, 24): success
+job verify (macos-latest, 22.12.0): failure
+job verify (ubuntu-latest, 22.12.0): success
+job verify (ubuntu-latest, 26): success
+
+$ gh run view --job 132738463609 --log   (verify (macos-latest, 22.12.0): the closed-pipe tests, then the one failure, verbatim excerpts)
+2026-11-15T07:33:35.0738970Z  ✓ test/e2e/closed-pipe.e2e.test.ts (10 tests) 4256ms
+2026-11-15T07:33:44.7803460Z  ✓ test/e2e/closed-reader-wiring.e2e.test.ts (4 tests) 1426ms
+2026-11-15T07:33:45.2058660Z  ✓ test/cli/closed-reader.test.ts (3 tests) 3ms
+2026-11-15T07:35:34.9557590Z  FAIL  test/parse/iac-cfn-second.test.ts > R1: ordinary YAML is never reported as an unreadable template > the probe costs a candidate no more than main did: a tree of values files with a nested Resources key is as cheap as one without
+2026-11-15T07:35:34.9570670Z AssertionError: expected 2.0058058306684465 to be less than 2
+2026-11-15T07:35:34.9631790Z  Test Files  1 failed | 143 passed (144)
+2026-11-15T07:35:34.9670030Z       Tests  1 failed | 13133 passed (13134)
+2026-11-15T07:35:34.9782400Z ##[error]AssertionError: expected 2.0058058306684465 to be less than 2

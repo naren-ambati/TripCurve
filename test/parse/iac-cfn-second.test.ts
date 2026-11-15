@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { intake, isCfnTemplateValue, readIac } from '../../src/parse/index.js';
 import { runBuilt } from '../support/e2e.js';
 import { txt } from '../support/render.js';
+import { constantFactorRatio, SCALING_TEST_TIMEOUT_MS } from '../support/scaling.js';
 import { makeTree, type Tree } from '../support/tmp-tree.js';
 
 const trees: Tree[] = [];
@@ -111,28 +112,37 @@ paths:
     expect(run({ 't.yaml': `${TPL}  bad: [\n` }).unchecked).toEqual([['t.yaml', 'parse-error']]);
   });
 
-  it('the probe costs a candidate no more than main did: a tree of values files with a nested Resources key is as cheap as one without', () => {
-    const body = (key: string) =>
-      `image:\n  tag: x\nresources:\n  limits:\n    cpu: 1\n  ${key}:\n    memory: 2\n${'  extra: 1\n'.repeat(200)}`;
-    const make = (key: string) => {
-      const f: Record<string, string> = {};
-      for (let i = 0; i < 300; i += 1) f[`v${i}/values.yaml`] = body(key);
-      return tree(f).root;
-    };
-    const cpu = (root: string): number => {
-      let best = Number.POSITIVE_INFINITY;
-      for (let k = 0; k < 5; k += 1) {
-        const t0 = process.cpuUsage();
-        intake({ root });
-        const t = process.cpuUsage(t0);
-        best = Math.min(best, (t.user + t.system) / 1000);
-      }
-      return best;
-    };
-    const withKey = cpu(make('Resources'));
-    const without = cpu(make('Resourcez'));
-    expect(withKey / Math.max(without, 1)).toBeLessThan(2);
-  });
+  it(
+    'the probe costs a candidate no more than main did: a tree of values files with a nested Resources key is as cheap as one without',
+    () => {
+      const body = (key: string) =>
+        `image:\n  tag: x\nresources:\n  limits:\n    cpu: 1\n  ${key}:\n    memory: 2\n${'  extra: 1\n'.repeat(200)}`;
+      // One tree per key and size; the sizes are built on demand because the helper may grow them.
+      const roots = new Map<string, string>();
+      const root = (key: string, n: number): string => {
+        const id = `${key}:${n}`;
+        let r = roots.get(id);
+        if (r === undefined) {
+          const f: Record<string, string> = {};
+          for (let i = 0; i < n; i += 1) f[`v${i}/values.yaml`] = body(key);
+          r = tree(f).root;
+          roots.set(id, r);
+        }
+        return r;
+      };
+      // Measured by CPU time, interleaved, at a size long enough to time, with one remeasure on a breach
+      // (test/support/scaling.ts): the hosted macOS run of 2026-11-15 read 2.006 on 18 ms runs for work that
+      // costs the same (docs/evidence/gh-macos-run3.txt, B28).
+      const ratio = constantFactorRatio(
+        (n) => intake({ root: root('Resources', n) }),
+        (n) => intake({ root: root('Resourcez', n) }),
+        300,
+        2,
+      );
+      expect(ratio).toBeLessThan(2);
+    },
+    SCALING_TEST_TIMEOUT_MS,
+  );
 });
 
 describe('R3: the sniff of an unreadable .json', () => {

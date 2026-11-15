@@ -89,3 +89,51 @@ export function scalingRatio(
   if (lowerSize < 1 || lowerSmall < MIN_LOWER_STEP_MS) return lower;
   return Math.min(lower, small / lowerSmall);
 }
+
+// A constant-factor check: work A must not cost more than `limit` times work B at the same size (B28). It is not
+// a scaling check, so the ratio is of two timings at one size, and two things make it robust where a plain
+// fastest-of-five on 18 ms runs was not (the hosted macOS run of 2026-11-15 read 2.006 against a limit of 2 for
+// work that costs the same locally, docs/evidence/gh-macos-run3.txt): the rounds are interleaved (A, B, A, B, ...)
+// so a drift of the host lands on both; and the size doubles until the cheaper work takes MIN_TIMED_MS, so a
+// few milliseconds of jitter cannot move the ratio. A breach is measured once more and the lower ratio kept, as
+// scalingRatio does: noise only ever adds time, while a real cost factor repeats.
+const CONSTANT_ROUNDS = 5;
+
+function interleavedFastest(
+  a: (size: number) => void,
+  b: (size: number) => void,
+  size: number,
+  now: () => number,
+): { a: number; b: number } {
+  let bestA = Number.POSITIVE_INFINITY;
+  let bestB = Number.POSITIVE_INFINITY;
+  for (let i = 0; i < CONSTANT_ROUNDS; i++) {
+    let t0 = now();
+    a(size);
+    bestA = Math.min(bestA, now() - t0);
+    t0 = now();
+    b(size);
+    bestB = Math.min(bestB, now() - t0);
+  }
+  return { a: bestA, b: bestB };
+}
+
+/** Returns time(a) / time(b) at a size >= `size`, grown until the cheaper of the two takes MIN_TIMED_MS. */
+export function constantFactorRatio(
+  a: (size: number) => void,
+  b: (size: number) => void,
+  size: number,
+  limit: number,
+  now: () => number = cpuMs,
+): number {
+  let n = size;
+  let t = interleavedFastest(a, b, n, now);
+  for (let i = 0; i < MAX_DOUBLINGS && Math.min(t.a, t.b) < MIN_TIMED_MS; i++) {
+    n *= 2;
+    t = interleavedFastest(a, b, n, now);
+  }
+  const ratio = t.a / Math.max(t.b, 1);
+  if (ratio < limit) return ratio;
+  const again = interleavedFastest(a, b, n, now);
+  return Math.min(ratio, again.a / Math.max(again.b, 1));
+}

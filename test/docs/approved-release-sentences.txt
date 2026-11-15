@@ -492,19 +492,19 @@ Release-checklist row 4 is done for the day;
 the newest releases found were node 26.13.1, gunicorn 27.0.1, uvicorn 0.54.0, uvicorn-worker 0.4.0 and lightship 9.1.0):
 this was the first run of the suite on Linux, where the Node 22.12.0 job reports 142 test files, 13,111 tests passed and 14 skipped, and the timed check skipped because it is not the recorded machine (`docs/evidence/gh-hosted-runs.txt`, `docs/evidence/gh-linux-verify.txt`).
 The source was pushed to https://github.com/naren-ambati/TripCurve on 2026-11-15, where the hosted workflow and the GitHub Action's self-test ran on each push: every job succeeded on the first (B25);
-Status: **written, checked locally, and run on GitHub.** Its self-test ran on both pushes of 2026-11-15, runs 43682221183 and 43686256564, and all three jobs succeeded each time (B25, B27;
-It ran on both pushes of 2026-11-15 in the `upload` job of `.github/workflows/action-selftest.yml` (runs 43682221183 and 43686256564, both successful);
 after the first, GitHub created an analysis at 2026-11-15T05:42:42Z (tool tripcurve 0.1.0, 6 results, 7 rules) and six alerts are open (`docs/evidence/gh-code-scanning.txt`).
-**The SARIF upload is opt-in and has run on both pushes of 2026-11-15.** `action.yml` contains the standard code-scanning upload step.
 *Linux: run on GitHub.** Every local run above is darwin-arm64.
-The GitHub Action, the hosted workflow and the SARIF upload ran on both pushes of 2026-11-15: every job succeeded on the first (runs 43682221175 and 43682221183);
-the fix is made in B27 and has not yet been run on GitHub (`docs/evidence/gh-macos-enotconn.txt`) | pass on the first push;
-the second push's macOS job failed, fix made in B27, not yet re-run on GitHub |
-the fix is made in B27 and not yet re-run on GitHub.
 **B27, a closed reader on macOS (2026-11-15).** The second hosted run (push 9e2206b, verify run 43686256521) failed its macOS job in the closed-pipe test: the write to the closed stdout was reported as `write ENOTCONN`, and B24 handled `EPIPE` only, so a trace was printed;
 The fix has not yet been run on GitHub.
-they ran on both pushes of 2026-11-15, every job succeeding on the first (B25) and the macOS verify job failing one closed-pipe test on the second (the fix is made in B27 and not yet re-run on GitHub), and they were not tried on a pull request, from a fork or in a private repository.
-the verify workflow ran in runs 43682221175 and 43686256521, the second failing its macOS job in a test unrelated to the Action;
-the fix is made in B27 and not yet re-run on GitHub);
 the same condition was reported once as `ENOTCONN`, in the hosted macOS run of 2026-11-15 (`docs/evidence/gh-macos-enotconn.txt`;
 on the second, the Action's self-test succeeded again (43686256564) and the verify workflow failed its macOS job in one closed-pipe test (43686256521;
+the measurement is made robust in B28, not yet re-run on GitHub (`docs/evidence/gh-macos-run3.txt`) | pass on the first push;
+a CPU-time ratio on short samples, made robust in B28 and not yet re-run on GitHub).
+a CPU-time ratio, made robust in B28 and not yet re-run on GitHub), and they were not tried on a pull request, from a fork or in a private repository.
+then a CPU-time ratio read 2.006 against a limit of 2, made robust in B28 and not yet re-run on GitHub);
+Status: **written, checked locally, and run on GitHub.** Its self-test ran on all three pushes of 2026-11-15, runs 43682221183, 43686256564 and 43690003381, and all three jobs succeeded each time (B25, B27;
+the verify workflow ran in runs 43682221175 and 43686256521, the second and third failing their macOS job in one test each, unrelated to the Action, see B27 and B28);
+It ran on all three pushes of 2026-11-15 in the `upload` job of `.github/workflows/action-selftest.yml` (runs 43682221183, 43686256564 and 43690003381, all successful);
+**The SARIF upload is opt-in and has run on all three pushes of 2026-11-15.** `action.yml` contains the standard code-scanning upload step.
+The GitHub Action, the hosted workflow and the SARIF upload ran on all three pushes of 2026-11-15: every job succeeded on the first (runs 43682221175 and 43682221183);
+that run's macOS job failed one CPU-time ratio test instead, made robust in B28 and not yet re-run on GitHub;
