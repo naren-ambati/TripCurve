@@ -1,0 +1,10 @@
+Lookups for bolt B24 (read-only GETs, each dated)
+
+2026-11-14  https://nodejs.org/docs/latest-v22.x/api/process.md  (page header "Node.js v22.23.5 Documentation")
+  Section "A note on process I/O":
+  "Pipes (and sockets): synchronous on Windows, asynchronous on POSIX"
+  So a write to a closed pipe on POSIX does not throw where it is made: the failure arrives afterwards as an
+  'error' event on process.stdout with code 'EPIPE'. With no listener, Node throws it as an unhandled error
+  (the trace seen before this bolt).
+  Signal events: "'SIGPIPE' is ignored by default. It can have a listener installed."
+  So the process is not killed by the signal; the only report of a closed pipe is the 'error' event.

@@ -630,3 +630,6 @@ SARIF carries the workload name in `runs[0].results[].properties.tripcurve.workl
 - There is no `check` subcommand (two pages named one): the command has one form, `tripcurve [options] [path]`. The documents say "a run of `tripcurve [path]`", and `test/docs/docs.test.ts` fails on any published text that shows a subcommand (derived from `--help`).
 - The "What ran" figures of `docs/release-checklist.md` and the CHANGELOG are re-run and dated; the CHANGELOG has one entry per bolt, B0 to B22.
 
+## B24 (2026-11-14): a closed output pipe
+
+- **A closed pipe ends the writing quietly.** When the reader of standard output or standard error closes early (`| head`, `| cmp - file`, a closed terminal), tripcurve stops writing, prints no trace and no message, and exits with the code the run computed (0, 1, 2 or 3), or 1 when none was known yet. What the reader received is then only a prefix of the output, and the exit code is the only report of the result; Node reports a closed pipe on POSIX as an `EPIPE` error event and ignores SIGPIPE (`docs/lookups-b24.txt`).
