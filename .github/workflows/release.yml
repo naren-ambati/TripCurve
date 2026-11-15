@@ -1,0 +1,72 @@
+# Publishes the container image when a version tag is pushed (`git push origin v0.1.0`): build from the
+# Dockerfile, smoke-test the image with no network (scripts/docker-smoke.mjs), then push it to GHCR as
+# ghcr.io/<owner>/tripcurve:<version> (no `latest`: the README names the version). A version that is already
+# published is never overwritten, and the tagged commit must be on main. The only credential is the workflow's own GITHUB_TOKEN,
+# given `packages: write` on this job alone; it reaches the shell through `env`, never through a `${{ }}` in a
+# run body. No third-party Action beyond the pinned checkout and setup-node the other workflows use.
+# tripcurve is not published to npm; the image and the tagged Action are its two distributions (B29).
+name: release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+jobs:
+  image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22.12.0
+      - name: The tag must be the package version, on a commit that is on main
+        env:
+          TAG: ${{ github.ref_name }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -eu
+          version=$(node -p 'require("./package.json").version')
+          test "$TAG" = "v$version" || { echo "tag $TAG is not v$version (package.json)"; exit 1; }
+          git fetch --quiet --depth=1000 origin main
+          git merge-base --is-ancestor "$SHA" origin/main || { echo "tagged commit $SHA was not found within 1000 commits of main"; exit 1; }
+      - name: Build the image
+        env:
+          TAG: ${{ github.ref_name }}
+        run: docker build -t "tripcurve:$TAG" .
+      - name: Smoke-test the image (no network)
+        env:
+          TAG: ${{ github.ref_name }}
+        run: node scripts/docker-smoke.mjs "tripcurve:$TAG"
+      - name: Log in to GHCR
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ACTOR: ${{ github.actor }}
+        run: printf '%s' "$GITHUB_TOKEN" | docker login ghcr.io -u "$ACTOR" --password-stdin
+      - name: Push the image as <version>, never over a published one
+        env:
+          TAG: ${{ github.ref_name }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -eu
+          image="ghcr.io/$(printf '%s' "$REPOSITORY" | tr '[:upper:]' '[:lower:]')"
+          # Push only when the registry says the manifest is unknown. An existing manifest, or any other
+          # answer (a network error, a permission error), stops the push: a version is never overwritten.
+          if answer=$(docker manifest inspect "$image:${TAG#v}" 2>&1); then
+            echo "$image:${TAG#v} is already published; a version is never overwritten"
+            exit 1
+          fi
+          case "$answer" in
+            *"manifest unknown"*|*"no such manifest"*|*"not found"*|*MANIFEST_UNKNOWN*) ;;
+            *) echo "could not tell whether $image:${TAG#v} exists: $answer"; exit 1 ;;
+          esac
+          docker tag "tripcurve:$TAG" "$image:${TAG#v}"
+          docker push "$image:${TAG#v}"
+          echo "pushed $image:${TAG#v}"

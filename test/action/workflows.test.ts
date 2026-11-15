@@ -1,4 +1,4 @@
-// The hosted workflow files, checked as files (B19; first run on GitHub 2026-11-15, B25).
+// The hosted workflow files, checked as files (B19; first run on GitHub 2026-11-15, B25; release.yml added in B29).
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -9,6 +9,7 @@ const DIR = join(ROOT, '.github', 'workflows');
 
 interface Step {
   id?: string;
+  name?: string;
   if?: string;
   uses?: string;
   run?: string;
@@ -36,10 +37,13 @@ const load = (f: string) => parse(raw(f)) as Workflow;
 const allSteps = (w: Workflow) => Object.values(w.jobs).flatMap((j) => j.steps);
 
 describe('workflow files: the set', () => {
-  it('is exactly verify.yml and action-selftest.yml', () => {
-    expect(FILES.sort()).toEqual(['action-selftest.yml', 'verify.yml']);
+  it('is exactly verify.yml, action-selftest.yml and release.yml', () => {
+    expect(FILES.sort()).toEqual(['action-selftest.yml', 'release.yml', 'verify.yml']);
   });
 });
+
+/** The two workflows that run on every change; release.yml runs on a version tag and has its own rules below. */
+const CI_FILES = FILES.filter((f) => f !== 'release.yml');
 
 describe.each(FILES)('%s: rules every workflow must follow', (file) => {
   const w = load(file);
@@ -64,6 +68,10 @@ describe.each(FILES)('%s: rules every workflow must follow', (file) => {
   it('sets workflow-level permissions to contents: read only', () => {
     expect(w.permissions).toEqual({ contents: 'read' });
   });
+});
+
+describe.each(CI_FILES)('%s: rules of the workflows that run on every change', (file) => {
+  const w = load(file);
 
   it('triggers on push and pull_request only (never pull_request_target or a schedule)', () => {
     expect(Object.keys(w.on as object).sort()).toEqual(['pull_request', 'push']);
@@ -192,5 +200,83 @@ describe('action-selftest.yml (B19)', () => {
 
   it('no job other than upload asks for security-events', () => {
     expect(raw('action-selftest.yml').match(/security-events/g)).toHaveLength(1);
+  });
+});
+
+describe('release.yml (B29): the container image, published on a version tag', () => {
+  const w = load('release.yml');
+  const job = w.jobs.image as Job;
+  const runs = job.steps.map((s) => s.run ?? '');
+  const at = (re: RegExp) => runs.findIndex((r) => re.test(r));
+
+  it('is the only job, triggered by a push of a v* tag and nothing else', () => {
+    expect(Object.keys(w.jobs)).toEqual(['image']);
+    expect(w.on).toEqual({ push: { tags: ['v*'] } });
+  });
+
+  it('adds packages: write to contents: read on the job, and nothing else', () => {
+    expect(job.permissions).toEqual({ contents: 'read', packages: 'write' });
+  });
+
+  it('checks out first with the pinned checkout and without keeping credentials, then the pinned setup-node', () => {
+    expect(job.steps[0]?.uses).toMatch(/^actions\/checkout@[0-9a-f]{40}$/);
+    expect(job.steps[0]?.with?.['persist-credentials']).toBe(false);
+    expect(job.steps[1]?.uses).toMatch(/^actions\/setup-node@[0-9a-f]{40}$/);
+    const pin = (t: string) => /actions\/setup-node@([0-9a-f]{40})/.exec(t)?.[1];
+    expect(pin(raw('release.yml'))).toBe(pin(readFileSync(join(ROOT, 'action.yml'), 'utf8')));
+  });
+
+  it('refuses a tag that is not v<package version>, before building', () => {
+    const check = at(/test "\$TAG" = "v\$version"/);
+    expect(check).toBeGreaterThan(-1);
+    expect(check).toBeLessThan(at(/docker build/));
+  });
+
+  it('builds, smoke-tests with scripts/docker-smoke.mjs, logs in, then pushes, in that order', () => {
+    const build = at(/docker build -t "tripcurve:\$TAG" \./);
+    const smoke = at(/node scripts\/docker-smoke\.mjs "tripcurve:\$TAG"/);
+    const login = at(/docker login ghcr\.io/);
+    const push = at(/docker push/);
+    expect([build, smoke, login, push].every((i) => i >= 0)).toBe(true);
+    expect(build).toBeLessThan(smoke);
+    expect(smoke).toBeLessThan(login);
+    expect(login).toBeLessThan(push);
+  });
+
+  it('the token reaches only the login step, through env, read from stdin', () => {
+    const withToken = job.steps.filter((s) =>
+      JSON.stringify(s.env ?? {}).includes('secrets.GITHUB_TOKEN'),
+    );
+    expect(withToken.map((s) => s.name)).toEqual(['Log in to GHCR']);
+    expect(withToken[0]?.run).toContain('--password-stdin');
+    expect((raw('release.yml').match(/secrets\./g) ?? []).length).toBe(1);
+  });
+
+  it('pushes the version without the v to ghcr.io/<repository> in lower case, never latest, never over a published version', () => {
+    const push = runs[at(/docker push/)] ?? '';
+    expect(push).toContain("tr '[:upper:]' '[:lower:]'");
+    expect(push).toContain('docker push "$image:${TAG#v}"');
+    expect(push).not.toContain('latest');
+    expect(push.indexOf('docker manifest inspect "$image:${TAG#v}"')).toBeGreaterThan(-1);
+    expect(push.indexOf('docker manifest inspect')).toBeLessThan(push.indexOf('docker push'));
+    // the guard fails closed: only a "manifest unknown" answer lets the push happen
+    expect(push).toContain('answer=$(docker manifest inspect "$image:${TAG#v}" 2>&1)');
+    expect(push).toMatch(/\*"manifest unknown"\*/);
+    expect(push).toMatch(/\*\) echo "could not tell whether/);
+    expect(push).not.toContain('${{');
+  });
+
+  it('refuses a tagged commit that is not on main', () => {
+    const guard = runs[at(/merge-base --is-ancestor "\$SHA" origin\/main/)];
+    expect(guard).toBeDefined();
+    expect(guard).toContain('git fetch --quiet --depth=1000 origin main');
+  });
+
+  it('uses no third-party Action beyond checkout and setup-node', () => {
+    const uses = job.steps.map((s) => s.uses).filter((u) => u !== undefined);
+    expect(uses.map((u) => u.split('@')[0]).sort()).toEqual([
+      'actions/checkout',
+      'actions/setup-node',
+    ]);
   });
 });

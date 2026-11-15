@@ -1,12 +1,10 @@
 Every released Node line keeps 5 s until v27.
-## Install from a checkout
 tripcurve is not published to npm.
 [docs/ci-and-sarif.md](docs/ci-and-sarif.md) | the GitHub Action and SARIF;
 [docs/action.md](docs/action.md) | the Action's inputs, outputs and exit behaviour |
 [docs/release-checklist.md](docs/release-checklist.md) | the release checks, what ran locally, and the open questions for the maintainer |
 Licence: decided by the maintainer before release.
 The licence is decided by the maintainer before release.
-*tripcurve 0.1.0 has not been released.** A bolt is one build step: B7 is build step 7.
 what must be true before the maintainer's go is in `docs/release-checklist.md`.
 **B8, measurement lanes.** `npm run verify:measure` (pinned lane) and `node measure/lanes.mjs latest`: every entry has a script run or a stated reason, nothing is retried, and a lookup failure stops the lane.
 **B9, the GitHub Action.** A composite Action built from its own checkout, with pinned third-party SHAs, inputs passed as environment variables, and the SARIF upload disabled.
@@ -53,7 +51,6 @@ Does every claim in the printed basis correspond to a recorded run (a release, a
 The release-quality dry run (metric 5)
 # CI and SARIF
 How to run tripcurve in CI, and how to read its SARIF output so that a gate cannot be fooled.
-The Action's name and ref are set at release;
 (`docs/action.md`, "Usage")
 ## Using the Action
 See [action.md](action.md) for the inputs (`path`, `config`, `format`, `sarif-file`), the outputs (`sarif-file`, `exit-code`), the exit behaviour and the security notes.
@@ -145,7 +142,6 @@ its checksum or hash verified, runs the same cases, and fails when the newest re
 `src/factories/createLightship.ts` lines 153 to 156 of the installed package (`.cache/lightship/node_modules/lightship/src/`) read `const address = await app.listen({ host: '0.0.0.0', port: modeIsLocal ?
 **Parallel runs.** The runner starts one script at a time by default (`--jobs=1`): a timing measurement must not share the CPU with another one.
 **Release checklist (for B15).** The release checklist must list every `DEFERRED` entry by name (today `node-headers-trap-10x`, `-12x` and `-13x`, deferred to B13) and say that each is unmeasured, so a release never reads a deferred entry as measured.
-# Release checklist: tripcurve 0.1.0 (unreleased)
 **Nothing here publishes anything.** Releasing means publishing to npm and the GitHub Action, by hand, and only on the maintainer's explicit go;
 until then the package stays `private: true` with `license: UNLICENSED`, and the name is neither reserved nor published.
 **done locally**: it ran in this bolt, with the command and its real output (the raw record is `docs/release-check-run-b15.txt`, and the lookups are in `docs/lookups-b15.txt`);
@@ -157,9 +153,7 @@ it needs the network (GET only) and installs into `.cache/` |
 see "npm audit" below |
 8 | The docs | **done locally** (written in B15) | README, rules, how defaults were measured, add an entry, CI and SARIF, security, CHANGELOG, this page;
 11 | A fresh re-check of the npm name | **done locally on 2026-11-12;
-repeat on the day of the go** | `npm view tripcurve` returned 404 at 2026-11-12T20:21Z (`docs/lookups-b15.txt`) |
 15 | Publish to npm;
-publish the Action | **cannot run before the maintainer's go** | |
 16 | The licence | **open maintainer decision**: decided by the maintainer before release | no LICENSE file exists, and a test checks that |
 Precision fixtures green | **done locally** | the gunicorn sync worker, `--threads` above 1, `GUNICORN_CMD_ARGS` overrides, Node with and without the buffer, resolved and unresolved terminus `beforeShutdown`: part of `npm run verify` |
 ### `npm run verify`: done locally
@@ -355,7 +349,6 @@ Uploading is an external write to a repository's code-scanning data.
 (`docs/action.md`, "The SARIF upload is opt-in")
 `test/action/workflows.test.ts` |
 The SARIF upload is off by default, and turning it on (`upload-sarif: "true"`) needs `security-events: write` in the calling job.
-tripcurve is not published to npm, so there is no `npm install tripcurve`.
 Release definition item | Status | Evidence or reason |
 the command name `npm run verify`;
 the Action builds from its own checkout;
@@ -418,7 +411,6 @@ the upload step is off by default (`docs/evidence/action-dry-fixed.txt`, `docs/e
 ![The Action's dry runs](docs/screenshots/action.png)
 **B23, test evidence (2026-11-15).** The README gains a "Test evidence" section: a table of every check run on a fresh checkout after the black-box testing, with verbatim screenshots under `docs/screenshots/` and the full transcripts under `docs/evidence/` (the verify summary, the demo before and after the fix, the four real repositories, the JSON and SARIF outputs and the official-schema validation, the Node release matrix, the dependency scan and the tarball listing, the Action's dry runs, the measurement lanes' case list).
 The README's no-badge rule now allows a local screenshot under `docs/screenshots/` and still refuses any other image.
-*Status: not released.** The source is at https://github.com/naren-ambati/TripCurve.
 The two hosted rows were run by GitHub on its own runners on the first push, 2026-11-15, not on that machine.
 Hosted verify | `npm run verify` on GitHub's runners after the first push (commit `cf55f77`): Ubuntu with Node 22.12.0, 24 and 26 and macOS with Node 22.12.0, all four jobs succeeded in run 43682221175;
 Hosted Action self-test and SARIF upload | run 43682221183: the jobs `clean`, `failing` and `upload` all succeeded;
@@ -467,7 +459,6 @@ anywhere else it prints `skipped` and passes, so the hosted Linux jobs do not en
 The audit is clean (0 vulnerabilities) for every way this repository is used: a `git clone` followed by `npm ci` from `npm-shrinkwrap.json`, and the tree that the hosted workflows install (the same shrinkwrap;
 the audit itself was run locally, not on GitHub).
 The suite ran on Linux for the first time on 2026-11-15, in the hosted verify run 43682221175 (Ubuntu with Node 22.12.0, 24 and 26), and every job succeeded;
-*Not decidable here, so still open.** Each is an external write that waits for the maintainer's explicit go: publish to npm, reserve the name `tripcurve`, and enable the SARIF upload anywhere but this repository's own self-test (the hosted CI run and that self-test's upload were done on 2026-11-15, rows 12 to 14).
 the hosted Linux run of 2026-11-15 (run 43682221175) is the first running.
 they were not tried on a pull request, from a fork or in a private repository, and runner details beyond the self-test's assertions are unverified.
 7 | The Action's name and ref (`<owner>/tripcurve@<sha>`) and when to enable the upload step elsewhere;
@@ -508,3 +499,29 @@ It ran on all three pushes of 2026-11-15 in the `upload` job of `.github/workflo
 **The SARIF upload is opt-in and has run on all three pushes of 2026-11-15.** `action.yml` contains the standard code-scanning upload step.
 The GitHub Action, the hosted workflow and the SARIF upload ran on all three pushes of 2026-11-15: every job succeeded on the first (runs 43682221175 and 43682221183);
 that run's macOS job failed one CPU-time ratio test instead, made robust in B28 and not yet re-run on GitHub;
+*In GitHub Actions:** `uses: naren-ambati/TripCurve@v0.1.0` (see [docs/action.md](docs/action.md)).
+tripcurve is not published to npm, so there is no `npm install tripcurve`:
+**B29, the container image and the 0.1.0 tag (2026-11-15).** The maintainer chose not to publish to npm.
+the usage example in `docs/action.md` names it.
+moot since 2026-11-15 (no npm publish, row 15)** | `npm view tripcurve` returned 404 at 2026-11-12T20:21Z (`docs/lookups-b15.txt`) |
+The `v0.1.0` tag makes the Action usable as `naren-ambati/TripCurve@v0.1.0` and starts the release workflow, which builds, smoke-tests and pushes the image `ghcr.io/naren-ambati/tripcurve:0.1.0`;
+the runtime stage installs only the three runtime dependencies from `npm-shrinkwrap.json`, which pins `minimatch` 11.0.8, so the image carries the tree whose advisory check is clean: `docs/lookups-b29.txt`) and smoke-tested with no network before it is pushed (`scripts/docker-smoke.mjs`, `.github/workflows/release.yml`).
+*tripcurve 0.1.0 is tagged `v0.1.0` on 2026-11-15 and ships as the GitHub Action ref `naren-ambati/TripCurve@v0.1.0` and as a container image, `ghcr.io/naren-ambati/tripcurve:0.1.0`, which the release workflow publishes from that tag (B29;
+A two-stage `Dockerfile` from a digest-pinned `node:22-alpine` builds `dist/` and installs the three runtime dependencies from the shrinkwrap (the shrinkwrap pins `minimatch` 11.0.8, and the advisory check inside the image found 0 vulnerabilities, `docs/lookups-b29.txt`);
+`.github/workflows/release.yml` builds, smoke-tests and pushes the image to GHCR on a `v*` tag with the workflow's own token;
+it refuses a tag that is not the package version or not on `main`, never overwrites a published version, and pushes no `latest`.
+The Action's ref is `naren-ambati/TripCurve@v0.1.0`, the 0.1.0 tag (B29, 2026-11-15);
+# Release checklist: tripcurve 0.1.0 (tagged 2026-11-15;
+publish the Action | **decided by the maintainer on 2026-11-15: no npm.** 0.1.0 is distributed as the Action ref `naren-ambati/TripCurve@v0.1.0` and as a container image, `ghcr.io/naren-ambati/tripcurve:0.1.0`, which `.github/workflows/release.yml` builds, smoke-tests and pushes when the `v0.1.0` tag lands;
+The tarball gap of row 5b does not apply to the image: its runtime tree is installed from the shrinkwrap and its advisory check inside the image found 0 vulnerabilities (`docs/lookups-b29.txt`) | `Dockerfile`;
+*Decided on 2026-11-15 (B29).** The maintainer chose a container image and a tagged Action over npm (row 15), so publishing to npm and reserving the name are closed as not wanted.
+Two steps follow the merge of B29 and are recorded in the CHANGELOG when done: push the `v0.1.0` tag (the release workflow then publishes the image) and make the GHCR package public.
+Enabling the SARIF upload anywhere but this repository's own self-test stays with whoever adopts the Action.
+The commands below work once the release workflow has pushed the image and the owner has opened the package;
+it is distributed as a GitHub Action ref and, once the release workflow has run, as a container image;
+not on npm.** The source is at https://github.com/naren-ambati/TripCurve.
+an Action ref, and a container image published from the tag;
+not npm)
+after that run the owner opens the GHCR package if it is private (we expect a new package to be private and that no workflow step changes that;
+tripcurve 0.1.0 is tagged (2026-11-15) as a GitHub Action ref, and its container image is published by the release workflow from that tag (B29;
+B30 records the result), not on npm;

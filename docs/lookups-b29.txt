@@ -1,0 +1,25 @@
+# Lookups for B29 (the container image), read-only, 2026-11-15
+
+## Base image (docker pull, 2026-11-15T17:45:59Z, from this machine)
+node:22-alpine -> node@sha256:1314fb30ec37592d5845e5a160d522c0e680972aa534549940b8d73bde88481a
+`docker buildx imagetools inspect node:22-alpine` (2026-11-15T17:57:26Z): MediaType application/vnd.oci.image.index.v1+json,
+Digest sha256:1314fb30... (the multi-arch index; its linux/amd64 manifest is sha256:12f54cafa58d0e96554ae05871e29663ff7241836377dc9a7916449b8adb062c)
+`docker run --rm --network none node:22-alpine node --version` -> v22.23.5 (meets engines.node >=22.12.0)
+The Dockerfile pins this index digest in both stages, so the same line builds the amd64 image on GitHub's ubuntu runner.
+
+## Local build and smoke test (2026-11-15, Docker 29.5.2, darwin-arm64)
+docker build -t tripcurve:b29 .   -> image 64,983,294 bytes; /app/node_modules holds 25 packages (runtime only)
+node scripts/docker-smoke.mjs tripcurve:b29 -> 7 of 7 checks passed (version, unprivileged user, demo exit 1 with
+"FAIL T1" for "web", demo-fixed exit 0, empty directory exit 2, --format sarif is SARIF 2.1.0 and exit 1),
+every run with --network none and the fixture mounted read-only.
+
+## Runtime tree of the image (2026-11-15T17:57Z, registry advisory lookups only, inside the local image)
+`npm audit --omit=dev` in /app: found 0 vulnerabilities, exit 0. `npm ls minimatch --omit=dev`: ts-morph@28.0.0 ->
+@ts-morph/common@0.29.0 -> minimatch@11.0.8 overridden (the shrinkwrap pins it; package.json's override is consistent).
+
+## Not looked up
+GHCR itself: the image is pushed by .github/workflows/release.yml on the first version tag; the result (run id, digest,
+whether an unauthenticated pull works) is recorded after that run. A new package on GHCR may be private until its
+owner makes it public in the package settings; that step cannot be done by the workflow. The local smoke run above
+is on Docker Desktop, which maps file ownership into the VM; a Linux host keeps the bind mount's owner and mode,
+which is why the smoke script makes its temporary directory 0755.

@@ -1,6 +1,6 @@
 # Security
 
-What tripcurve does and does not do with the files it reads, what the GitHub Action does, and the one thing a reviewer must watch: **a pull request can add a waiver.** Dates are 2026. tripcurve is unreleased, and there is no public channel for reporting a vulnerability yet; see "Reporting a vulnerability" below.
+What tripcurve does and does not do with the files it reads, what the GitHub Action does, and the one thing a reviewer must watch: **a pull request can add a waiver.** Dates are 2026. tripcurve 0.1.0 is tagged (2026-11-15) as a GitHub Action ref, and its container image is published by the release workflow from that tag (B29; B30 records the result), not on npm; the licence is still undecided and none is granted until then.
 
 ## What a run of `tripcurve [path]` never does
 

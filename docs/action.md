@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@<full commit SHA>   # pin by commit, comment the tag
-      - uses: <owner>/tripcurve@<full commit SHA>  # name and ref are set at release; not published yet
+      - uses: naren-ambati/TripCurve@v0.1.0        # or pin the tag's full commit SHA and comment the tag
         with:
           path: .
           format: human

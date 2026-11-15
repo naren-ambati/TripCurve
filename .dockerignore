@@ -1,0 +1,8 @@
+# Only package.json, npm-shrinkwrap.json, the two tsconfig files and src/ are copied (Dockerfile); everything
+# else stays out of the build context so no local state, test tree or design file can reach the image.
+*
+!package.json
+!npm-shrinkwrap.json
+!tsconfig.json
+!tsconfig.build.json
+!src

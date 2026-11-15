@@ -9,7 +9,7 @@ tripcurve is a command-line checker. It reads the files of a repository (Kuberne
 
 Where a setting is not written down, tripcurve fills in the default from a sourced, dated knowledge base, and prints where every number came from. Where it cannot establish a number, it says UNRESOLVED instead of guessing. The rules are in [docs/rules.md](docs/rules.md).
 
-**Status: not released.** The source is at https://github.com/naren-ambati/TripCurve. tripcurve is not published to npm. `package.json` stays `"private": true` and `"license": "UNLICENSED"`. This README describes the code in this checkout, built bolt by bolt (see [CHANGELOG.md](CHANGELOG.md), "0.1.0 (unreleased)").
+**Status: 0.1.0 is tagged (`v0.1.0`, 2026-11-15); it is distributed as a GitHub Action ref and, once the release workflow has run, as a container image; not on npm.** The source is at https://github.com/naren-ambati/TripCurve. The `v0.1.0` tag makes the Action usable as `naren-ambati/TripCurve@v0.1.0` and starts the release workflow, which builds, smoke-tests and pushes the image `ghcr.io/naren-ambati/tripcurve:0.1.0`; whether that push has happened, and whether the package can be pulled without a login yet, is recorded in [CHANGELOG.md](CHANGELOG.md) (we expect a new GHCR package to be private until its owner opens it; not verified, B30 records what happened). tripcurve is not published to npm. `package.json` stays `"private": true` and `"license": "UNLICENSED"`: no licence is granted until the maintainer decides one. This README describes the code in this checkout, built bolt by bolt (see [CHANGELOG.md](CHANGELOG.md)).
 
 ## What it looks like
 
@@ -29,7 +29,7 @@ It never runs your code and never touches the network. See [docs/security.md](do
 
 ## Why it should exist
 
-Electrical engineers run a time-current coordination study so that breakers trip in the right order. Software timeouts need the same ordering, and today's defaults often have it backwards. Every fact below is from `docs/research.md` (sources and dates there) unless it names another file.
+tripcurve is for the people who own the timeouts between layers: platform and infrastructure engineers, SREs, and anyone who runs a service behind a load balancer, in a pod, or off a queue. Those timeouts have to be ordered (the application must keep idle connections open longer than the load balancer does, T1; a pod must wait for endpoint removal before it shuts down, and its grace period must cover that wait plus the drain, T2 and T3; an SQS queue must hide a message for longer than its Lambda consumer can take, T4; the rules are in `docs/rules.md`), and today's defaults often have it backwards. The name is an analogy with the "trip curve" of a protective device, chosen so that the right breaker trips first. Every fact below is from `docs/research.md` (sources and dates there) unless it names another file.
 
 - Node.js core raised its `keepAliveTimeout` default from 5 s to 65 s (PR #62782, merged 2026-04-26). The stated reason is from the superseded PR #59203: "The previous default of 5 seconds is shorter than the defaults used by common infrastructure". Every released Node line keeps 5 s until v27. (`docs/research.md` section 7 and section 2)
 - Measured defaults: Node 22.23.2 closes an idle connection at 6.0 s, gunicorn 26.2.0 with the uvicorn worker at 2.0 s, uvicorn 0.54.0 at 5.0 s. An AWS ALB keeps idle connections for 60 s by default. (`docs/research.md` section 2; re-measured 2026-11-11 in section 13)
@@ -58,9 +58,20 @@ It shows the mechanism, not an ALB measurement. An earlier attempt found 0 failu
 
 Medium. The research estimated 5-7 days of coding for the MVP, one person with Claude Code, part-time, for the open-source core only; review rounds were extra and no deadline applied. (`docs/research.md` section 8)
 
-## Install from a checkout
+## Run it
 
-tripcurve is not published to npm, so there is no `npm install tripcurve`. Node 22.12.0 or later is required (`package.json`, `engines`). From a checkout:
+**As a container** (no Node needed; the image runs as the unprivileged user `node`, uid 1000, and needs no network). The commands below work once the release workflow has pushed the image and the owner has opened the package; the CHANGELOG records when that is so. The checked directory must be readable by uid 1000 (most checkouts are; a 0700 directory is not, so add `--user "$(id -u)"` then):
+
+```sh
+docker run --rm -v "$PWD:/repo:ro" ghcr.io/naren-ambati/tripcurve:0.1.0
+docker run --rm -v "$PWD:/repo:ro" ghcr.io/naren-ambati/tripcurve:0.1.0 /repo --format sarif > tripcurve.sarif
+```
+
+The image is built from the `Dockerfile` here (two stages from a digest-pinned `node:22-alpine`; the runtime stage installs only the three runtime dependencies from `npm-shrinkwrap.json`, which pins `minimatch` 11.0.8, so the image carries the tree whose advisory check is clean: `docs/lookups-b29.txt`) and smoke-tested with no network before it is pushed (`scripts/docker-smoke.mjs`, `.github/workflows/release.yml`).
+
+**In GitHub Actions:** `uses: naren-ambati/TripCurve@v0.1.0` (see [docs/action.md](docs/action.md)).
+
+**From a checkout** (Node 22.12.0 or later, `package.json` `engines`); tripcurve is not published to npm, so there is no `npm install tripcurve`:
 
 ```sh
 npm ci --ignore-scripts
