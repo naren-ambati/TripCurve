@@ -1,0 +1,20 @@
+# Lookups for bolt B9 (the GitHub Action): commit SHAs of the third-party Actions it references.
+# Read-only, with `git ls-remote --tags` against github.com, on 2026-11-12 (UTC 13:46Z). Nothing was cloned or written.
+# A tag is resolved to the commit it points at: for an annotated tag, the peeled `^{}` line; for a lightweight tag, the tag line itself.
+
+## https://github.com/actions/setup-node.git  (tag v7.1.0, lightweight, so the tag line is the commit)
+949feb2413d6458794dcd2491c4babbbce0c15c1	refs/tags/v7.1.0
+(v7 and v7.1.0 pointed at the same commit.)
+
+## https://github.com/github/codeql-action.git  (tag v4.39.3, annotated, so the peeled line is the commit)
+f3bbb05694c2f74569081c28664c0866d64dec21	refs/tags/v4.39.3      (tag object)
+33d7b85da1a04171e211befe2c739303b9a4c066	refs/tags/v4.39.3^{}   (the commit; v4 pointed at the same commit)
+(v4.39.3 was the highest v4.x.y tag listed.)
+
+## https://github.com/actions/checkout.git  (second lookup, 2026-11-12 UTC 14:16Z, for .github/workflows/verify.yml)
+3d3c42e5aac5ba805825da76410c181273ba90b1	refs/tags/v7.0.1   (lightweight tag, so the tag line is the commit; v7 pointed at the same commit; v7.0.1 was the highest tag listed)
+actions/setup-node v7.1.0 re-read the same day: 949feb2413d6458794dcd2491c4babbbce0c15c1 (unchanged; verify.yml uses the same pin as the Action).
+
+## Not looked up
+- The Action itself does not use `actions/checkout` (the runner fetches the Action's own checkout).
+- What setup-node v7 or codeql-action v4 need from the runner, and whether upload-sarif accepts the file: not looked up; the Action has never run on GitHub.

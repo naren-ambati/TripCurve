@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "alb-idle-timeout-default",
+      "subject": "alb-idle-timeout",
+      "value": 60,
+      "unit": "s",
+      "applies": { "runtime": "alb", "versionRange": "*" },
+      "citationName": "ALB idle timeout",
+      "rangeLabel": "AWS docs, ALB",
+      "docUrl": "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/application-load-balancers.html",
+      "docDate": "2026-11-11",
+      "basis": "documented",
+      "scriptRef": {
+        "notMeasurableLocally": "An Application Load Balancer is an AWS service and cannot run on localhost; no cloud account is used."
+      },
+      "notes": "AWS documents idle_timeout.timeout_seconds with the default of 60 seconds (read 2026-11-11). The value can be changed in the console outside Git, so its absence from the files does not establish it; a result that rests on it is unresolved."
+    }
+  ]
+}

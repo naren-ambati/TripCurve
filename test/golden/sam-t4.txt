@@ -1,0 +1,13 @@
+tripcurve 0.1.0   checked "."   1 file read
+
+Workload "OrdersFunction/OrdersEvent" (event source mapping) in "template.yaml"
+  FAIL T4  visibility 60 s is less than 6 x 30 s + 5 s = 185 s
+           visibility 60 s  "template.yaml":7
+           timeout 30 s     "template.yaml":14
+           batching 5 s     "template.yaml":21
+
+Assumptions
+  - Green never means zero-downtime: the SIGTERM race and the deregistration
+    delay are outside these rules.
+
+Summary: 1 failed; not a clean result

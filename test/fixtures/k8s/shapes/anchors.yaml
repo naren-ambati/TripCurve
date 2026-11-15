@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: anchored
+  labels: &labels
+    app: anchored
+spec:
+  template:
+    metadata:
+      labels: *labels
+    spec:
+      containers:
+        - &base
+          name: base
+          image: example/base:1
+          env: &env
+            - name: SHARED
+              value: "1"
+        - <<: *base
+          name: merged
+          env: *env

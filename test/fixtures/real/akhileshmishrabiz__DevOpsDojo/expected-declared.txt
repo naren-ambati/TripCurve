@@ -1,0 +1,38 @@
+tripcurve 0.1.0   checked "."   10 files read
+
+Workload "frontend" (Deployment) in "k8s/frontend.yaml"
+  UNRESOLVED T2  the search for a drain is not complete
+           preStop none     in "k8s/frontend.yaml"
+           drain            a package is imported whose code may register
+                            shutdown handlers; declare drain.in_process_s or add
+                            a preStop
+           declare drain.in_process_s for this workload in tripcurve.yaml
+  UNRESOLVED T3  drain not established; grace cannot be checked
+           grace 30 s       default: Kubernetes terminationGracePeriodSeconds
+                            (documented)
+           drain            a package is imported whose code may register
+                            shutdown handlers; declare drain.in_process_s or add
+                            a preStop
+           declare drain.in_process_s for this workload in tripcurve.yaml
+  VERSION-DEPENDENT T1  Node version spans several knowledge-base ranges
+           Node 20          declared "20" at "tripcurve.yaml":10
+           source           no setting found in 1 file read
+                            ("frontend/server.js")
+           LB idle 60 s     "tripcurve.yaml":13
+           every known Node range evaluated:
+           20 to before 20.20.2
+                            unresolved: no knowledge-base entry covers this
+                            range
+           20.x from 20.20.2
+                            idle close 6 s would FAIL (measured on 20.20.2)
+           pin the image to an exact Node version tag, or declare runtime.node
+           for this workload in tripcurve.yaml
+
+Assumptions
+  - Green never means zero-downtime: the SIGTERM race and the deregistration
+    delay are outside these rules.
+  - No load balancer found in the checked files for 1 workload, T1 to T3 not
+    checked for it:
+    Workload "backend" (Deployment) in "k8s/backend.yaml"
+
+Summary: 2 unresolved, 1 version-dependent; not a clean result

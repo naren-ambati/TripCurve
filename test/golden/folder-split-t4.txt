@@ -1,0 +1,25 @@
+tripcurve 0.1.0   checked "."   4 files read
+
+Workload "orders" (event source mapping) in "mapping.tf"
+  FAIL T4  visibility 60 s is less than 6 x 30 s = 180 s; the batching window is
+           not set, and any window only raises the need
+           visibility 60 s  = "30 * 2" at "queue.tf":2
+           timeout 30 s     "function.tf":2
+
+Workload "child" (event source mapping) in "modules/child/mapping.tf"
+  UNRESOLVED T4  visibility timeout not established: the aws_sqs_queue the
+                 mapping names is not in the same folder
+           visibility       the aws_sqs_queue the mapping names is not in the
+                            same folder
+           timeout          the aws_lambda_function the mapping names is not in
+                            the same folder
+           batching 0 s     "modules/child/mapping.tf":5
+           reference the queue (event_source_arn = aws_sqs_queue.<name>.arn) and
+           the function (function_name = aws_lambda_function.<name>.arn) from
+           the mapping, in the same folder
+
+Assumptions
+  - Green never means zero-downtime: the SIGTERM race and the deregistration
+    delay are outside these rules.
+
+Summary: 1 failed, 1 unresolved; not a clean result

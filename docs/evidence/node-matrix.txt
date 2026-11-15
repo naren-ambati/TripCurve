@@ -1,0 +1,31 @@
+== Node 22.12.0: v22.12.0
+ Test Files  141 passed (141)
+      Tests  13115 passed (13115)
+   Duration  159.35s (tests 90%, import 10%)
+demo exit 1; byte-equal to expected/first-run.txt: yes
+demo-fixed exit 0; byte-equal to expected/after-fix.txt: yes
+
+== Node 24.22.3: v24.22.3
+ Test Files  141 passed (141)
+      Tests  13115 passed (13115)
+   Duration  137.30s (tests 90%, import 9%, transform 1%)
+demo exit 1; byte-equal to expected/first-run.txt: yes
+demo-fixed exit 0; byte-equal to expected/after-fix.txt: yes
+
+== Node 26.13.1: v26.13.1
+ Test Files  141 passed (141)
+      Tests  13115 passed (13115)
+   Duration  136.71s (tests 90%, import 9%, transform 1%)
+demo exit 1; byte-equal to expected/first-run.txt: yes
+demo-fixed exit 0; byte-equal to expected/after-fix.txt: yes
+
+== Node 20.20.2 (unsupported):
+tripcurve needs Node 22.12.0 or later; this is Node 20.20.2.
+Nothing was checked.
+exit 2
+
+== Node 18.20.8 (unsupported):
+tripcurve needs Node 22.12.0 or later; this is Node 18.20.8.
+Nothing was checked.
+exit 2
+

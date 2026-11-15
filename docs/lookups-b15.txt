@@ -1,0 +1,53 @@
+# Lookups for bolt B15 (docs and release checks), read-only, taken on the dates and times below (UTC).
+# Each block is a command and its real output. The checkout path is shown as <worktree>. Nothing was published or written to a registry.
+
+## 1. Is the npm name free?  $ npm view tripcurve   (2026-11-12T20:21Z)
+npm error code E404
+npm error 404 Not Found - GET https://registry.npmjs.org/tripcurve - Not found
+npm error 404
+npm error 404  'tripcurve@*' is not in this registry.
+npm error 404
+npm error 404 Note that you can also install from a
+npm error 404 tarball, folder, http url, or git url.
+npm error A complete log of this run can be found in: <home>/.npm/_logs/2026-11-12T20_21_34_898Z-debug-0.log
+[exit 1]
+
+## 2. Does a newer ts-morph exist?  $ npm view ts-morph version   (2026-11-12T20:21Z)
+28.0.0
+
+## 3. What does the latest @ts-morph/common depend on?  $ npm view @ts-morph/common version dependencies
+version = '0.29.0'
+dependencies = {
+  minimatch: '^10.0.1',
+  'path-browserify': '^1.0.1',
+  tinyglobby: '^0.2.14'
+}
+
+## 4. The newest minimatch  $ npm view minimatch version
+11.0.8
+
+## 5. npm audit (against the registry; read-only)  $ npm audit   (2026-11-12T20:21Z)
+# npm audit report
+
+minimatch  7.0.0 - 11.0.0
+Severity: moderate
+minimatch has potential denial of service via globparts amplification - https://github.com/advisories/GHSA-g3hv-75wg-m249
+fix available via `npm audit fix --force`
+Will install ts-morph@17.0.1, which is a breaking change
+node_modules/minimatch
+  @ts-morph/common  >=0.19.0
+  Depends on vulnerable versions of minimatch
+  node_modules/@ts-morph/common
+    ts-morph  >=18.0.0
+    Depends on vulnerable versions of @ts-morph/common
+    node_modules/ts-morph
+
+3 moderate severity vulnerabilities
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+[exit 1]
+
+## 6. The npm name again at the end of the bolt  $ npm view tripcurve   (2026-11-12T21:09Z)
+npm error code E404
+npm error 404 Not Found - GET https://registry.npmjs.org/tripcurve - Not found

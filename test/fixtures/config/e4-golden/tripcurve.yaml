@@ -1,0 +1,7 @@
+version: 1
+workloads:
+  - name: web
+    namespace: shop
+    runtime:
+      node: "22.23"
+    longest_request_s: fast

@@ -1,0 +1,50 @@
+T3  terminationGracePeriodSeconds must be at least the preStop delay + the
+    in-process drain + L + 1 s, where L is the declared longest_request_s, or
+    else the graceful timeout of the server as a ceiling.
+
+Vendor guidance
+  Kubernetes, container lifecycle hooks (read 2026-11-12):
+  "The Pod's termination grace period countdown begins before the PreStop hook
+  is executed, ... This grace period applies to the total time it takes for both
+  the PreStop hook to execute and for the Container to stop normally."
+  https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
+  gunicorn, settings reference (graceful_timeout) (read 2026-11-12):
+  "Workers still alive after the timeout (starting from the receipt of the
+  restart signal) are force killed."
+  https://gunicorn.org/reference/settings/
+
+Defaults used by T3
+  - k8s-grace-period-default: 30 s; documented; source read 2026-11-12; not
+    measurable locally
+  - gunicorn-graceful-timeout-26x, gunicorn 26.x (workerClass in [sync, gthread,
+    uvicorn]): 30 s; measured on 26.2.0; dated 2026-11-12; script
+    measure/shutdown-b4.mjs
+  - gunicorn-graceful-timeout-27x, gunicorn 27.x (workerClass in [sync, gthread,
+    uvicorn]): 30 s; measured on 27.0.0; dated 2026-11-12; script
+    measure/shutdown-b4.mjs
+  - gunicorn-explicit-graceful-timeout-flag-26x, gunicorn 26.x (workerClass in
+    [sync, gthread, uvicorn]): n/a; measured at 10 s on 26.2.0; dated
+    2026-11-12; script measure/shutdown-b4-more.mjs
+  - gunicorn-explicit-graceful-timeout-sync-env-conf-26x, gunicorn 26.x
+    (workerClass in [sync]): n/a; measured at 10 s on 26.2.0; dated 2026-11-12;
+    script measure/shutdown-b4-more.mjs
+  - gunicorn-explicit-graceful-timeout-flag-27x, gunicorn 27.x (workerClass in
+    [sync, gthread, uvicorn]): n/a; measured at 10 s on 27.0.0; dated
+    2026-11-12; script measure/shutdown-b4-more.mjs
+  - gunicorn-explicit-graceful-timeout-sync-env-conf-27x, gunicorn 27.x
+    (workerClass in [sync]): n/a; measured at 10 s on 27.0.0; dated 2026-11-12;
+    script measure/shutdown-b4-more.mjs
+  - uvicorn-explicit-graceful-timeout-0-54x, uvicorn 0.54.x: n/a; measured at 5
+    s on 0.54.0; dated 2026-11-12; script measure/shutdown-b4.mjs
+  - lightship-shutdown-delay-9x, lightship 9.x: 5000 ms; measured on 9.1.0;
+    dated 2026-11-12; script measure/lightship-b4.mjs
+
+When T3 does not apply or cannot decide
+  - Not checked when no load balancer is found for the workload in the checked
+    files.
+  - NOT EVALUATED when T2 failed for the workload.
+  - UNRESOLVED, never PASS or FAIL, when no ceiling is known and
+    longest_request_s is not declared, or a drain or hook has a duration that
+    cannot be established.
+  - WARN, the worst case, when only the ceiling is known and the grace period
+    does not cover it.

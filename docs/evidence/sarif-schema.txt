@@ -1,0 +1,6 @@
+fetched 2026-11-15T04:52:42Z
+schema sha256: c3b4bb2d6093897483348925aaa73af03b3e3f4bd4ca38cef26dcb4212a2682e (expected c3b4bb2d6093897483348925aaa73af03b3e3f4bd4ca38cef26dcb4212a2682e)
+ajv 8.20.0, ajv-draft-04 1.0.0, run in a scratch folder outside the repository
+checked: 12 golden documents and 6 live runs (demo, demo-fixed, 4 real repositories)
+valid documents: 18; invalid: 0; negative controls rejected: 3 of 3
+[exit 0]

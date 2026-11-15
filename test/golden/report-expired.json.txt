@@ -1,0 +1,252 @@
+{
+  "schemaVersion": 1,
+  "tool": {
+    "name": "tripcurve",
+    "version": "0.1.0"
+  },
+  "checked": {
+    "path": ".",
+    "filesRead": 5
+  },
+  "workloads": [
+    {
+      "name": "api",
+      "kind": "Deployment",
+      "namespace": "shop",
+      "file": "k8s/api.yaml",
+      "line": 2,
+      "results": [
+        {
+          "rule": "T1",
+          "kind": "FAIL",
+          "headline": "idle close 2 s is not longer than LB idle 60 s",
+          "chain": [
+            {
+              "label": "idle close",
+              "valueType": "value",
+              "value": 2,
+              "unit": "s",
+              "source": {
+                "type": "default",
+                "citation": "gunicorn keepalive, uvicorn worker",
+                "range": "gunicorn 26.x",
+                "basis": "measured on 26.2.0"
+              },
+              "confidence": "cited"
+            },
+            {
+              "label": "worker",
+              "valueType": "value",
+              "value": "uvicorn",
+              "unit": "none",
+              "source": {
+                "type": "file",
+                "file": "k8s/api.yaml",
+                "line": 23,
+                "basis": "declared"
+              },
+              "confidence": "read"
+            },
+            {
+              "label": "LB idle",
+              "valueType": "value",
+              "value": 60,
+              "unit": "s",
+              "source": {
+                "type": "file",
+                "file": "k8s/ingress.yaml",
+                "line": 9,
+                "basis": "declared"
+              },
+              "confidence": "read"
+            }
+          ]
+        },
+        {
+          "rule": "T2",
+          "kind": "FAIL",
+          "headline": "no drain delay before SIGTERM",
+          "chain": [
+            {
+              "label": "target-type",
+              "valueType": "value",
+              "value": "ip",
+              "unit": "none",
+              "source": {
+                "type": "file",
+                "file": "k8s/ingress.yaml",
+                "line": 8,
+                "basis": "declared"
+              },
+              "confidence": "read"
+            },
+            {
+              "label": "preStop none",
+              "detail": "in",
+              "valueType": "text",
+              "value": "k8s/api.yaml"
+            },
+            {
+              "label": "drain none",
+              "valueType": "note",
+              "value": "in-process drains are read for Node source only; none declared"
+            }
+          ],
+          "expiredWaiver": {
+            "until": "2026-10-31",
+            "reason": "drains in sidecar",
+            "source": {
+              "type": "file",
+              "file": "k8s/api.yaml",
+              "line": 6
+            },
+            "mechanism": "inline"
+          }
+        },
+        {
+          "rule": "T3",
+          "kind": "NOT EVALUATED",
+          "headline": "T2 failed for this workload",
+          "chain": []
+        }
+      ]
+    },
+    {
+      "name": "admin",
+      "kind": "Deployment",
+      "namespace": "shop",
+      "file": "k8s/admin.yaml",
+      "line": 2,
+      "results": [
+        {
+          "rule": "T1",
+          "kind": "N/A",
+          "headline": "gunicorn sync worker closes after every response",
+          "chain": [
+            {
+              "label": "worker",
+              "valueType": "value",
+              "value": "sync",
+              "unit": "none",
+              "source": {
+                "type": "file",
+                "file": "k8s/admin.yaml",
+                "line": 18,
+                "basis": "declared"
+              },
+              "confidence": "read"
+            }
+          ],
+          "decidingNote": "no -k given"
+        },
+        {
+          "rule": "T2",
+          "kind": "PASS",
+          "headline": "preStop sleep 10 s",
+          "chain": [
+            {
+              "label": "preStop",
+              "valueType": "value",
+              "value": 10,
+              "unit": "s",
+              "source": {
+                "type": "file",
+                "file": "k8s/admin.yaml",
+                "line": 24,
+                "basis": "declared"
+              },
+              "confidence": "read"
+            }
+          ]
+        },
+        {
+          "rule": "T3",
+          "kind": "PASS",
+          "headline": "grace 45 s covers 10 s + 0 s + 30 s + 1 s",
+          "chain": [
+            {
+              "label": "grace",
+              "valueType": "value",
+              "value": 45,
+              "unit": "s",
+              "source": {
+                "type": "file",
+                "file": "k8s/admin.yaml",
+                "line": 25,
+                "basis": "declared"
+              },
+              "confidence": "read"
+            },
+            {
+              "label": "preStop",
+              "valueType": "value",
+              "value": 10,
+              "unit": "s",
+              "source": {
+                "type": "file",
+                "file": "k8s/admin.yaml",
+                "line": 24,
+                "basis": "declared"
+              },
+              "confidence": "read"
+            },
+            {
+              "label": "ceiling",
+              "valueType": "value",
+              "value": 30,
+              "unit": "s",
+              "source": {
+                "type": "default",
+                "citation": "gunicorn graceful_timeout",
+                "range": "gunicorn 26.x",
+                "basis": "measured on 26.2.0"
+              },
+              "confidence": "cited"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "notChecked": [],
+  "assumptions": [
+    "The gunicorn and uvicorn versions are taken from \"requirements.txt\".",
+    "Endpoint removal needs time to propagate; AWS's EKS guide suggests a preStop of 10 s. tripcurve checks a delay exists, not that it is enough.",
+    "In-process drains of Python servers are not read; counted as 0 s.",
+    "Green never means zero-downtime: the SIGTERM race and the deregistration delay are outside these rules."
+  ],
+  "waivers": [
+    {
+      "rule": "T2",
+      "workload": {
+        "name": "api",
+        "namespace": "shop"
+      },
+      "state": "expired",
+      "until": "2026-10-31",
+      "reason": "drains in sidecar",
+      "source": {
+        "type": "file",
+        "file": "k8s/api.yaml",
+        "line": 6
+      },
+      "mechanism": "inline"
+    }
+  ],
+  "unchecked": [],
+  "configErrors": [],
+  "summary": {
+    "failed": 2,
+    "warning": 0,
+    "unresolved": 0,
+    "versionDependent": 0,
+    "notEvaluated": 1,
+    "waived": 0,
+    "notApplicable": 1,
+    "passed": 2,
+    "outcome": "NotClean",
+    "clean": false,
+    "waivedDates": [],
+    "exitCode": 1
+  }
+}

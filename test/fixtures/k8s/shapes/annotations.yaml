@@ -1,0 +1,89 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: idle-120
+  annotations:
+    alb.ingress.kubernetes.io/load-balancer-attributes: "access_logs.s3.enabled=true,idle_timeout.timeout_seconds=120"
+    alb.ingress.kubernetes.io/target-type: instance
+spec:
+  ingressClassName: alb
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: malformed-list
+  annotations:
+    alb.ingress.kubernetes.io/load-balancer-attributes: "idle_timeout.timeout_seconds=60,,x=y"
+spec:
+  ingressClassName: alb
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: no-equals
+  annotations:
+    alb.ingress.kubernetes.io/load-balancer-attributes: "idle_timeout.timeout_seconds"
+spec:
+  ingressClassName: alb
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: twice
+  annotations:
+    alb.ingress.kubernetes.io/load-balancer-attributes: "idle_timeout.timeout_seconds=60,idle_timeout.timeout_seconds=90"
+spec:
+  ingressClassName: alb
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: not-a-number
+  annotations:
+    alb.ingress.kubernetes.io/load-balancer-attributes: "idle_timeout.timeout_seconds=sixty"
+    alb.ingress.kubernetes.io/target-type: lambda
+spec:
+  ingressClassName: alb
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: no-idle-key
+  annotations:
+    alb.ingress.kubernetes.io/load-balancer-attributes: "deletion_protection.enabled=true"
+spec:
+  ingressClassName: alb
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: negative-and-float
+  annotations:
+    alb.ingress.kubernetes.io/load-balancer-attributes: "idle_timeout.timeout_seconds=-5"
+spec:
+  ingressClassName: alb
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: numeric-annotation
+  annotations:
+    alb.ingress.kubernetes.io/load-balancer-attributes: 60
+spec:
+  ingressClassName: alb
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: none-set
+spec:
+  ingressClassName: alb
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: padded
+  annotations:
+    alb.ingress.kubernetes.io/load-balancer-attributes: "access_logs.s3.enabled=true, idle_timeout.timeout_seconds=120"
+spec:
+  ingressClassName: alb

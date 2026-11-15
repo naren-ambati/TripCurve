@@ -1,0 +1,51 @@
+T4  The visibility timeout of an SQS queue must be at least 6 x the timeout of
+    the Lambda function that reads it + the batching window of the event source
+    mapping. Equal passes.
+
+Vendor guidance
+  AWS, Lambda developer guide, SQS event source (read 2026-11-12):
+  "We recommend setting your queue's visibility timeout to six times your Event
+  Function timeout, plus the value of MaximumBatchingWindowInSeconds."
+  https://docs.aws.amazon.com/lambda/latest/dg/services-sqs-configure.html
+
+Defaults used by T4
+  - terraform-sqs-visibility-default, Terraform AWS provider docs: 30 s;
+    documented; source read 2026-11-12; not measurable locally
+  - terraform-lambda-timeout-default, Terraform AWS provider docs: 3 s;
+    documented; source read 2026-11-12; not measurable locally
+  - cfn-sqs-visibility-default, AWS CloudFormation and SAM docs: 30 s;
+    documented; source read 2026-11-12; not measurable locally
+  - cfn-lambda-timeout-default, AWS CloudFormation and SAM docs: 3 s;
+    documented; source read 2026-11-12; not measurable locally
+  - lambda-sqs-batching-window-default, AWS docs, Lambda API: 0 s; documented;
+    source read 2026-11-12; not measurable locally
+
+When T4 does not apply or cannot decide
+  - Applies to a Lambda event source mapping read from Terraform (HCL, JSON or a
+    plan) or from a SAM or CloudFormation template (YAML or JSON; a SAM SQS
+    event is one mapping).
+  - In Terraform source, the mapping links to a queue and a function by a
+    reference to a resource of the same folder, because Terraform reads every
+    file of a folder as one module; a subfolder, a parent folder and a module
+    block are other modules and are never linked.
+  - A number written as integer arithmetic on literals (60 + (30 * 6)) is read
+    exactly, and the expression is printed beside the result.
+  - FAIL when visibility is below 6 x the function timeout, even when the
+    batching window is not set or not known: a window is 0 s or more, so it can
+    only raise the need.
+  - UNRESOLVED, never PASS or FAIL, when the visibility or the function timeout
+    is not established (a value that is not a literal, a queue or function that
+    cannot be linked, an event source that is not an SQS queue). UNRESOLVED too
+    when visibility covers 6 x the timeout and the batching window is not
+    written or not known: only a PASS needs the window (the assumed 0 s is shown
+    and never gives PASS).
+
+Credit
+  T4 is not new. It is a credited port of the cdk-nag rule
+  LambdaEventSourceSQSVisibilityTimeout (added 2024-11-01, PR #1813; CDK only,
+  without the batching window) and sits beside cfn-lint rule E3505, "Validate
+  SQS 'VisibilityTimeout' is greater than a function's 'Timeout'"
+  (CloudFormation only, with a weaker ">" threshold). Both as recorded in
+  tripcurve's research notes (checked 2026-10-29 to 2026-11-02).
+  https://github.com/cdklabs/cdk-nag
+  https://github.com/aws-cloudformation/cfn-lint

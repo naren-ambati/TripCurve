@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  generateName: no-name-
+spec:
+  template:
+    spec:
+      containers: []
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: odd
+  namespace: 5
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: odd-values
+spec:
+  template:
+    metadata:
+      labels:
+        app: odd
+        version: 1.5
+    spec:
+      terminationGracePeriodSeconds: soon
+      containers:
+        - name: c
+          image: 7
+          command: node
+          args: ["a", 1]
+          env:
+            - name: NUM
+              value: 5
+            - name: BOTH
+              value: x
+              valueFrom: {configMapKeyRef: {name: a, key: b}}
+            - value: nameless
+          envFrom:
+            - configMapRef: {name: cfg}
+          ports:
+            - containerPort: http
+            - containerPort: 80
+        - image: nameless-container
+        - 42
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: no-spec
+---
+- not
+- an
+- object
+---
+just a string
+---
+kind: 12
+---
+kind: Deployment
+metadata:
+  name: negative-grace
+spec:
+  template:
+    spec:
+      terminationGracePeriodSeconds: -1
+      containers:
+        - name: c
+          image: ok

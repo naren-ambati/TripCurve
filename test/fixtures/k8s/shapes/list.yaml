@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: List
+items:
+  - apiVersion: v1
+    kind: Pod
+    metadata:
+      name: in-list
+    spec:
+      containers:
+        - name: c
+          image: from-list
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: svc-in-list
+    spec:
+      selector:
+        app: x
+---
+apiVersion: apps/v1
+kind: DeploymentList
+items:
+  - metadata:
+      name: typed-list-item
+    spec:
+      template:
+        spec:
+          containers:
+            - name: c
+              image: typed

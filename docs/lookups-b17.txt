@@ -1,0 +1,23 @@
+# Lookups for bolt B17 (folder-scoped Terraform linking, integer arithmetic), read 2026-11-12 (UTC)
+
+All three pages were fetched read-only on 2026-11-12 and the text below was copied from the fetched page text.
+
+## https://developer.hashicorp.com/terraform/language/files (Terraform v1.17.x, "Files and configuration structure", read 2026-11-12)
+"A module is a collection of .tf and/or .tf.json files kept together in a directory. A Terraform module only consists of the top-level configuration files in a directory; nested directories are treated as completely separate modules, and are not automatically included in the configuration. Terraform evaluates all of the configuration files in a module, effectively treating the entire module as a single document. Separating various blocks into different files is purely for the convenience of readers and maintainers, and has no effect on the module's behavior."
+"A Terraform module can use module calls to explicitly include other modules into the configuration. These child modules can come from local directories (nested in the parent module's directory, or anywhere else on disk), or from external sources like the Terraform Registry."
+
+## https://developer.hashicorp.com/terraform/language/files/override (Terraform v1.17.x, "Override files", read 2026-11-12)
+"Terraform normally loads all of the .tf and .tf.json files within a directory and expects each one to define a distinct set of configuration objects. If two files attempt to define the same object, Terraform returns an error."
+"For these rare situations, Terraform has special handling of any configuration file whose name ends in _override.tf or _override.tf.json. This special handling also applies to a file named literally override.tf or override.tf.json. Terraform initially skips these override files when loading configuration, and then afterwards processes each one in turn (in lexicographical order). For each top-level block defined in an override file, Terraform attempts to find an already-defined object corresponding to that block and then merges the override block contents into the existing object."
+"A top-level block in an override file merges with a block in a normal configuration file that has the same block header. The block header is the block type and any quoted labels that follow it. Within a top-level block, an attribute argument within an override block replaces any argument of the same name in the original block."
+
+Reading (main session): a resource an override file names is changed by it, in the folder of the override file only, so every resource of that address in that folder is UNRESOLVED. B5 already did this (`override.tf`, `*_override.tf` and the `.json` forms, same folder); B17 only changed what "same folder" means for the link, and made an override's second block of one address link to the unresolved one instead of "more than one".
+
+## https://github.com/hashicorp/hcl/blob/main/hclsyntax/spec.md (raw.githubusercontent.com/hashicorp/hcl/main/hclsyntax/spec.md, read 2026-11-12)
+"Between the `(` and `)` characters denoting a sub-expression, newline characters are ignored as whitespace."
+"arithmeticOperator = "+" | "-" | "*" | "/" | "%";" and "unaryOp = ("-" | "!") ExprTerm;"
+"The unary operators have the highest precedence." The binary levels: "6 * / %", "5 + -", ... "Higher values of "level" bind tighter. Operators within the same precedence level have left-to-right associativity. For example, `x / y * z` is equivalent to `(x / y) * z`."
+"NumericLit = decimal+ ("." decimal+)? (expmark decimal+)?;"
+"a / b   quotient   (division)"
+
+Reading (main session): the reader takes decimal integer literals without a leading zero (HCL also takes `010` as ten; refusing it is the conservative side), `+`, `-`, `*` and parentheses, with `*` binding tighter than `+` and `-` and left-to-right grouping. No unary sign, no `/`, no `%`. A newline or a comment inside parentheses is valid HCL (newlines are whitespace there), but the lexer drops comments and the reader requires one line, so it refuses both. Every literal and every intermediate value is held to at most 2^53 - 1 so that HCL's own arithmetic gives the same exact integer.

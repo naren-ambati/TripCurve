@@ -1,0 +1,96 @@
+# Runs the repository's own Action (`uses: ./`) against the demo fixtures. Prepared in B19; it has
+# not run on GitHub yet (it first runs after the push). Assertions read outputs through env, never
+# through ${{ }} inside a run body.
+name: action-selftest
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  # (a) a clean repository: exit-code 0 and a valid SARIF file.
+  clean:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - id: tripcurve
+        uses: ./
+        with:
+          path: demo-fixed
+      - name: Assert exit-code 0 and a valid SARIF file
+        env:
+          EXIT_CODE: ${{ steps.tripcurve.outputs.exit-code }}
+          SARIF_FILE: ${{ steps.tripcurve.outputs.sarif-file }}
+        run: |
+          set -eu
+          test "$EXIT_CODE" = "0" || { echo "exit-code is '$EXIT_CODE', expected 0"; exit 1; }
+          test -n "$SARIF_FILE" || { echo "no sarif-file output"; exit 1; }
+          test -f "$SARIF_FILE" || { echo "SARIF file '$SARIF_FILE' does not exist"; exit 1; }
+          node -e 'const d = JSON.parse(require("node:fs").readFileSync(process.argv[1], "utf8")); if (d.version !== "2.1.0") { console.error("SARIF version is " + d.version); process.exit(1); }' "$SARIF_FILE"
+          echo "clean: exit-code 0, SARIF 2.1.0 at $SARIF_FILE"
+
+  # (b) a failing repository: the step fails, exit-code 1, a SARIF file is still written.
+  failing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - id: tripcurve
+        uses: ./
+        continue-on-error: true
+        with:
+          path: demo
+      - name: Assert the step failed with exit-code 1 and wrote a valid SARIF file
+        if: ${{ always() }}
+        env:
+          OUTCOME: ${{ steps.tripcurve.outcome }}
+          EXIT_CODE: ${{ steps.tripcurve.outputs.exit-code }}
+          SARIF_FILE: ${{ steps.tripcurve.outputs.sarif-file }}
+        run: |
+          set -eu
+          test "$OUTCOME" = "failure" || { echo "outcome is '$OUTCOME', expected failure"; exit 1; }
+          test "$EXIT_CODE" = "1" || { echo "exit-code is '$EXIT_CODE', expected 1"; exit 1; }
+          test -n "$SARIF_FILE" || { echo "no sarif-file output"; exit 1; }
+          test -f "$SARIF_FILE" || { echo "SARIF file '$SARIF_FILE' does not exist"; exit 1; }
+          node -e 'const d = JSON.parse(require("node:fs").readFileSync(process.argv[1], "utf8")); if (d.version !== "2.1.0") { console.error("SARIF version is " + d.version); process.exit(1); }' "$SARIF_FILE"
+          echo "failing: outcome failure, exit-code 1, SARIF 2.1.0 at $SARIF_FILE"
+
+  # (c) the same failing repository with the upload on. Code scanning upload works only on a public
+  # repository or one with GitHub code security, and a pull request from a fork gets a read-only
+  # token, so this job runs only for a public repository and for pushes or same-repository pull requests.
+  upload:
+    if: ${{ github.event.repository.visibility == 'public' && github.actor != 'dependabot[bot]' && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - id: tripcurve
+        uses: ./
+        continue-on-error: true
+        with:
+          path: demo
+          upload-sarif: "true"
+      - name: Assert the step failed with exit-code 1 and wrote a SARIF file (the upload ran after it)
+        if: ${{ always() }}
+        env:
+          OUTCOME: ${{ steps.tripcurve.outcome }}
+          EXIT_CODE: ${{ steps.tripcurve.outputs.exit-code }}
+          SARIF_FILE: ${{ steps.tripcurve.outputs.sarif-file }}
+        run: |
+          set -eu
+          test "$OUTCOME" = "failure" || { echo "outcome is '$OUTCOME', expected failure"; exit 1; }
+          test "$EXIT_CODE" = "1" || { echo "exit-code is '$EXIT_CODE', expected 1"; exit 1; }
+          test -n "$SARIF_FILE" || { echo "no sarif-file output"; exit 1; }
+          test -f "$SARIF_FILE" || { echo "SARIF file '$SARIF_FILE' does not exist"; exit 1; }
+          echo "upload: outcome failure, exit-code 1, SARIF at $SARIF_FILE"

@@ -1,0 +1,52 @@
+tripcurve 0.1.0   checked "."   14 files read
+
+Workload "api" (Deployment) in "k8s/api.json"
+  FAIL T1  idle close 2 s is not longer than LB idle 60 s
+           idle close 2 s   default: gunicorn keepalive, uvicorn worker
+                            (gunicorn 26.x; measured on 26.2.0)
+           worker uvicorn   "k8s/api.json":31
+           LB idle 60 s     "k8s/ingress.json":10
+  FAIL T2  no drain delay before SIGTERM
+           target-type ip   "k8s/ingress.json":12
+           preStop none     in "k8s/api.json"
+           drain none       in-process drains are read for Node source only;
+                            none declared
+  NOT EVALUATED T3  T2 failed for this workload
+
+Workload "web" (Deployment) in "k8s/web.json"
+  FAIL T1  idle close 6 s is not longer than LB idle 60 s
+           idle close 6 s   default: Node keepAliveTimeout 5 s + 1 s (Node 22.x
+                            from 22.12; measured on 5 releases from 22.12.0 to
+                            22.23.5)
+           Node 22.23       image "node:22.23" at "k8s/web.json":24
+           source           no setting found in 1 file read ("src/server.ts")
+           LB idle 60 s     "k8s/ingress.json":10
+  UNRESOLVED T3  no graceful-timeout ceiling known for a Node server
+           grace 45 s       "k8s/web.json":53
+           preStop 10 s     "k8s/web.json":39
+           declare longest_request_s for this workload in tripcurve.yaml
+  PASS T2  preStop sleep 10 s ("k8s/web.json":39)
+
+Workload "orders" (event source mapping) in "infra/queue.tf"
+  FAIL T4  visibility 60 s is less than 6 x 30 s + 5 s = 185 s
+           visibility 60 s  "infra/queue.tf":3
+           timeout 30 s     "infra/queue.tf":12
+           batching 5 s     "infra/queue.tf":20
+
+Workload "admin" (Deployment) in "k8s/admin.json"
+  N/A  T1  gunicorn sync worker closes after every response
+           ("k8s/admin.json":26, no -k given)
+  PASS T2  preStop sleep 10 s ("k8s/admin.json":40)
+  PASS T3  grace 45 s covers 10 s + 0 s + 30 s + 1 s ("k8s/admin.json":58)
+
+Assumptions
+  - The gunicorn and uvicorn versions are taken from "requirements.txt".
+  - The container's working directory is taken to be ".".
+  - Endpoint removal needs time to propagate; AWS's EKS guide suggests a preStop
+    of 10 s. tripcurve checks a delay exists, not that it is enough.
+  - In-process drains of Python servers are not read; counted as 0 s.
+  - Green never means zero-downtime: the SIGTERM race and the deregistration
+    delay are outside these rules.
+
+Summary: 4 failed, 1 unresolved, 1 not evaluated, 1 not applicable, 3 passed;
+not a clean result

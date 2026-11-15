@@ -1,0 +1,46 @@
+{
+  "apiVersion": "apps/v1",
+  "kind": "Deployment",
+  "metadata": {
+    "name": "api",
+    "namespace": "shop"
+  },
+  "spec": {
+    "replicas": 3,
+    "selector": {
+      "matchLabels": {
+        "app": "api"
+      }
+    },
+    "template": {
+      "metadata": {
+        "labels": {
+          "app": "api"
+        }
+      },
+      "spec": {
+        "containers": [
+          {
+            "name": "api",
+            "image": "example/api:1",
+            "imagePullPolicy": "IfNotPresent",
+            "command": [
+              "gunicorn",
+              "api:app",
+              "-k",
+              "uvicorn_worker.UvicornWorker",
+              "-w",
+              "4"
+            ],
+            "ports": [
+              {
+                "name": "http",
+                "containerPort": 8000
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

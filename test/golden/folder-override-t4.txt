@@ -1,0 +1,22 @@
+tripcurve 0.1.0   checked "."   4 files read
+
+Workload "orders" (event source mapping) in "mapping.tf"
+  UNRESOLVED T4  visibility timeout not established: an override file changes
+                 this resource
+           visibility       an override file changes this resource
+           timeout 30 s     "function.tf":2
+           batching 0 s     assumed, not set in the files: default: Lambda event
+                            source mapping batching window (AWS docs, Lambda
+                            API; documented)
+           write visibility_timeout_seconds as a literal number in the
+           aws_sqs_queue
+
+Assumptions
+  - The batching window is assumed to be 0 s where
+    maximum_batching_window_in_seconds is not set: the Terraform provider has no
+    default for it, so AWS applies its own default at create and Terraform does
+    not manage it afterwards.
+  - Green never means zero-downtime: the SIGTERM race and the deregistration
+    delay are outside these rules.
+
+Summary: 1 unresolved; not a clean result

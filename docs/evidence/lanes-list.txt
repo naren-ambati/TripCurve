@@ -1,0 +1,160 @@
+alb-idle-timeout-default: not measurable locally: An Application Load Balancer is an AWS service and cannot run on localhost; no cloud account is used.
+cfn-lb-idle-timeout-default: not measurable locally: An Application Load Balancer is an AWS service and cannot run on localhost; no cloud account is used.
+cfn-sqs-visibility-default: not measurable locally: An SQS queue is an AWS service and cannot run on localhost; no cloud account is used.
+cfn-lambda-timeout-default: not measurable locally: A Lambda function is an AWS service and cannot run on localhost; no cloud account is used.
+node-idle-close-18x: 1 case
+  node 18.20.8 default: measure/node-idle-close.mjs  -> entry 5000 ms, tolerance 5 ms
+node-idle-close-20x: 1 case
+  node 20.20.2 default: measure/node-idle-close.mjs  -> entry 6000 ms, tolerance 4 ms
+node-idle-close-22x: 5 cases
+  node 22.12.0 default: measure/node-idle-close.mjs  -> entry 6000 ms, tolerance 5 ms
+  node 22.18.0 default: measure/node-idle-close.mjs  -> entry 6000 ms, tolerance 5 ms
+  node 22.19.0 default: measure/node-idle-close.mjs  -> entry 6000 ms, tolerance 5 ms
+  node 22.23.2 default: measure/node-idle-close.mjs  -> entry 6000 ms, tolerance 5 ms
+  node 22.23.5 default: measure/node-idle-close.mjs  -> entry 6000 ms, tolerance 5 ms
+node-idle-close-24x: 4 cases
+  node 24.0.0 default: measure/node-idle-close.mjs  -> entry 6000 ms, tolerance 5 ms
+  node 24.5.0 default: measure/node-idle-close.mjs  -> entry 6000 ms, tolerance 5 ms
+  node 24.6.0 default: measure/node-idle-close.mjs  -> entry 6000 ms, tolerance 5 ms
+  node 24.22.3 default: measure/node-idle-close.mjs  -> entry 6000 ms, tolerance 5 ms
+node-idle-close-26x: 2 cases
+  node 26.0.0 default: measure/node-idle-close.mjs  -> entry 6000 ms, tolerance 4 ms
+  node 26.13.1 default: measure/node-idle-close.mjs  -> entry 6000 ms, tolerance 4 ms
+node-explicit-keepalive-18x: 3 cases
+  node 18.20.8 assign K=7s: measure/node-explicit.mjs 7000 --cap-ms=17000 -> entry 7000 ms, tolerance 5 ms
+  node 18.20.8 assign K=12s: measure/node-explicit.mjs 12000 --cap-ms=22000 -> entry 12000 ms, tolerance 5 ms
+  node 18.20.8 assign K=65s: measure/node-explicit.mjs 65000 --cap-ms=75000 -> entry 65000 ms, tolerance 5 ms
+node-explicit-keepalive-20x: 3 cases
+  node 20.20.2 assign K=7s: measure/node-explicit.mjs 7000 --cap-ms=17000 -> entry 8000 ms, tolerance 5 ms
+  node 20.20.2 assign K=12s: measure/node-explicit.mjs 12000 --cap-ms=22000 -> entry 13000 ms, tolerance 5 ms
+  node 20.20.2 assign K=65s: measure/node-explicit.mjs 65000 --cap-ms=75000 -> entry 66000 ms, tolerance 5 ms
+node-explicit-keepalive-22x: 19 cases
+  node 22.12.0 assign K=7s: measure/node-explicit.mjs 7000 --cap-ms=17000 -> entry 8000 ms, tolerance 5 ms
+  node 22.12.0 assign K=12s: measure/node-explicit.mjs 12000 --cap-ms=22000 -> entry 13000 ms, tolerance 5 ms
+  node 22.12.0 assign K=65s: measure/node-explicit.mjs 65000 --cap-ms=75000 -> entry 66000 ms, tolerance 5 ms
+  node 22.12.0 createServer options K=65s: measure/node-explicit.mjs 65000 --form=options --cap-ms=75000 -> entry 66000 ms, tolerance 5 ms
+  node 22.18.0 assign K=7s: measure/node-explicit.mjs 7000 --cap-ms=17000 -> entry 8000 ms, tolerance 5 ms
+  node 22.18.0 assign K=12s: measure/node-explicit.mjs 12000 --cap-ms=22000 -> entry 13000 ms, tolerance 5 ms
+  node 22.18.0 assign K=65s: measure/node-explicit.mjs 65000 --cap-ms=75000 -> entry 66000 ms, tolerance 5 ms
+  node 22.19.0 assign K=7s: measure/node-explicit.mjs 7000 --cap-ms=17000 -> entry 8000 ms, tolerance 5 ms
+  node 22.19.0 assign K=12s: measure/node-explicit.mjs 12000 --cap-ms=22000 -> entry 13000 ms, tolerance 5 ms
+  node 22.19.0 assign K=65s: measure/node-explicit.mjs 65000 --cap-ms=75000 -> entry 66000 ms, tolerance 5 ms
+  node 22.23.2 assign K=7s: measure/node-explicit.mjs 7000 --cap-ms=17000 -> entry 8000 ms, tolerance 5 ms
+  node 22.23.2 assign K=12s: measure/node-explicit.mjs 12000 --cap-ms=22000 -> entry 13000 ms, tolerance 5 ms
+  node 22.23.2 assign K=65s: measure/node-explicit.mjs 65000 --cap-ms=75000 -> entry 66000 ms, tolerance 5 ms
+  node 22.23.2 createServer options K=7s: measure/node-explicit.mjs 7000 --form=options --cap-ms=17000 -> entry 8000 ms, tolerance 5 ms
+  node 22.23.5 assign K=7s: measure/node-explicit.mjs 7000 --cap-ms=17000 -> entry 8000 ms, tolerance 5 ms
+  node 22.23.5 assign K=12s: measure/node-explicit.mjs 12000 --cap-ms=22000 -> entry 13000 ms, tolerance 5 ms
+  node 22.23.5 assign K=65s: measure/node-explicit.mjs 65000 --cap-ms=75000 -> entry 66000 ms, tolerance 5 ms
+  node 22.23.5 createServer options K=7s: measure/node-explicit.mjs 7000 --form=options --cap-ms=17000 -> entry 8000 ms, tolerance 5 ms
+  node 22.23.5 createServer options K=65s: measure/node-explicit.mjs 65000 --form=options --cap-ms=75000 -> entry 66000 ms, tolerance 5 ms
+node-explicit-keepalive-24x: 14 cases
+  node 24.0.0 assign K=7s: measure/node-explicit.mjs 7000 --cap-ms=17000 -> entry 8000 ms, tolerance 5 ms
+  node 24.0.0 assign K=12s: measure/node-explicit.mjs 12000 --cap-ms=22000 -> entry 13000 ms, tolerance 5 ms
+  node 24.0.0 assign K=65s: measure/node-explicit.mjs 65000 --cap-ms=75000 -> entry 66000 ms, tolerance 5 ms
+  node 24.0.0 createServer options K=65s: measure/node-explicit.mjs 65000 --form=options --cap-ms=75000 -> entry 66000 ms, tolerance 5 ms
+  node 24.5.0 assign K=7s: measure/node-explicit.mjs 7000 --cap-ms=17000 -> entry 8000 ms, tolerance 5 ms
+  node 24.5.0 assign K=12s: measure/node-explicit.mjs 12000 --cap-ms=22000 -> entry 13000 ms, tolerance 5 ms
+  node 24.5.0 assign K=65s: measure/node-explicit.mjs 65000 --cap-ms=75000 -> entry 66000 ms, tolerance 5 ms
+  node 24.6.0 assign K=7s: measure/node-explicit.mjs 7000 --cap-ms=17000 -> entry 8000 ms, tolerance 5 ms
+  node 24.6.0 assign K=12s: measure/node-explicit.mjs 12000 --cap-ms=22000 -> entry 13000 ms, tolerance 5 ms
+  node 24.6.0 assign K=65s: measure/node-explicit.mjs 65000 --cap-ms=75000 -> entry 66000 ms, tolerance 5 ms
+  node 24.22.3 assign K=7s: measure/node-explicit.mjs 7000 --cap-ms=17000 -> entry 8000 ms, tolerance 5 ms
+  node 24.22.3 assign K=12s: measure/node-explicit.mjs 12000 --cap-ms=22000 -> entry 13000 ms, tolerance 5 ms
+  node 24.22.3 assign K=65s: measure/node-explicit.mjs 65000 --cap-ms=75000 -> entry 66000 ms, tolerance 5 ms
+  node 24.22.3 createServer options K=7s: measure/node-explicit.mjs 7000 --form=options --cap-ms=17000 -> entry 8000 ms, tolerance 5 ms
+node-explicit-keepalive-26x: 8 cases
+  node 26.0.0 assign K=7s: measure/node-explicit.mjs 7000 --cap-ms=17000 -> entry 8000 ms, tolerance 5 ms
+  node 26.0.0 assign K=12s: measure/node-explicit.mjs 12000 --cap-ms=22000 -> entry 13000 ms, tolerance 5 ms
+  node 26.0.0 assign K=65s: measure/node-explicit.mjs 65000 --cap-ms=75000 -> entry 66000 ms, tolerance 5 ms
+  node 26.0.0 createServer options K=65s: measure/node-explicit.mjs 65000 --form=options --cap-ms=75000 -> entry 66000 ms, tolerance 5 ms
+  node 26.13.1 assign K=7s: measure/node-explicit.mjs 7000 --cap-ms=17000 -> entry 8000 ms, tolerance 5 ms
+  node 26.13.1 assign K=12s: measure/node-explicit.mjs 12000 --cap-ms=22000 -> entry 13000 ms, tolerance 5 ms
+  node 26.13.1 assign K=65s: measure/node-explicit.mjs 65000 --cap-ms=75000 -> entry 66000 ms, tolerance 5 ms
+  node 26.13.1 createServer options K=7s: measure/node-explicit.mjs 7000 --form=options --cap-ms=17000 -> entry 8000 ms, tolerance 5 ms
+node-explicit-buffer-22x-0: 4 cases
+  node 22.19.0 assign K=7s buffer=0ms: measure/node-explicit.mjs 7000 --buffer=0 --cap-ms=17000 -> entry 7000 ms, tolerance 5 ms
+  node 22.19.0 assign K=65s buffer=0ms: measure/node-explicit.mjs 65000 --buffer=0 --cap-ms=75000 -> entry 65000 ms, tolerance 5 ms
+  node 22.23.5 assign K=7s buffer=0ms: measure/node-explicit.mjs 7000 --buffer=0 --cap-ms=17000 -> entry 7000 ms, tolerance 5 ms
+  node 22.23.5 assign K=65s buffer=0ms: measure/node-explicit.mjs 65000 --buffer=0 --cap-ms=75000 -> entry 65000 ms, tolerance 5 ms
+node-explicit-buffer-22x-1: 2 cases
+  node 22.19.0 assign K=7s buffer=1000ms: measure/node-explicit.mjs 7000 --buffer=1000 --cap-ms=17000 -> entry 8000 ms, tolerance 5 ms
+  node 22.23.5 assign K=7s buffer=1000ms: measure/node-explicit.mjs 7000 --buffer=1000 --cap-ms=17000 -> entry 8000 ms, tolerance 5 ms
+node-explicit-buffer-24x-0: 4 cases
+  node 24.6.0 assign K=7s buffer=0ms: measure/node-explicit.mjs 7000 --buffer=0 --cap-ms=17000 -> entry 7000 ms, tolerance 5 ms
+  node 24.6.0 assign K=65s buffer=0ms: measure/node-explicit.mjs 65000 --buffer=0 --cap-ms=75000 -> entry 65000 ms, tolerance 5 ms
+  node 24.22.3 assign K=7s buffer=0ms: measure/node-explicit.mjs 7000 --buffer=0 --cap-ms=17000 -> entry 7000 ms, tolerance 5 ms
+  node 24.22.3 assign K=65s buffer=0ms: measure/node-explicit.mjs 65000 --buffer=0 --cap-ms=75000 -> entry 65000 ms, tolerance 5 ms
+node-explicit-buffer-24x-1: 2 cases
+  node 24.6.0 assign K=7s buffer=1000ms: measure/node-explicit.mjs 7000 --buffer=1000 --cap-ms=17000 -> entry 8000 ms, tolerance 5 ms
+  node 24.22.3 assign K=7s buffer=1000ms: measure/node-explicit.mjs 7000 --buffer=1000 --cap-ms=17000 -> entry 8000 ms, tolerance 5 ms
+node-explicit-buffer-26x-0: 4 cases
+  node 26.0.0 assign K=7s buffer=0ms: measure/node-explicit.mjs 7000 --buffer=0 --cap-ms=17000 -> entry 7000 ms, tolerance 4 ms
+  node 26.0.0 assign K=65s buffer=0ms: measure/node-explicit.mjs 65000 --buffer=0 --cap-ms=75000 -> entry 65000 ms, tolerance 4 ms
+  node 26.13.1 assign K=7s buffer=0ms: measure/node-explicit.mjs 7000 --buffer=0 --cap-ms=17000 -> entry 7000 ms, tolerance 4 ms
+  node 26.13.1 assign K=65s buffer=0ms: measure/node-explicit.mjs 65000 --buffer=0 --cap-ms=75000 -> entry 65000 ms, tolerance 4 ms
+node-explicit-buffer-26x-1: 2 cases
+  node 26.0.0 assign K=7s buffer=1000ms: measure/node-explicit.mjs 7000 --buffer=1000 --cap-ms=17000 -> entry 8000 ms, tolerance 4 ms
+  node 26.13.1 assign K=7s buffer=1000ms: measure/node-explicit.mjs 7000 --buffer=1000 --cap-ms=17000 -> entry 8000 ms, tolerance 4 ms
+node-headers-trap-10x: DEFERRED (B13), not measured: Attempted in B13 (2026-11-12): cannot run on this host. Node 10, 12 and 13 have no arm64 macOS build, and this host has no x64 runtime: Rosetta 2 is absent (`arch -x86_64 /usr/bin/true` fails with "Bad CPU type in executable"; record: measure/results/2026-11-12-b13-attempt.txt). The trap was not measured; it needs Rosetta 2 or an x64 host.
+node-headers-trap-12x: DEFERRED (B13), not measured: Attempted in B13 (2026-11-12): cannot run on this host. Node 10, 12 and 13 have no arm64 macOS build, and this host has no x64 runtime: Rosetta 2 is absent (`arch -x86_64 /usr/bin/true` fails with "Bad CPU type in executable"; record: measure/results/2026-11-12-b13-attempt.txt). The trap was not measured; it needs Rosetta 2 or an x64 host.
+node-headers-trap-13x: DEFERRED (B13), not measured: Attempted in B13 (2026-11-12): cannot run on this host. Node 10, 12 and 13 have no arm64 macOS build, and this host has no x64 runtime: Rosetta 2 is absent (`arch -x86_64 /usr/bin/true` fails with "Bad CPU type in executable"; record: measure/results/2026-11-12-b13-attempt.txt). The trap was not measured; it needs Rosetta 2 or an x64 host.
+gunicorn-keepalive-uvicorn-worker-26x: 1 case
+  gunicorn 26.2.0 uvicorn worker default: measure/py-idle-close.mjs gunicorn-uvicorn -> entry 2000 ms, tolerance 6 ms
+gunicorn-keepalive-uvicorn-worker-27x: 1 case
+  gunicorn 27.0.0 uvicorn worker default: measure/py-idle-close.mjs gunicorn-uvicorn -> entry 2000 ms, tolerance 6 ms
+uvicorn-keepalive-0-54x: 1 case
+  uvicorn 0.54.0 default: measure/py-idle-close.mjs uvicorn -> entry 5000 ms, tolerance 4 ms
+gunicorn-keepalive-gthread-26x: 1 case
+  gunicorn 26.2.0 gthread default: measure/py-b2.mjs threads -> entry 2000 ms, tolerance 6 ms
+gunicorn-keepalive-gthread-27x: 1 case
+  gunicorn 27.0.0 gthread default: measure/py-b2.mjs threads -> entry 2000 ms, tolerance 6 ms
+gunicorn-sync-worker-26x: 1 case
+  gunicorn 26.2.0 sync worker: measure/py-b2.mjs sync -> entry n/a, tolerance 6 ms
+gunicorn-sync-worker-27x: 1 case
+  gunicorn 27.0.0 sync worker: measure/py-b2.mjs sync -> entry n/a, tolerance 6 ms
+gunicorn-explicit-keepalive-uvicorn-worker-26x: 1 case
+  gunicorn 26.2.0 uvicorn-worker-keepalive 3s: measure/py-b2.mjs uvicorn-worker-keepalive 3 -> entry 3000 ms, tolerance 6 ms
+gunicorn-explicit-keepalive-uvicorn-worker-27x: 1 case
+  gunicorn 27.0.0 uvicorn-worker-keepalive 3s: measure/py-b2.mjs uvicorn-worker-keepalive 3 -> entry 3000 ms, tolerance 6 ms
+gunicorn-explicit-keepalive-gthread-26x: 1 case
+  gunicorn 26.2.0 gthread-keepalive 7s: measure/py-b2.mjs gthread-keepalive 7 -> entry 7000 ms, tolerance 22 ms
+gunicorn-explicit-keepalive-gthread-27x: 1 case
+  gunicorn 27.0.0 gthread-keepalive 7s: measure/py-b2.mjs gthread-keepalive 7 -> entry 7000 ms, tolerance 22 ms
+uvicorn-explicit-keepalive-0-54x: 2 cases
+  uvicorn 0.54.0 uvicorn-flag 7s: measure/py-b2.mjs uvicorn-flag 7 -> entry 7000 ms, tolerance 6 ms
+  uvicorn 0.54.0 uvicorn-env 7s: measure/py-b2.mjs uvicorn-env 7 -> entry 7000 ms, tolerance 6 ms
+k8s-grace-period-default: not measurable locally: The grace period is applied by the Kubernetes API server and kubelet, which need a cluster; no cluster is used on this project.
+gunicorn-graceful-timeout-26x: 3 cases
+  gunicorn 26.2.0 sync graceful ceiling: measure/shutdown-b4.mjs sync long -> entry 30000 ms, tolerance 120 ms
+  gunicorn 26.2.0 gthread graceful ceiling: measure/shutdown-b4.mjs gthread long -> entry 30000 ms, tolerance 120 ms
+  gunicorn 26.2.0 uvicorn graceful ceiling: measure/shutdown-b4.mjs uvicorn-worker long -> entry 30000 ms, tolerance 120 ms
+gunicorn-explicit-graceful-timeout-flag-26x: 3 cases
+  gunicorn 26.2.0 sync graceful 10s from command: measure/shutdown-b4-more.mjs sync-w2-graceful10 long -> entry 10000 ms, tolerance 120 ms
+  gunicorn 26.2.0 gthread graceful 10s from command: measure/shutdown-b4-more.mjs gthread-graceful10 long -> entry 10000 ms, tolerance 120 ms
+  gunicorn 26.2.0 uvicorn graceful 10s from command: measure/shutdown-b4-more.mjs uvicorn-worker-graceful10 long -> entry 10000 ms, tolerance 120 ms
+gunicorn-explicit-graceful-timeout-sync-env-conf-26x: 2 cases
+  gunicorn 26.2.0 sync graceful 10s from env: measure/shutdown-b4-more.mjs sync-env-graceful10 long -> entry 10000 ms, tolerance 120 ms
+  gunicorn 26.2.0 sync graceful 10s from config-file: measure/shutdown-b4-more.mjs sync-conf-graceful10 long -> entry 10000 ms, tolerance 120 ms
+gunicorn-graceful-timeout-27x: 3 cases
+  gunicorn 27.0.0 sync graceful ceiling: measure/shutdown-b4.mjs sync long -> entry 30000 ms, tolerance 120 ms
+  gunicorn 27.0.0 gthread graceful ceiling: measure/shutdown-b4.mjs gthread long -> entry 30000 ms, tolerance 120 ms
+  gunicorn 27.0.0 uvicorn graceful ceiling: measure/shutdown-b4.mjs uvicorn-worker long -> entry 30000 ms, tolerance 120 ms
+gunicorn-explicit-graceful-timeout-flag-27x: 3 cases
+  gunicorn 27.0.0 sync graceful 10s from command: measure/shutdown-b4-more.mjs sync-w2-graceful10 long -> entry 10000 ms, tolerance 120 ms
+  gunicorn 27.0.0 gthread graceful 10s from command: measure/shutdown-b4-more.mjs gthread-graceful10 long -> entry 10000 ms, tolerance 120 ms
+  gunicorn 27.0.0 uvicorn graceful 10s from command: measure/shutdown-b4-more.mjs uvicorn-worker-graceful10 long -> entry 10000 ms, tolerance 120 ms
+gunicorn-explicit-graceful-timeout-sync-env-conf-27x: 2 cases
+  gunicorn 27.0.0 sync graceful 10s from env: measure/shutdown-b4-more.mjs sync-env-graceful10 long -> entry 10000 ms, tolerance 120 ms
+  gunicorn 27.0.0 sync graceful 10s from config-file: measure/shutdown-b4-more.mjs sync-conf-graceful10 long -> entry 10000 ms, tolerance 120 ms
+uvicorn-explicit-graceful-timeout-0-54x: 2 cases
+  uvicorn 0.54.0 --timeout-graceful-shutdown 5: measure/shutdown-b4.mjs uvicorn-graceful5 long -> entry 5000 ms, tolerance 214 ms
+  uvicorn 0.54.0 default: no ceiling: measure/shutdown-b4.mjs uvicorn long -> entry n/a, tolerance 214 ms
+lightship-shutdown-delay-9x: 1 case
+  lightship 9.1.0 k8s shutdown delay: measure/lightship-b4.mjs k8s -> entry 5000 ms, tolerance 24 ms
+terraform-lb-idle-timeout-default: not measurable locally: An Application Load Balancer is an AWS service and cannot run on localhost; no cloud account is used.
+terraform-sqs-visibility-default: not measurable locally: An SQS queue is an AWS service and cannot run on localhost; no cloud account is used.
+terraform-lambda-timeout-default: not measurable locally: A Lambda function is an AWS service and cannot run on localhost; no cloud account is used.
+lambda-sqs-batching-window-default: not measurable locally: A Lambda event source mapping is an AWS service and cannot run on localhost; no cloud account is used.
+
+[exit 0]

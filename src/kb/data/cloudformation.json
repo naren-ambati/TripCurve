@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "cfn-lb-idle-timeout-default",
+      "subject": "cfn-lb-idle-timeout",
+      "value": 60,
+      "unit": "s",
+      "applies": {
+        "runtime": "cloudformation",
+        "versionRange": "*"
+      },
+      "citationName": "CloudFormation load balancer idle_timeout.timeout_seconds",
+      "rangeLabel": "AWS CloudFormation and SAM docs",
+      "docUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-elasticloadbalancingv2-loadbalancer-loadbalancerattribute.html",
+      "docDate": "2026-11-12",
+      "basis": "documented",
+      "scriptRef": {
+        "notMeasurableLocally": "An Application Load Balancer is an AWS service and cannot run on localhost; no cloud account is used."
+      },
+      "notes": "AWS CloudFormation reference for LoadBalancerAttribute, read 2026-11-12: \"The following attributes are supported by only Application Load Balancers: idle_timeout.timeout_seconds - The idle timeout value, in seconds. The valid range is 1-4000 seconds. The default is 60 seconds.\" The LoadBalancer page gives the type default: \"Type The type of load balancer. The default is application.\" tripcurve uses the default only when the type is application or absent, and only when the template was read in full (no transform, no Condition). The value follows from the template and may support PASS or FAIL."
+    },
+    {
+      "id": "cfn-sqs-visibility-default",
+      "subject": "cfn-sqs-visibility",
+      "value": 30,
+      "unit": "s",
+      "applies": {
+        "runtime": "cloudformation",
+        "versionRange": "*"
+      },
+      "citationName": "CloudFormation AWS::SQS::Queue VisibilityTimeout",
+      "rangeLabel": "AWS CloudFormation and SAM docs",
+      "docUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-sqs-queue.html",
+      "docDate": "2026-11-12",
+      "basis": "documented",
+      "scriptRef": {
+        "notMeasurableLocally": "An SQS queue is an AWS service and cannot run on localhost; no cloud account is used."
+      },
+      "notes": "AWS CloudFormation reference for AWS::SQS::Queue, read 2026-11-12: \"Values must be from 0 to 43,200 seconds (12 hours). If you don't specify a value, AWS CloudFormation uses the default value of 30 seconds.\" The value follows from the template and may support PASS or FAIL."
+    },
+    {
+      "id": "cfn-lambda-timeout-default",
+      "subject": "cfn-lambda-timeout",
+      "value": 3,
+      "unit": "s",
+      "applies": {
+        "runtime": "cloudformation",
+        "versionRange": "*"
+      },
+      "citationName": "CloudFormation Lambda function Timeout",
+      "rangeLabel": "AWS CloudFormation and SAM docs",
+      "docUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-lambda-function.html",
+      "docDate": "2026-11-12",
+      "basis": "documented",
+      "scriptRef": {
+        "notMeasurableLocally": "A Lambda function is an AWS service and cannot run on localhost; no cloud account is used."
+      },
+      "notes": "AWS CloudFormation reference for AWS::Lambda::Function, read 2026-11-12: \"The amount of time (in seconds) that Lambda allows a function to run before stopping it. The default is 3 seconds, and the maximum allowed value is 900 seconds.\" The AWS SAM reference for AWS::Serverless::Function (https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html, read 2026-11-12) gives Timeout \"Default: 3\" and says it \"is passed directly to the Timeout property of an AWS::Lambda::Function resource\". For a SAM function the value is used only when neither the function nor Globals.Function.Timeout sets it and Globals was read in full. The value follows from the template and may support PASS or FAIL."
+    }
+  ]
+}

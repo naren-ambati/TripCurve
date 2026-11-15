@@ -1,0 +1,16 @@
+{
+  "failed": 4,
+  "warning": 0,
+  "unresolved": 1,
+  "versionDependent": 0,
+  "notEvaluated": 1,
+  "waived": 0,
+  "notApplicable": 1,
+  "passed": 3,
+  "outcome": "NotClean",
+  "clean": false,
+  "waivedDates": [],
+  "exitCode": 1
+}
+
+[exit 0]

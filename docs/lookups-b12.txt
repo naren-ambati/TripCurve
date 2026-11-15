@@ -1,0 +1,69 @@
+# Lookups for bolt B12 (SAM and CloudFormation readers), read 2026-11-12 (UTC 14:40Z to 14:42Z)
+# Every page answered HTTP 200 on the first try. Text was taken from the page HTML with the tags removed and
+# line breaks joined; the quotes below are that text word for word. No lookup failed.
+
+## https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-sqs-queue.html
+"VisibilityTimeout" is the property name (AWS::SQS::Queue).
+"Values must be from 0 to 43,200 seconds (12 hours). If you don't specify a value, AWS CloudFormation uses the default value of 30 seconds."
+
+## https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-lambda-function.html
+"The amount of time (in seconds) that Lambda allows a function to run before stopping it. The default is 3 seconds, and the maximum allowed value is 900 seconds."
+
+## https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+SAM AWS::Serverless::Function, property Timeout: "The maximum time in seconds that the function can run before it is stopped." Type: Integer. Required: No. Default: 3. "CloudFormation compatibility: This property is passed directly to the Timeout property of an AWS::Lambda::Function resource."
+
+## https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-lambda-eventsourcemapping.html
+"MaximumBatchingWindowInSeconds" is the property name (AWS::Lambda::EventSourceMapping); "EventSourceArn" and "FunctionName" are its source and function properties.
+"The maximum amount of time, in seconds, that Lambda spends gathering records before invoking the function. Default (Kinesis, DynamoDB, Amazon SQS event sources) : 0"
+"EventSourceArn The Amazon Resource Name (ARN) of the event source. Amazon Kinesis - The ARN of the data stream or a stream consumer. Amazon DynamoDB Streams - The ARN of the stream."
+"FunctionName The name or ARN of the Lambda function."
+
+## https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-elasticloadbalancingv2-loadbalancer.html
+"LoadBalancerAttributes The load balancer attributes. Attributes that you do not modify retain their current values."
+"Type The type of load balancer. The default is application."
+
+## https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-elasticloadbalancingv2-loadbalancer-loadbalancerattribute.html
+Properties are Key and Value, both String.
+"The following attributes are supported by only Application Load Balancers: idle_timeout.timeout_seconds - The idle timeout value, in seconds. The valid range is 1-4000 seconds. The default is 60 seconds."
+
+## https://docs.aws.amazon.com/elasticloadbalancing/latest/application/edit-load-balancer-attributes.html
+"The valid range is 1 to 4000 seconds."
+(the page's CloudFormation example writes the attribute as Key: "idle_timeout.timeout_seconds")
+
+## https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy-globals.html
+"The Globals section supports the following AWS SAM resource types: AWS::Serverless::Api ... AWS::Serverless::Function ..."
+The supported Function list under Globals includes "Timeout:". Example: "Globals: Function: Runtime: nodejs12.x Timeout: 180 Handler: index.handler"
+"Resources can override the properties that you declare in the Globals section. ... Primitive data types are replaced ... The value specified in the Resources section replaces the value in the Globals section."
+
+## https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-function-sqs.html
+SQS event properties include Queue (String) and MaximumBatchingWindowInSeconds (Integer).
+"Queue The ARN of the queue. Type: String Required: Yes CloudFormation compatibility: This property is passed directly to the EventSourceArn property of an AWS::Lambda::EventSourceMapping resource."
+"MaximumBatchingWindowInSeconds The maximum amount of time, in seconds, to gather records before invoking the function. ... CloudFormation compatibility: This property is passed directly to the MaximumBatchingWindowInSeconds property of an AWS::Lambda::EventSourceMapping resource."
+(No default is given for the SAM SQS event's MaximumBatchingWindowInSeconds; BatchSize has "Default: 10".)
+
+## https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy.html
+"The declaration Transform: AWS::Serverless-2016-10-31 is required for AWS SAM template files. This declaration identifies an CloudFormation template file as an AWS SAM template file."
+"Transform: - AWS::LanguageExtensions - AWS::Serverless-2016-10-31" (a list form, with LanguageExtensions before the serverless transform)
+
+## https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-section-structure.html
+"The Transform section specifies one or more macros that CloudFormation uses to process your template in some way. Macros can perform simple tasks like finding and replacing text, or they can make more extensive transformations to the entire template."
+
+## https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-macros.html
+"consider the AWS::Include and AWS::Serverless transforms, which are macros hosted by CloudFormation"
+
+## https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cloudformation-limits.html
+"Template body size in an Amazon S3 object ... 1 MB" and "Template body size in a request ... 51,200 bytes".
+
+## Main-session reading for B12
+- Absent SQS VisibilityTimeout (30), Lambda Timeout (3), SAM function Timeout (3) and ALB idle (60, application only) have documented defaults above; they follow from a template only when every place the value could come from was read (Globals, Transform, a plain resource). Basis `documented`.
+- The batching window: the CloudFormation page documents a default of 0 for SQS, but, as in B5, an absent window is the ASSUMED 0 s and a result resting on it is UNRESOLVED. (B5 reasoning: a deploy or console change outside the template is not corrected by it.)
+
+## Return values of Ref and GetAtt (read 2026-11-12, UTC 14:44Z; same pages as above)
+SQS queue page: "When you pass the logical ID of this resource to the intrinsic Ref function, Ref returns the queue URL." and "Arn Returns the Amazon Resource Name (ARN) of the queue."
+Lambda function page: "Arn The Amazon Resource Name (ARN) of the function." "When you pass the logical ID of this resource to the intrinsic Ref function, Ref returns the resource name." (Return values section)
+-> A function is followed as Ref or Fn::GetAtt [function, Arn] (a name or an ARN: both are accepted by the mapping's FunctionName). An event source ARN is followed only as Fn::GetAtt [queue, Arn]; a Ref to a queue is a URL, not an ARN, so it is not followed.
+
+## Review fixes (read 2026-11-12, UTC 15:33Z; no lookup failed)
+https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html : "The Resources section is required in every CloudFormation template and forms the core of the template."
+https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-lambda-function.html : "The default is 3 seconds, and the maximum allowed value is 900 seconds. For functions using Lambda Managed Instances, asynchronous invocations and event source mapping invocations (except Amazon MQ and Amazon DocumentDB) support a maximum allowed value of 5,400 seconds (90 minutes)." (the same sentence is on https://docs.aws.amazon.com/lambda/latest/dg/configuration-timeout.html). tripcurve keeps the 900 s cap: a Timeout above it is UNRESOLVED, which is conservative.
+UTF-8 as the required encoding of a template was NOT looked up, so no claim about encoding is made; an unreadable .json is judged by a bounded content sniff instead (docs/limits.md).

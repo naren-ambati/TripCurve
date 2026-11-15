@@ -1,0 +1,214 @@
+# paths redacted for publication: <repo> is the repository root, <scratch> a temporary folder. This run was made while the host was busy (35 cases flagged), so it is evidence only, not an official run.
+tripcurve measurement lane: latest
+started 2026-11-15T04:53:42.989Z, darwin-arm64, runner node v22.23.2, cache <repo>/.cache, jobs 1
+host load average (1, 5, 15 min) at start: 2.51 9.70 12.33 on 10 cores
+## lookups, read-only GET, 2026-11-15T04:53:42.990Z
+node: unrecognised version, not compared: "27.0.0-alpha.0.1.0"
+node: unrecognised version, not compared: "27.0.0-alpha.0.0.0"
+gunicorn: unrecognised version, not compared: "0.1"
+gunicorn: unrecognised version, not compared: "0.2"
+gunicorn: unrecognised version, not compared: "0.3"
+gunicorn: unrecognised version, not compared: "0.4"
+gunicorn: unrecognised version, not compared: "0.5"
+gunicorn: unrecognised version, not compared: "0.6"
+gunicorn: unrecognised version, not compared: "17.5"
+gunicorn: unrecognised version, not compared: "18.0"
+uvicorn: unrecognised version, not compared: "0.17.0.post1"
+uvicorn: unrecognised version, not compared: "0.24.0.post1"
+uvicorn: unrecognised version, not compared: "0.27.0.post1"
+uvicorn: unrecognised version, not compared: "0.7.0b1"
+uvicorn: unrecognised version, not compared: "0.7.0b2"
+newest releases: node 26.13.1, gunicorn 27.0.1, uvicorn 0.54.0, lightship 9.1.0, uvicorn-worker 0.4.0
+newest release inside each node range: 18.20.8, 20.20.2, 22.23.5, 24.22.3, 26.13.1
+newest release inside each gunicorn range: 26.2.0, 27.0.1
+newest release inside each uvicorn range: 0.54.0
+newest release inside each lightship range: 9.1.0
+node 18.20.8: found in the cache <repo>/.cache/node, not re-verified (the tarball is not kept, so its checksum cannot be checked again)
+node 20.20.2: found in the cache <repo>/.cache/node, not re-verified (the tarball is not kept, so its checksum cannot be checked again)
+node 22.23.5: found in the cache <repo>/.cache/node, not re-verified (the tarball is not kept, so its checksum cannot be checked again)
+node 24.22.3: found in the cache <repo>/.cache/node, not re-verified (the tarball is not kept, so its checksum cannot be checked again)
+node 26.13.1: found in the cache <repo>/.cache/node, not re-verified (the tarball is not kept, so its checksum cannot be checked again)
+g26: gunicorn 26.2.0, uvicorn 0.54.0, uvicorn-worker 0.4.0: found in <repo>/.cache/py-latest-g26-gunicorn-26.2.0-uvicorn-0.54.0-worker-0.4.0, not re-verified
+g27: installed gunicorn 27.0.1, uvicorn 0.54.0, uvicorn-worker 0.4.0 into <repo>/.cache/py-latest-g27-gunicorn-27.0.1-uvicorn-0.54.0-worker-0.4.0 with hashes from PyPI required and wheels only (uv pip install --require-hashes --only-binary :all:)
+lightship 9.1.0: found in <repo>/.cache/lightship-9.1.0, not re-verified
+65 cases for 48 entries
+[1/65] PASS node-idle-close-18x node 18.20.8 default
+[2/65] PASS node-idle-close-20x node 20.20.2 default
+[3/65] PASS node-idle-close-22x node 22.23.5 default
+[4/65] PASS node-idle-close-24x node 24.22.3 default
+[5/65] PASS node-idle-close-26x node 26.13.1 default
+[6/65] PASS node-explicit-keepalive-18x node 18.20.8 assign K=7s
+[7/65] PASS node-explicit-keepalive-18x node 18.20.8 assign K=12s
+[8/65] PASS node-explicit-keepalive-18x node 18.20.8 assign K=65s
+host is busy before node 20.20.2 assign K=7s: load 10.74 on 10 cores
+[9/65] PASS node-explicit-keepalive-20x node 20.20.2 assign K=7s
+host is busy before node 20.20.2 assign K=12s: load 9.96 on 10 cores
+[10/65] PASS node-explicit-keepalive-20x node 20.20.2 assign K=12s
+host is busy before node 20.20.2 assign K=65s: load 7.98 on 10 cores
+[11/65] PASS node-explicit-keepalive-20x node 20.20.2 assign K=65s
+[12/65] PASS node-explicit-keepalive-22x node 22.23.5 assign K=7s
+[13/65] PASS node-explicit-keepalive-22x node 22.23.5 assign K=12s
+[14/65] PASS node-explicit-keepalive-22x node 22.23.5 assign K=65s
+[15/65] PASS node-explicit-keepalive-22x node 22.23.5 createServer options K=7s
+[16/65] PASS node-explicit-keepalive-22x node 22.23.5 createServer options K=65s
+host is busy before node 24.22.3 assign K=7s: load 8.73 on 10 cores
+[17/65] PASS node-explicit-keepalive-24x node 24.22.3 assign K=7s
+host is busy before node 24.22.3 assign K=12s: load 10.60 on 10 cores
+[18/65] PASS node-explicit-keepalive-24x node 24.22.3 assign K=12s
+host is busy before node 24.22.3 assign K=65s: load 12.48 on 10 cores
+[19/65] PASS node-explicit-keepalive-24x node 24.22.3 assign K=65s
+host is busy before node 24.22.3 createServer options K=7s: load 26.16 on 10 cores
+[20/65] PASS node-explicit-keepalive-24x node 24.22.3 createServer options K=7s
+host is busy before node 26.13.1 assign K=7s: load 23.00 on 10 cores
+[21/65] PASS node-explicit-keepalive-26x node 26.13.1 assign K=7s
+host is busy before node 26.13.1 assign K=12s: load 21.24 on 10 cores
+[22/65] PASS node-explicit-keepalive-26x node 26.13.1 assign K=12s
+host is busy before node 26.13.1 assign K=65s: load 17.03 on 10 cores
+[23/65] PASS node-explicit-keepalive-26x node 26.13.1 assign K=65s
+host is busy before node 26.13.1 createServer options K=7s: load 7.30 on 10 cores
+[24/65] PASS node-explicit-keepalive-26x node 26.13.1 createServer options K=7s
+host is busy before node 22.23.5 assign K=7s buffer=0ms: load 6.49 on 10 cores
+[25/65] PASS node-explicit-buffer-22x-0 node 22.23.5 assign K=7s buffer=0ms
+host is busy before node 22.23.5 assign K=65s buffer=0ms: load 6.21 on 10 cores
+[26/65] PASS node-explicit-buffer-22x-0 node 22.23.5 assign K=65s buffer=0ms
+[27/65] PASS node-explicit-buffer-22x-1 node 22.23.5 assign K=7s buffer=1000ms
+[28/65] PASS node-explicit-buffer-24x-0 node 24.22.3 assign K=7s buffer=0ms
+[29/65] PASS node-explicit-buffer-24x-0 node 24.22.3 assign K=65s buffer=0ms
+[30/65] PASS node-explicit-buffer-24x-1 node 24.22.3 assign K=7s buffer=1000ms
+[31/65] PASS node-explicit-buffer-26x-0 node 26.13.1 assign K=7s buffer=0ms
+[32/65] PASS node-explicit-buffer-26x-0 node 26.13.1 assign K=65s buffer=0ms
+host is busy before node 26.13.1 assign K=7s buffer=1000ms: load 16.12 on 10 cores
+[33/65] PASS node-explicit-buffer-26x-1 node 26.13.1 assign K=7s buffer=1000ms
+host is busy before gunicorn 26.2.0 uvicorn worker default: load 18.83 on 10 cores
+[34/65] PASS gunicorn-keepalive-uvicorn-worker-26x gunicorn 26.2.0 uvicorn worker default
+host is busy before gunicorn 27.0.1 uvicorn worker default: load 18.83 on 10 cores
+[35/65] PASS gunicorn-keepalive-uvicorn-worker-27x gunicorn 27.0.1 uvicorn worker default
+host is busy before uvicorn 0.54.0 default: load 20.76 on 10 cores
+[36/65] PASS uvicorn-keepalive-0-54x uvicorn 0.54.0 default
+host is busy before gunicorn 26.2.0 gthread default: load 20.38 on 10 cores
+[37/65] PASS gunicorn-keepalive-gthread-26x gunicorn 26.2.0 gthread default
+host is busy before gunicorn 27.0.1 gthread default: load 20.67 on 10 cores
+[38/65] FAIL gunicorn-keepalive-gthread-27x gunicorn 27.0.1 gthread default
+host is busy before gunicorn 26.2.0 sync worker: load 20.67 on 10 cores
+[39/65] PASS gunicorn-sync-worker-26x gunicorn 26.2.0 sync worker
+host is busy before gunicorn 27.0.1 sync worker: load 21.66 on 10 cores
+[40/65] PASS gunicorn-sync-worker-27x gunicorn 27.0.1 sync worker
+host is busy before gunicorn 26.2.0 uvicorn-worker-keepalive 3s: load 21.66 on 10 cores
+[41/65] FAIL gunicorn-explicit-keepalive-uvicorn-worker-26x gunicorn 26.2.0 uvicorn-worker-keepalive 3s
+host is busy before gunicorn 27.0.1 uvicorn-worker-keepalive 3s: load 21.44 on 10 cores
+[42/65] PASS gunicorn-explicit-keepalive-uvicorn-worker-27x gunicorn 27.0.1 uvicorn-worker-keepalive 3s
+host is busy before gunicorn 26.2.0 gthread-keepalive 7s: load 21.44 on 10 cores
+[43/65] FAIL gunicorn-explicit-keepalive-gthread-26x gunicorn 26.2.0 gthread-keepalive 7s
+host is busy before gunicorn 27.0.1 gthread-keepalive 7s: load 22.63 on 10 cores
+[44/65] FAIL gunicorn-explicit-keepalive-gthread-27x gunicorn 27.0.1 gthread-keepalive 7s
+host is busy before uvicorn 0.54.0 uvicorn-flag 7s: load 24.42 on 10 cores
+[45/65] PASS uvicorn-explicit-keepalive-0-54x uvicorn 0.54.0 uvicorn-flag 7s
+host is busy before uvicorn 0.54.0 uvicorn-env 7s: load 24.31 on 10 cores
+[46/65] PASS uvicorn-explicit-keepalive-0-54x uvicorn 0.54.0 uvicorn-env 7s
+host is busy before gunicorn 26.2.0 sync graceful ceiling: load 27.17 on 10 cores
+[47/65] PASS gunicorn-graceful-timeout-26x gunicorn 26.2.0 sync graceful ceiling
+host is busy before gunicorn 26.2.0 gthread graceful ceiling: load 19.43 on 10 cores
+[48/65] PASS gunicorn-graceful-timeout-26x gunicorn 26.2.0 gthread graceful ceiling
+host is busy before gunicorn 26.2.0 uvicorn graceful ceiling: load 12.28 on 10 cores
+[49/65] PASS gunicorn-graceful-timeout-26x gunicorn 26.2.0 uvicorn graceful ceiling
+host is busy before gunicorn 26.2.0 sync graceful 10s from command: load 8.62 on 10 cores
+[50/65] PASS gunicorn-explicit-graceful-timeout-flag-26x gunicorn 26.2.0 sync graceful 10s from command
+host is busy before gunicorn 26.2.0 gthread graceful 10s from command: load 7.45 on 10 cores
+[51/65] PASS gunicorn-explicit-graceful-timeout-flag-26x gunicorn 26.2.0 gthread graceful 10s from command
+host is busy before gunicorn 26.2.0 uvicorn graceful 10s from command: load 6.75 on 10 cores
+[52/65] PASS gunicorn-explicit-graceful-timeout-flag-26x gunicorn 26.2.0 uvicorn graceful 10s from command
+host is busy before gunicorn 26.2.0 sync graceful 10s from env: load 6.02 on 10 cores
+[53/65] PASS gunicorn-explicit-graceful-timeout-sync-env-conf-26x gunicorn 26.2.0 sync graceful 10s from env
+host is busy before gunicorn 26.2.0 sync graceful 10s from config-file: load 5.57 on 10 cores
+[54/65] PASS gunicorn-explicit-graceful-timeout-sync-env-conf-26x gunicorn 26.2.0 sync graceful 10s from config-file
+[55/65] PASS gunicorn-graceful-timeout-27x gunicorn 27.0.1 sync graceful ceiling
+[56/65] PASS gunicorn-graceful-timeout-27x gunicorn 27.0.1 gthread graceful ceiling
+[57/65] PASS gunicorn-graceful-timeout-27x gunicorn 27.0.1 uvicorn graceful ceiling
+[58/65] PASS gunicorn-explicit-graceful-timeout-flag-27x gunicorn 27.0.1 sync graceful 10s from command
+[59/65] PASS gunicorn-explicit-graceful-timeout-flag-27x gunicorn 27.0.1 gthread graceful 10s from command
+[60/65] PASS gunicorn-explicit-graceful-timeout-flag-27x gunicorn 27.0.1 uvicorn graceful 10s from command
+[61/65] PASS gunicorn-explicit-graceful-timeout-sync-env-conf-27x gunicorn 27.0.1 sync graceful 10s from env
+[62/65] PASS gunicorn-explicit-graceful-timeout-sync-env-conf-27x gunicorn 27.0.1 sync graceful 10s from config-file
+[63/65] PASS uvicorn-explicit-graceful-timeout-0-54x uvicorn 0.54.0 --timeout-graceful-shutdown 5
+[64/65] PASS uvicorn-explicit-graceful-timeout-0-54x uvicorn 0.54.0 default: no ceiling
+[65/65] PASS lightship-shutdown-delay-9x lightship 9.1.0 k8s shutdown delay
+host load average (1, 5, 15 min) at end: 1.02 5.28 8.48 on 10 cores
+PASS  node-idle-close-18x  [node 18.20.8 default]  measured 5001 ms  entry 5000 ms  tolerance 5 ms  margin 4 ms
+PASS  node-idle-close-20x  [node 20.20.2 default]  measured 6002 ms  entry 6000 ms  tolerance 4 ms  margin 2 ms
+PASS  node-idle-close-22x  [node 22.23.5 default]  measured 6003 ms  entry 6000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-idle-close-24x  [node 24.22.3 default]  measured 6003 ms  entry 6000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-idle-close-26x  [node 26.13.1 default]  measured 6002 ms  entry 6000 ms  tolerance 4 ms  margin 2 ms
+PASS  node-explicit-keepalive-18x  [node 18.20.8 assign K=7s]  measured 7003 ms  entry 7000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-keepalive-18x  [node 18.20.8 assign K=12s]  measured 12003 ms  entry 12000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-keepalive-18x  [node 18.20.8 assign K=65s]  measured 65001 ms  entry 65000 ms  tolerance 5 ms  margin 4 ms
+PASS  node-explicit-keepalive-20x  [node 20.20.2 assign K=7s]  measured 8002 ms  entry 8000 ms  tolerance 5 ms  margin 3 ms
+PASS  node-explicit-keepalive-20x  [node 20.20.2 assign K=12s]  measured 13002 ms  entry 13000 ms  tolerance 5 ms  margin 3 ms
+PASS  node-explicit-keepalive-20x  [node 20.20.2 assign K=65s]  measured 66002 ms  entry 66000 ms  tolerance 5 ms  margin 3 ms
+PASS  node-explicit-keepalive-22x  [node 22.23.5 assign K=7s]  measured 8003 ms  entry 8000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-keepalive-22x  [node 22.23.5 assign K=12s]  measured 13003 ms  entry 13000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-keepalive-22x  [node 22.23.5 assign K=65s]  measured 66002 ms  entry 66000 ms  tolerance 5 ms  margin 3 ms
+PASS  node-explicit-keepalive-22x  [node 22.23.5 createServer options K=7s]  measured 8002 ms  entry 8000 ms  tolerance 5 ms  margin 3 ms
+PASS  node-explicit-keepalive-22x  [node 22.23.5 createServer options K=65s]  measured 66003 ms  entry 66000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-keepalive-24x  [node 24.22.3 assign K=7s]  measured 8002 ms  entry 8000 ms  tolerance 5 ms  margin 3 ms
+PASS  node-explicit-keepalive-24x  [node 24.22.3 assign K=12s]  measured 13004 ms  entry 13000 ms  tolerance 5 ms  margin 1 ms
+PASS  node-explicit-keepalive-24x  [node 24.22.3 assign K=65s]  measured 66001 ms  entry 66000 ms  tolerance 5 ms  margin 4 ms
+PASS  node-explicit-keepalive-24x  [node 24.22.3 createServer options K=7s]  measured 8001 ms  entry 8000 ms  tolerance 5 ms  margin 4 ms
+PASS  node-explicit-keepalive-26x  [node 26.13.1 assign K=7s]  measured 8001 ms  entry 8000 ms  tolerance 5 ms  margin 4 ms
+PASS  node-explicit-keepalive-26x  [node 26.13.1 assign K=12s]  measured 13001 ms  entry 13000 ms  tolerance 5 ms  margin 4 ms
+PASS  node-explicit-keepalive-26x  [node 26.13.1 assign K=65s]  measured 66000 ms  entry 66000 ms  tolerance 5 ms  margin 5 ms
+PASS  node-explicit-keepalive-26x  [node 26.13.1 createServer options K=7s]  measured 8000 ms  entry 8000 ms  tolerance 5 ms  margin 5 ms
+PASS  node-explicit-buffer-22x-0  [node 22.23.5 assign K=7s buffer=0ms]  measured 7000 ms  entry 7000 ms  tolerance 5 ms  margin 5 ms
+PASS  node-explicit-buffer-22x-0  [node 22.23.5 assign K=65s buffer=0ms]  measured 65002 ms  entry 65000 ms  tolerance 5 ms  margin 3 ms
+PASS  node-explicit-buffer-22x-1  [node 22.23.5 assign K=7s buffer=1000ms]  measured 8003 ms  entry 8000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-buffer-24x-0  [node 24.22.3 assign K=7s buffer=0ms]  measured 7003 ms  entry 7000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-buffer-24x-0  [node 24.22.3 assign K=65s buffer=0ms]  measured 65001 ms  entry 65000 ms  tolerance 5 ms  margin 4 ms
+PASS  node-explicit-buffer-24x-1  [node 24.22.3 assign K=7s buffer=1000ms]  measured 8002 ms  entry 8000 ms  tolerance 5 ms  margin 3 ms
+PASS  node-explicit-buffer-26x-0  [node 26.13.1 assign K=7s buffer=0ms]  measured 7001 ms  entry 7000 ms  tolerance 4 ms  margin 3 ms
+PASS  node-explicit-buffer-26x-0  [node 26.13.1 assign K=65s buffer=0ms]  measured 65001 ms  entry 65000 ms  tolerance 4 ms  margin 3 ms
+PASS  node-explicit-buffer-26x-1  [node 26.13.1 assign K=7s buffer=1000ms]  measured 8001 ms  entry 8000 ms  tolerance 4 ms  margin 3 ms
+PASS  gunicorn-keepalive-uvicorn-worker-26x  [gunicorn 26.2.0 uvicorn worker default]  measured 2001 ms  entry 2000 ms  tolerance 6 ms  margin 5 ms
+PASS  gunicorn-keepalive-uvicorn-worker-27x  [gunicorn 27.0.1 uvicorn worker default]  measured 1998 ms  entry 2000 ms  tolerance 6 ms  margin 4 ms
+PASS  uvicorn-keepalive-0-54x  [uvicorn 0.54.0 default]  measured 5004 ms  entry 5000 ms  tolerance 4 ms  margin 0 ms
+PASS  gunicorn-keepalive-gthread-26x  [gunicorn 26.2.0 gthread default]  measured 2004 ms  entry 2000 ms  tolerance 6 ms  margin 2 ms
+FAIL  gunicorn-keepalive-gthread-27x  [gunicorn 27.0.1 gthread default]  measured 2009 ms  entry 2000 ms  tolerance 6 ms  margin -3 ms  <- differs by +9 ms, more than the tolerance
+PASS  gunicorn-sync-worker-26x  [gunicorn 26.2.0 sync worker]  measured closes after the response (1 ms)  entry n/a (closes after every response)  tolerance 6 ms  margin 5 ms
+PASS  gunicorn-sync-worker-27x  [gunicorn 27.0.1 sync worker]  measured closes after the response (1 ms)  entry n/a (closes after every response)  tolerance 6 ms  margin 5 ms
+FAIL  gunicorn-explicit-keepalive-uvicorn-worker-26x  [gunicorn 26.2.0 uvicorn-worker-keepalive 3s]  measured 3014 ms  entry 3000 ms  tolerance 6 ms  margin -8 ms  <- differs by +14 ms, more than the tolerance
+PASS  gunicorn-explicit-keepalive-uvicorn-worker-27x  [gunicorn 27.0.1 uvicorn-worker-keepalive 3s]  measured 3000 ms  entry 3000 ms  tolerance 6 ms  margin 6 ms
+FAIL  gunicorn-explicit-keepalive-gthread-26x  [gunicorn 26.2.0 gthread-keepalive 7s]  measured 7024 ms  entry 7000 ms  tolerance 22 ms  margin -2 ms  <- differs by +24 ms, more than the tolerance
+FAIL  gunicorn-explicit-keepalive-gthread-27x  [gunicorn 27.0.1 gthread-keepalive 7s]  measured 7023 ms  entry 7000 ms  tolerance 22 ms  margin -1 ms  <- differs by +23 ms, more than the tolerance
+PASS  uvicorn-explicit-keepalive-0-54x  [uvicorn 0.54.0 uvicorn-flag 7s]  measured 7001 ms  entry 7000 ms  tolerance 6 ms  margin 5 ms
+PASS  uvicorn-explicit-keepalive-0-54x  [uvicorn 0.54.0 uvicorn-env 7s]  measured 7001 ms  entry 7000 ms  tolerance 6 ms  margin 5 ms
+PASS  gunicorn-graceful-timeout-26x  [gunicorn 26.2.0 sync graceful ceiling]  measured 30097.9 ms  entry 30000 ms  tolerance 120 ms  margin 22.1 ms
+PASS  gunicorn-graceful-timeout-26x  [gunicorn 26.2.0 gthread graceful ceiling]  measured 30101.2 ms  entry 30000 ms  tolerance 120 ms  margin 18.8 ms
+PASS  gunicorn-graceful-timeout-26x  [gunicorn 26.2.0 uvicorn graceful ceiling]  measured 30100.4 ms  entry 30000 ms  tolerance 120 ms  margin 19.6 ms
+PASS  gunicorn-explicit-graceful-timeout-flag-26x  [gunicorn 26.2.0 sync graceful 10s from command]  measured 10053.2 ms  entry 10000 ms  tolerance 120 ms  margin 66.8 ms
+PASS  gunicorn-explicit-graceful-timeout-flag-26x  [gunicorn 26.2.0 gthread graceful 10s from command]  measured 10095.8 ms  entry 10000 ms  tolerance 120 ms  margin 24.2 ms
+PASS  gunicorn-explicit-graceful-timeout-flag-26x  [gunicorn 26.2.0 uvicorn graceful 10s from command]  measured 10014.2 ms  entry 10000 ms  tolerance 120 ms  margin 105.8 ms
+PASS  gunicorn-explicit-graceful-timeout-sync-env-conf-26x  [gunicorn 26.2.0 sync graceful 10s from env]  measured 10097.5 ms  entry 10000 ms  tolerance 120 ms  margin 22.5 ms
+PASS  gunicorn-explicit-graceful-timeout-sync-env-conf-26x  [gunicorn 26.2.0 sync graceful 10s from config-file]  measured 10103.5 ms  entry 10000 ms  tolerance 120 ms  margin 16.5 ms
+PASS  gunicorn-graceful-timeout-27x  [gunicorn 27.0.1 sync graceful ceiling]  measured 30052.7 ms  entry 30000 ms  tolerance 120 ms  margin 67.3 ms
+PASS  gunicorn-graceful-timeout-27x  [gunicorn 27.0.1 gthread graceful ceiling]  measured 30101 ms  entry 30000 ms  tolerance 120 ms  margin 19 ms
+PASS  gunicorn-graceful-timeout-27x  [gunicorn 27.0.1 uvicorn graceful ceiling]  measured 30050.1 ms  entry 30000 ms  tolerance 120 ms  margin 69.9 ms
+PASS  gunicorn-explicit-graceful-timeout-flag-27x  [gunicorn 27.0.1 sync graceful 10s from command]  measured 10013.1 ms  entry 10000 ms  tolerance 120 ms  margin 106.9 ms
+PASS  gunicorn-explicit-graceful-timeout-flag-27x  [gunicorn 27.0.1 gthread graceful 10s from command]  measured 10078.2 ms  entry 10000 ms  tolerance 120 ms  margin 41.8 ms
+PASS  gunicorn-explicit-graceful-timeout-flag-27x  [gunicorn 27.0.1 uvicorn graceful 10s from command]  measured 10099 ms  entry 10000 ms  tolerance 120 ms  margin 21 ms
+PASS  gunicorn-explicit-graceful-timeout-sync-env-conf-27x  [gunicorn 27.0.1 sync graceful 10s from env]  measured 10035.1 ms  entry 10000 ms  tolerance 120 ms  margin 84.9 ms
+PASS  gunicorn-explicit-graceful-timeout-sync-env-conf-27x  [gunicorn 27.0.1 sync graceful 10s from config-file]  measured 10052 ms  entry 10000 ms  tolerance 120 ms  margin 68 ms
+PASS  uvicorn-explicit-graceful-timeout-0-54x  [uvicorn 0.54.0 --timeout-graceful-shutdown 5]  measured 5189.7 ms  entry 5000 ms  tolerance 214 ms  margin 24.3 ms
+PASS  uvicorn-explicit-graceful-timeout-0-54x  [uvicorn 0.54.0 default: no ceiling]  measured request finished in full  entry no ceiling  tolerance 214 ms  margin n/a
+PASS  lightship-shutdown-delay-9x  [lightship 9.1.0 k8s shutdown delay]  measured 5002.8 ms  entry 5000 ms  tolerance 24 ms  margin 21.2 ms
+NOT RUN  alb-idle-timeout-default  not measurable locally: An Application Load Balancer is an AWS service and cannot run on localhost; no cloud account is used.
+NOT RUN  cfn-lb-idle-timeout-default  not measurable locally: An Application Load Balancer is an AWS service and cannot run on localhost; no cloud account is used.
+NOT RUN  cfn-sqs-visibility-default  not measurable locally: An SQS queue is an AWS service and cannot run on localhost; no cloud account is used.
+NOT RUN  cfn-lambda-timeout-default  not measurable locally: A Lambda function is an AWS service and cannot run on localhost; no cloud account is used.
+NOT RUN  k8s-grace-period-default  not measurable locally: The grace period is applied by the Kubernetes API server and kubelet, which need a cluster; no cluster is used on this project.
+NOT RUN  terraform-lb-idle-timeout-default  not measurable locally: An Application Load Balancer is an AWS service and cannot run on localhost; no cloud account is used.
+NOT RUN  terraform-sqs-visibility-default  not measurable locally: An SQS queue is an AWS service and cannot run on localhost; no cloud account is used.
+NOT RUN  terraform-lambda-timeout-default  not measurable locally: A Lambda function is an AWS service and cannot run on localhost; no cloud account is used.
+NOT RUN  lambda-sqs-batching-window-default  not measurable locally: A Lambda event source mapping is an AWS service and cannot run on localhost; no cloud account is used.
+DEFERRED (B13)  node-headers-trap-10x  not measured: Attempted in B13 (2026-11-12): cannot run on this host. Node 10, 12 and 13 have no arm64 macOS build, and this host has no x64 runtime: Rosetta 2 is absent (`arch -x86_64 /usr/bin/true` fails with "Bad CPU type in executable"; record: measure/results/2026-11-12-b13-attempt.txt). The trap was not measured; it needs Rosetta 2 or an x64 host.
+DEFERRED (B13)  node-headers-trap-12x  not measured: Attempted in B13 (2026-11-12): cannot run on this host. Node 10, 12 and 13 have no arm64 macOS build, and this host has no x64 runtime: Rosetta 2 is absent (`arch -x86_64 /usr/bin/true` fails with "Bad CPU type in executable"; record: measure/results/2026-11-12-b13-attempt.txt). The trap was not measured; it needs Rosetta 2 or an x64 host.
+DEFERRED (B13)  node-headers-trap-13x  not measured: Attempted in B13 (2026-11-12): cannot run on this host. Node 10, 12 and 13 have no arm64 macOS build, and this host has no x64 runtime: Rosetta 2 is absent (`arch -x86_64 /usr/bin/true` fails with "Bad CPU type in executable"; record: measure/results/2026-11-12-b13-attempt.txt). The trap was not measured; it needs Rosetta 2 or an x64 host.
+LANE FAIL: 61 of 65 cases within tolerance, 36 entries planned, 32 entries passing, 9 carry a stated reason, 3 deferred and not measured, 0 release blockers, 0 drift findings
+lane exit 1

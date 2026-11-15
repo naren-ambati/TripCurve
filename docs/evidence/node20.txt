@@ -1,0 +1,4 @@
+tripcurve needs Node 22.12.0 or later; this is Node 20.20.2.
+Nothing was checked.
+
+[exit 2]

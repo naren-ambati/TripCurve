@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "tool": {
+    "name": "tripcurve",
+    "version": "0.1.0"
+  },
+  "checked": {
+    "path": ".",
+    "filesRead": 4
+  },
+  "workloads": [],
+  "notChecked": [],
+  "assumptions": [],
+  "waivers": [],
+  "unchecked": [],
+  "configErrors": [
+    {
+      "file": "tripcurve.yaml",
+      "line": 7,
+      "key": "workloads[0].longest_request_s",
+      "reason": "has a value that is not valid",
+      "reasonCode": "bad-value",
+      "expected": "a number of seconds, for example longest_request_s: 5"
+    }
+  ],
+  "summary": {
+    "failed": 0,
+    "warning": 0,
+    "unresolved": 0,
+    "versionDependent": 0,
+    "notEvaluated": 0,
+    "waived": 0,
+    "notApplicable": 0,
+    "passed": 0,
+    "outcome": "ConfigError",
+    "clean": false,
+    "waivedDates": [],
+    "exitCode": 2
+  }
+}

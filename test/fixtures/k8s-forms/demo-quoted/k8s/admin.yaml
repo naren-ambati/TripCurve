@@ -1,0 +1,38 @@
+"apiVersion": apps/v1
+"kind": Deployment
+"metadata":
+  "name": admin
+  "namespace": shop
+"spec":
+  "selector":
+    "matchLabels":
+      "app": admin
+  "template":
+    "metadata":
+      "labels":
+        "app": admin
+    "spec":
+      "containers":
+        - "name": admin
+          "image": example/admin:1
+          "imagePullPolicy": IfNotPresent
+          "command":
+            - gunicorn
+            - admin:app
+            - -w
+            - "2"
+          "ports":
+            - "containerPort": 8000
+          "lifecycle":
+            "preStop":
+              "exec":
+                "command":
+                  - sleep
+                  - "10"
+          "resources":
+            "requests":
+              "cpu": 100m
+              "memory": 128Mi
+            "limits":
+              "memory": 256Mi
+      "terminationGracePeriodSeconds": 45

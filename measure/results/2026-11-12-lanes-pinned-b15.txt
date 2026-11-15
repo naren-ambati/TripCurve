@@ -1,0 +1,244 @@
+# paths redacted for publication: <repo> is the repository root, <scratch> a temporary folder
+
+> tripcurve@0.1.0 verify:measure
+> node measure/lanes.mjs pinned --raw=<scratch>/pinned-lane.jsonl
+
+tripcurve measurement lane: pinned
+started 2026-11-12T20:27:11.030Z, darwin-arm64, runner node v22.23.2, cache <repo>/.cache, jobs 1
+host load average (1, 5, 15 min) at start: 2.68 3.58 4.01 on 10 cores
+110 cases for 48 entries
+[1/110] PASS node-idle-close-18x node 18.20.8 default
+[2/110] PASS node-idle-close-20x node 20.20.2 default
+[3/110] PASS node-idle-close-22x node 22.12.0 default
+[4/110] PASS node-idle-close-22x node 22.18.0 default
+[5/110] PASS node-idle-close-22x node 22.19.0 default
+[6/110] PASS node-idle-close-22x node 22.23.2 default
+[7/110] PASS node-idle-close-22x node 22.23.5 default
+[8/110] PASS node-idle-close-24x node 24.0.0 default
+[9/110] PASS node-idle-close-24x node 24.5.0 default
+[10/110] PASS node-idle-close-24x node 24.6.0 default
+[11/110] PASS node-idle-close-24x node 24.22.3 default
+[12/110] PASS node-idle-close-26x node 26.0.0 default
+[13/110] PASS node-idle-close-26x node 26.13.1 default
+[14/110] PASS node-explicit-keepalive-18x node 18.20.8 assign K=7s
+[15/110] PASS node-explicit-keepalive-18x node 18.20.8 assign K=12s
+[16/110] PASS node-explicit-keepalive-18x node 18.20.8 assign K=65s
+[17/110] PASS node-explicit-keepalive-20x node 20.20.2 assign K=7s
+[18/110] PASS node-explicit-keepalive-20x node 20.20.2 assign K=12s
+[19/110] PASS node-explicit-keepalive-20x node 20.20.2 assign K=65s
+[20/110] PASS node-explicit-keepalive-22x node 22.12.0 assign K=7s
+[21/110] PASS node-explicit-keepalive-22x node 22.12.0 assign K=12s
+[22/110] PASS node-explicit-keepalive-22x node 22.12.0 assign K=65s
+[23/110] PASS node-explicit-keepalive-22x node 22.12.0 createServer options K=65s
+[24/110] PASS node-explicit-keepalive-22x node 22.18.0 assign K=7s
+[25/110] PASS node-explicit-keepalive-22x node 22.18.0 assign K=12s
+[26/110] PASS node-explicit-keepalive-22x node 22.18.0 assign K=65s
+[27/110] PASS node-explicit-keepalive-22x node 22.19.0 assign K=7s
+[28/110] PASS node-explicit-keepalive-22x node 22.19.0 assign K=12s
+[29/110] PASS node-explicit-keepalive-22x node 22.19.0 assign K=65s
+[30/110] PASS node-explicit-keepalive-22x node 22.23.2 assign K=7s
+[31/110] PASS node-explicit-keepalive-22x node 22.23.2 assign K=12s
+[32/110] PASS node-explicit-keepalive-22x node 22.23.2 assign K=65s
+[33/110] PASS node-explicit-keepalive-22x node 22.23.2 createServer options K=7s
+[34/110] PASS node-explicit-keepalive-22x node 22.23.5 assign K=7s
+[35/110] PASS node-explicit-keepalive-22x node 22.23.5 assign K=12s
+[36/110] PASS node-explicit-keepalive-22x node 22.23.5 assign K=65s
+[37/110] PASS node-explicit-keepalive-22x node 22.23.5 createServer options K=7s
+[38/110] PASS node-explicit-keepalive-22x node 22.23.5 createServer options K=65s
+[39/110] PASS node-explicit-keepalive-24x node 24.0.0 assign K=7s
+[40/110] PASS node-explicit-keepalive-24x node 24.0.0 assign K=12s
+[41/110] PASS node-explicit-keepalive-24x node 24.0.0 assign K=65s
+[42/110] PASS node-explicit-keepalive-24x node 24.0.0 createServer options K=65s
+[43/110] PASS node-explicit-keepalive-24x node 24.5.0 assign K=7s
+[44/110] PASS node-explicit-keepalive-24x node 24.5.0 assign K=12s
+[45/110] PASS node-explicit-keepalive-24x node 24.5.0 assign K=65s
+[46/110] PASS node-explicit-keepalive-24x node 24.6.0 assign K=7s
+[47/110] PASS node-explicit-keepalive-24x node 24.6.0 assign K=12s
+[48/110] PASS node-explicit-keepalive-24x node 24.6.0 assign K=65s
+[49/110] PASS node-explicit-keepalive-24x node 24.22.3 assign K=7s
+[50/110] PASS node-explicit-keepalive-24x node 24.22.3 assign K=12s
+[51/110] PASS node-explicit-keepalive-24x node 24.22.3 assign K=65s
+[52/110] PASS node-explicit-keepalive-24x node 24.22.3 createServer options K=7s
+[53/110] PASS node-explicit-keepalive-26x node 26.0.0 assign K=7s
+[54/110] PASS node-explicit-keepalive-26x node 26.0.0 assign K=12s
+[55/110] PASS node-explicit-keepalive-26x node 26.0.0 assign K=65s
+[56/110] PASS node-explicit-keepalive-26x node 26.0.0 createServer options K=65s
+[57/110] PASS node-explicit-keepalive-26x node 26.13.1 assign K=7s
+[58/110] PASS node-explicit-keepalive-26x node 26.13.1 assign K=12s
+[59/110] PASS node-explicit-keepalive-26x node 26.13.1 assign K=65s
+[60/110] PASS node-explicit-keepalive-26x node 26.13.1 createServer options K=7s
+[61/110] PASS node-explicit-buffer-22x-0 node 22.19.0 assign K=7s buffer=0ms
+[62/110] PASS node-explicit-buffer-22x-0 node 22.19.0 assign K=65s buffer=0ms
+[63/110] PASS node-explicit-buffer-22x-0 node 22.23.5 assign K=7s buffer=0ms
+[64/110] PASS node-explicit-buffer-22x-0 node 22.23.5 assign K=65s buffer=0ms
+[65/110] PASS node-explicit-buffer-22x-1 node 22.19.0 assign K=7s buffer=1000ms
+[66/110] PASS node-explicit-buffer-22x-1 node 22.23.5 assign K=7s buffer=1000ms
+[67/110] PASS node-explicit-buffer-24x-0 node 24.6.0 assign K=7s buffer=0ms
+[68/110] PASS node-explicit-buffer-24x-0 node 24.6.0 assign K=65s buffer=0ms
+[69/110] PASS node-explicit-buffer-24x-0 node 24.22.3 assign K=7s buffer=0ms
+[70/110] PASS node-explicit-buffer-24x-0 node 24.22.3 assign K=65s buffer=0ms
+[71/110] PASS node-explicit-buffer-24x-1 node 24.6.0 assign K=7s buffer=1000ms
+[72/110] PASS node-explicit-buffer-24x-1 node 24.22.3 assign K=7s buffer=1000ms
+[73/110] PASS node-explicit-buffer-26x-0 node 26.0.0 assign K=7s buffer=0ms
+[74/110] PASS node-explicit-buffer-26x-0 node 26.0.0 assign K=65s buffer=0ms
+[75/110] PASS node-explicit-buffer-26x-0 node 26.13.1 assign K=7s buffer=0ms
+[76/110] PASS node-explicit-buffer-26x-0 node 26.13.1 assign K=65s buffer=0ms
+[77/110] PASS node-explicit-buffer-26x-1 node 26.0.0 assign K=7s buffer=1000ms
+[78/110] PASS node-explicit-buffer-26x-1 node 26.13.1 assign K=7s buffer=1000ms
+[79/110] PASS gunicorn-keepalive-uvicorn-worker-26x gunicorn 26.2.0 uvicorn worker default
+[80/110] PASS gunicorn-keepalive-uvicorn-worker-27x gunicorn 27.0.0 uvicorn worker default
+[81/110] PASS uvicorn-keepalive-0-54x uvicorn 0.54.0 default
+[82/110] PASS gunicorn-keepalive-gthread-26x gunicorn 26.2.0 gthread default
+[83/110] PASS gunicorn-keepalive-gthread-27x gunicorn 27.0.0 gthread default
+[84/110] PASS gunicorn-sync-worker-26x gunicorn 26.2.0 sync worker
+[85/110] PASS gunicorn-sync-worker-27x gunicorn 27.0.0 sync worker
+[86/110] PASS gunicorn-explicit-keepalive-uvicorn-worker-26x gunicorn 26.2.0 uvicorn-worker-keepalive 3s
+[87/110] PASS gunicorn-explicit-keepalive-uvicorn-worker-27x gunicorn 27.0.0 uvicorn-worker-keepalive 3s
+[88/110] PASS gunicorn-explicit-keepalive-gthread-26x gunicorn 26.2.0 gthread-keepalive 7s
+[89/110] PASS gunicorn-explicit-keepalive-gthread-27x gunicorn 27.0.0 gthread-keepalive 7s
+[90/110] PASS uvicorn-explicit-keepalive-0-54x uvicorn 0.54.0 uvicorn-flag 7s
+[91/110] PASS uvicorn-explicit-keepalive-0-54x uvicorn 0.54.0 uvicorn-env 7s
+[92/110] PASS gunicorn-graceful-timeout-26x gunicorn 26.2.0 sync graceful ceiling
+[93/110] PASS gunicorn-graceful-timeout-26x gunicorn 26.2.0 gthread graceful ceiling
+[94/110] PASS gunicorn-graceful-timeout-26x gunicorn 26.2.0 uvicorn graceful ceiling
+[95/110] PASS gunicorn-explicit-graceful-timeout-flag-26x gunicorn 26.2.0 sync graceful 10s from command
+[96/110] PASS gunicorn-explicit-graceful-timeout-flag-26x gunicorn 26.2.0 gthread graceful 10s from command
+[97/110] PASS gunicorn-explicit-graceful-timeout-flag-26x gunicorn 26.2.0 uvicorn graceful 10s from command
+[98/110] PASS gunicorn-explicit-graceful-timeout-sync-env-conf-26x gunicorn 26.2.0 sync graceful 10s from env
+[99/110] PASS gunicorn-explicit-graceful-timeout-sync-env-conf-26x gunicorn 26.2.0 sync graceful 10s from config-file
+[100/110] PASS gunicorn-graceful-timeout-27x gunicorn 27.0.0 sync graceful ceiling
+[101/110] PASS gunicorn-graceful-timeout-27x gunicorn 27.0.0 gthread graceful ceiling
+[102/110] PASS gunicorn-graceful-timeout-27x gunicorn 27.0.0 uvicorn graceful ceiling
+[103/110] PASS gunicorn-explicit-graceful-timeout-flag-27x gunicorn 27.0.0 sync graceful 10s from command
+[104/110] PASS gunicorn-explicit-graceful-timeout-flag-27x gunicorn 27.0.0 gthread graceful 10s from command
+[105/110] PASS gunicorn-explicit-graceful-timeout-flag-27x gunicorn 27.0.0 uvicorn graceful 10s from command
+[106/110] PASS gunicorn-explicit-graceful-timeout-sync-env-conf-27x gunicorn 27.0.0 sync graceful 10s from env
+[107/110] PASS gunicorn-explicit-graceful-timeout-sync-env-conf-27x gunicorn 27.0.0 sync graceful 10s from config-file
+[108/110] PASS uvicorn-explicit-graceful-timeout-0-54x uvicorn 0.54.0 --timeout-graceful-shutdown 5
+[109/110] PASS uvicorn-explicit-graceful-timeout-0-54x uvicorn 0.54.0 default: no ceiling
+[110/110] PASS lightship-shutdown-delay-9x lightship 9.1.0 k8s shutdown delay
+host load average (1, 5, 15 min) at end: 1.21 0.74 0.76 on 10 cores
+PASS  node-idle-close-18x  [node 18.20.8 default]  measured 5003 ms  entry 5000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-idle-close-20x  [node 20.20.2 default]  measured 6001 ms  entry 6000 ms  tolerance 4 ms  margin 3 ms
+PASS  node-idle-close-22x  [node 22.12.0 default]  measured 6002 ms  entry 6000 ms  tolerance 5 ms  margin 3 ms
+PASS  node-idle-close-22x  [node 22.18.0 default]  measured 6003 ms  entry 6000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-idle-close-22x  [node 22.19.0 default]  measured 6003 ms  entry 6000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-idle-close-22x  [node 22.23.2 default]  measured 6003 ms  entry 6000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-idle-close-22x  [node 22.23.5 default]  measured 6003 ms  entry 6000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-idle-close-24x  [node 24.0.0 default]  measured 6002 ms  entry 6000 ms  tolerance 5 ms  margin 3 ms
+PASS  node-idle-close-24x  [node 24.5.0 default]  measured 6002 ms  entry 6000 ms  tolerance 5 ms  margin 3 ms
+PASS  node-idle-close-24x  [node 24.6.0 default]  measured 6003 ms  entry 6000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-idle-close-24x  [node 24.22.3 default]  measured 6002 ms  entry 6000 ms  tolerance 5 ms  margin 3 ms
+PASS  node-idle-close-26x  [node 26.0.0 default]  measured 6003 ms  entry 6000 ms  tolerance 4 ms  margin 1 ms
+PASS  node-idle-close-26x  [node 26.13.1 default]  measured 6002 ms  entry 6000 ms  tolerance 4 ms  margin 2 ms
+PASS  node-explicit-keepalive-18x  [node 18.20.8 assign K=7s]  measured 7003 ms  entry 7000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-keepalive-18x  [node 18.20.8 assign K=12s]  measured 12004 ms  entry 12000 ms  tolerance 5 ms  margin 1 ms
+PASS  node-explicit-keepalive-18x  [node 18.20.8 assign K=65s]  measured 65003 ms  entry 65000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-keepalive-20x  [node 20.20.2 assign K=7s]  measured 8002 ms  entry 8000 ms  tolerance 5 ms  margin 3 ms
+PASS  node-explicit-keepalive-20x  [node 20.20.2 assign K=12s]  measured 13003 ms  entry 13000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-keepalive-20x  [node 20.20.2 assign K=65s]  measured 66003 ms  entry 66000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-keepalive-22x  [node 22.12.0 assign K=7s]  measured 8003 ms  entry 8000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-keepalive-22x  [node 22.12.0 assign K=12s]  measured 13003 ms  entry 13000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-keepalive-22x  [node 22.12.0 assign K=65s]  measured 66003 ms  entry 66000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-keepalive-22x  [node 22.12.0 createServer options K=65s]  measured 66002 ms  entry 66000 ms  tolerance 5 ms  margin 3 ms
+PASS  node-explicit-keepalive-22x  [node 22.18.0 assign K=7s]  measured 8002 ms  entry 8000 ms  tolerance 5 ms  margin 3 ms
+PASS  node-explicit-keepalive-22x  [node 22.18.0 assign K=12s]  measured 13003 ms  entry 13000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-keepalive-22x  [node 22.18.0 assign K=65s]  measured 66002 ms  entry 66000 ms  tolerance 5 ms  margin 3 ms
+PASS  node-explicit-keepalive-22x  [node 22.19.0 assign K=7s]  measured 8003 ms  entry 8000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-keepalive-22x  [node 22.19.0 assign K=12s]  measured 13003 ms  entry 13000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-keepalive-22x  [node 22.19.0 assign K=65s]  measured 66003 ms  entry 66000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-keepalive-22x  [node 22.23.2 assign K=7s]  measured 8003 ms  entry 8000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-keepalive-22x  [node 22.23.2 assign K=12s]  measured 13004 ms  entry 13000 ms  tolerance 5 ms  margin 1 ms
+PASS  node-explicit-keepalive-22x  [node 22.23.2 assign K=65s]  measured 66004 ms  entry 66000 ms  tolerance 5 ms  margin 1 ms
+PASS  node-explicit-keepalive-22x  [node 22.23.2 createServer options K=7s]  measured 8003 ms  entry 8000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-keepalive-22x  [node 22.23.5 assign K=7s]  measured 8003 ms  entry 8000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-keepalive-22x  [node 22.23.5 assign K=12s]  measured 13002 ms  entry 13000 ms  tolerance 5 ms  margin 3 ms
+PASS  node-explicit-keepalive-22x  [node 22.23.5 assign K=65s]  measured 66003 ms  entry 66000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-keepalive-22x  [node 22.23.5 createServer options K=7s]  measured 8001 ms  entry 8000 ms  tolerance 5 ms  margin 4 ms
+PASS  node-explicit-keepalive-22x  [node 22.23.5 createServer options K=65s]  measured 66003 ms  entry 66000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-keepalive-24x  [node 24.0.0 assign K=7s]  measured 8003 ms  entry 8000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-keepalive-24x  [node 24.0.0 assign K=12s]  measured 13003 ms  entry 13000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-keepalive-24x  [node 24.0.0 assign K=65s]  measured 66002 ms  entry 66000 ms  tolerance 5 ms  margin 3 ms
+PASS  node-explicit-keepalive-24x  [node 24.0.0 createServer options K=65s]  measured 66003 ms  entry 66000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-keepalive-24x  [node 24.5.0 assign K=7s]  measured 8001 ms  entry 8000 ms  tolerance 5 ms  margin 4 ms
+PASS  node-explicit-keepalive-24x  [node 24.5.0 assign K=12s]  measured 13002 ms  entry 13000 ms  tolerance 5 ms  margin 3 ms
+PASS  node-explicit-keepalive-24x  [node 24.5.0 assign K=65s]  measured 66002 ms  entry 66000 ms  tolerance 5 ms  margin 3 ms
+PASS  node-explicit-keepalive-24x  [node 24.6.0 assign K=7s]  measured 8004 ms  entry 8000 ms  tolerance 5 ms  margin 1 ms
+PASS  node-explicit-keepalive-24x  [node 24.6.0 assign K=12s]  measured 13004 ms  entry 13000 ms  tolerance 5 ms  margin 1 ms
+PASS  node-explicit-keepalive-24x  [node 24.6.0 assign K=65s]  measured 66003 ms  entry 66000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-keepalive-24x  [node 24.22.3 assign K=7s]  measured 8002 ms  entry 8000 ms  tolerance 5 ms  margin 3 ms
+PASS  node-explicit-keepalive-24x  [node 24.22.3 assign K=12s]  measured 13002 ms  entry 13000 ms  tolerance 5 ms  margin 3 ms
+PASS  node-explicit-keepalive-24x  [node 24.22.3 assign K=65s]  measured 66001 ms  entry 66000 ms  tolerance 5 ms  margin 4 ms
+PASS  node-explicit-keepalive-24x  [node 24.22.3 createServer options K=7s]  measured 8004 ms  entry 8000 ms  tolerance 5 ms  margin 1 ms
+PASS  node-explicit-keepalive-26x  [node 26.0.0 assign K=7s]  measured 8003 ms  entry 8000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-keepalive-26x  [node 26.0.0 assign K=12s]  measured 13003 ms  entry 13000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-keepalive-26x  [node 26.0.0 assign K=65s]  measured 66003 ms  entry 66000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-keepalive-26x  [node 26.0.0 createServer options K=65s]  measured 66004 ms  entry 66000 ms  tolerance 5 ms  margin 1 ms
+PASS  node-explicit-keepalive-26x  [node 26.13.1 assign K=7s]  measured 8003 ms  entry 8000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-keepalive-26x  [node 26.13.1 assign K=12s]  measured 13002 ms  entry 13000 ms  tolerance 5 ms  margin 3 ms
+PASS  node-explicit-keepalive-26x  [node 26.13.1 assign K=65s]  measured 66002 ms  entry 66000 ms  tolerance 5 ms  margin 3 ms
+PASS  node-explicit-keepalive-26x  [node 26.13.1 createServer options K=7s]  measured 8002 ms  entry 8000 ms  tolerance 5 ms  margin 3 ms
+PASS  node-explicit-buffer-22x-0  [node 22.19.0 assign K=7s buffer=0ms]  measured 7002 ms  entry 7000 ms  tolerance 5 ms  margin 3 ms
+PASS  node-explicit-buffer-22x-0  [node 22.19.0 assign K=65s buffer=0ms]  measured 65002 ms  entry 65000 ms  tolerance 5 ms  margin 3 ms
+PASS  node-explicit-buffer-22x-0  [node 22.23.5 assign K=7s buffer=0ms]  measured 7003 ms  entry 7000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-buffer-22x-0  [node 22.23.5 assign K=65s buffer=0ms]  measured 65002 ms  entry 65000 ms  tolerance 5 ms  margin 3 ms
+PASS  node-explicit-buffer-22x-1  [node 22.19.0 assign K=7s buffer=1000ms]  measured 8001 ms  entry 8000 ms  tolerance 5 ms  margin 4 ms
+PASS  node-explicit-buffer-22x-1  [node 22.23.5 assign K=7s buffer=1000ms]  measured 8002 ms  entry 8000 ms  tolerance 5 ms  margin 3 ms
+PASS  node-explicit-buffer-24x-0  [node 24.6.0 assign K=7s buffer=0ms]  measured 7002 ms  entry 7000 ms  tolerance 5 ms  margin 3 ms
+PASS  node-explicit-buffer-24x-0  [node 24.6.0 assign K=65s buffer=0ms]  measured 65002 ms  entry 65000 ms  tolerance 5 ms  margin 3 ms
+PASS  node-explicit-buffer-24x-0  [node 24.22.3 assign K=7s buffer=0ms]  measured 7003 ms  entry 7000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-buffer-24x-0  [node 24.22.3 assign K=65s buffer=0ms]  measured 65002 ms  entry 65000 ms  tolerance 5 ms  margin 3 ms
+PASS  node-explicit-buffer-24x-1  [node 24.6.0 assign K=7s buffer=1000ms]  measured 8003 ms  entry 8000 ms  tolerance 5 ms  margin 2 ms
+PASS  node-explicit-buffer-24x-1  [node 24.22.3 assign K=7s buffer=1000ms]  measured 8002 ms  entry 8000 ms  tolerance 5 ms  margin 3 ms
+PASS  node-explicit-buffer-26x-0  [node 26.0.0 assign K=7s buffer=0ms]  measured 7002 ms  entry 7000 ms  tolerance 4 ms  margin 2 ms
+PASS  node-explicit-buffer-26x-0  [node 26.0.0 assign K=65s buffer=0ms]  measured 65004 ms  entry 65000 ms  tolerance 4 ms  margin 0 ms
+PASS  node-explicit-buffer-26x-0  [node 26.13.1 assign K=7s buffer=0ms]  measured 7002 ms  entry 7000 ms  tolerance 4 ms  margin 2 ms
+PASS  node-explicit-buffer-26x-0  [node 26.13.1 assign K=65s buffer=0ms]  measured 65002 ms  entry 65000 ms  tolerance 4 ms  margin 2 ms
+PASS  node-explicit-buffer-26x-1  [node 26.0.0 assign K=7s buffer=1000ms]  measured 8002 ms  entry 8000 ms  tolerance 4 ms  margin 2 ms
+PASS  node-explicit-buffer-26x-1  [node 26.13.1 assign K=7s buffer=1000ms]  measured 8001 ms  entry 8000 ms  tolerance 4 ms  margin 3 ms
+PASS  gunicorn-keepalive-uvicorn-worker-26x  [gunicorn 26.2.0 uvicorn worker default]  measured 2002 ms  entry 2000 ms  tolerance 6 ms  margin 4 ms
+PASS  gunicorn-keepalive-uvicorn-worker-27x  [gunicorn 27.0.0 uvicorn worker default]  measured 2002 ms  entry 2000 ms  tolerance 6 ms  margin 4 ms
+PASS  uvicorn-keepalive-0-54x  [uvicorn 0.54.0 default]  measured 5002 ms  entry 5000 ms  tolerance 4 ms  margin 2 ms
+PASS  gunicorn-keepalive-gthread-26x  [gunicorn 26.2.0 gthread default]  measured 2002 ms  entry 2000 ms  tolerance 6 ms  margin 4 ms
+PASS  gunicorn-keepalive-gthread-27x  [gunicorn 27.0.0 gthread default]  measured 2002 ms  entry 2000 ms  tolerance 6 ms  margin 4 ms
+PASS  gunicorn-sync-worker-26x  [gunicorn 26.2.0 sync worker]  measured closes after the response (0 ms)  entry n/a (closes after every response)  tolerance 6 ms  margin 6 ms
+PASS  gunicorn-sync-worker-27x  [gunicorn 27.0.0 sync worker]  measured closes after the response (0 ms)  entry n/a (closes after every response)  tolerance 6 ms  margin 6 ms
+PASS  gunicorn-explicit-keepalive-uvicorn-worker-26x  [gunicorn 26.2.0 uvicorn-worker-keepalive 3s]  measured 3002 ms  entry 3000 ms  tolerance 6 ms  margin 4 ms
+PASS  gunicorn-explicit-keepalive-uvicorn-worker-27x  [gunicorn 27.0.0 uvicorn-worker-keepalive 3s]  measured 3002 ms  entry 3000 ms  tolerance 6 ms  margin 4 ms
+PASS  gunicorn-explicit-keepalive-gthread-26x  [gunicorn 26.2.0 gthread-keepalive 7s]  measured 7007 ms  entry 7000 ms  tolerance 22 ms  margin 15 ms
+PASS  gunicorn-explicit-keepalive-gthread-27x  [gunicorn 27.0.0 gthread-keepalive 7s]  measured 7009 ms  entry 7000 ms  tolerance 22 ms  margin 13 ms
+PASS  uvicorn-explicit-keepalive-0-54x  [uvicorn 0.54.0 uvicorn-flag 7s]  measured 7002 ms  entry 7000 ms  tolerance 6 ms  margin 4 ms
+PASS  uvicorn-explicit-keepalive-0-54x  [uvicorn 0.54.0 uvicorn-env 7s]  measured 7002 ms  entry 7000 ms  tolerance 6 ms  margin 4 ms
+PASS  gunicorn-graceful-timeout-26x  [gunicorn 26.2.0 sync graceful ceiling]  measured 30086 ms  entry 30000 ms  tolerance 120 ms  margin 34 ms
+PASS  gunicorn-graceful-timeout-26x  [gunicorn 26.2.0 gthread graceful ceiling]  measured 30038.8 ms  entry 30000 ms  tolerance 120 ms  margin 81.2 ms
+PASS  gunicorn-graceful-timeout-26x  [gunicorn 26.2.0 uvicorn graceful ceiling]  measured 30072.6 ms  entry 30000 ms  tolerance 120 ms  margin 47.4 ms
+PASS  gunicorn-explicit-graceful-timeout-flag-26x  [gunicorn 26.2.0 sync graceful 10s from command]  measured 10060.4 ms  entry 10000 ms  tolerance 120 ms  margin 59.6 ms
+PASS  gunicorn-explicit-graceful-timeout-flag-26x  [gunicorn 26.2.0 gthread graceful 10s from command]  measured 10075.7 ms  entry 10000 ms  tolerance 120 ms  margin 44.3 ms
+PASS  gunicorn-explicit-graceful-timeout-flag-26x  [gunicorn 26.2.0 uvicorn graceful 10s from command]  measured 10067.3 ms  entry 10000 ms  tolerance 120 ms  margin 52.7 ms
+PASS  gunicorn-explicit-graceful-timeout-sync-env-conf-26x  [gunicorn 26.2.0 sync graceful 10s from env]  measured 10029.8 ms  entry 10000 ms  tolerance 120 ms  margin 90.2 ms
+PASS  gunicorn-explicit-graceful-timeout-sync-env-conf-26x  [gunicorn 26.2.0 sync graceful 10s from config-file]  measured 10005.6 ms  entry 10000 ms  tolerance 120 ms  margin 114.4 ms
+PASS  gunicorn-graceful-timeout-27x  [gunicorn 27.0.0 sync graceful ceiling]  measured 30064.2 ms  entry 30000 ms  tolerance 120 ms  margin 55.8 ms
+PASS  gunicorn-graceful-timeout-27x  [gunicorn 27.0.0 gthread graceful ceiling]  measured 30045.4 ms  entry 30000 ms  tolerance 120 ms  margin 74.6 ms
+PASS  gunicorn-graceful-timeout-27x  [gunicorn 27.0.0 uvicorn graceful ceiling]  measured 30050.3 ms  entry 30000 ms  tolerance 120 ms  margin 69.7 ms
+PASS  gunicorn-explicit-graceful-timeout-flag-27x  [gunicorn 27.0.0 sync graceful 10s from command]  measured 10091.1 ms  entry 10000 ms  tolerance 120 ms  margin 28.9 ms
+PASS  gunicorn-explicit-graceful-timeout-flag-27x  [gunicorn 27.0.0 gthread graceful 10s from command]  measured 10067.7 ms  entry 10000 ms  tolerance 120 ms  margin 52.3 ms
+PASS  gunicorn-explicit-graceful-timeout-flag-27x  [gunicorn 27.0.0 uvicorn graceful 10s from command]  measured 10062.2 ms  entry 10000 ms  tolerance 120 ms  margin 57.8 ms
+PASS  gunicorn-explicit-graceful-timeout-sync-env-conf-27x  [gunicorn 27.0.0 sync graceful 10s from env]  measured 10039.6 ms  entry 10000 ms  tolerance 120 ms  margin 80.4 ms
+PASS  gunicorn-explicit-graceful-timeout-sync-env-conf-27x  [gunicorn 27.0.0 sync graceful 10s from config-file]  measured 10062.2 ms  entry 10000 ms  tolerance 120 ms  margin 57.8 ms
+PASS  uvicorn-explicit-graceful-timeout-0-54x  [uvicorn 0.54.0 --timeout-graceful-shutdown 5]  measured 5161.3 ms  entry 5000 ms  tolerance 214 ms  margin 52.7 ms
+PASS  uvicorn-explicit-graceful-timeout-0-54x  [uvicorn 0.54.0 default: no ceiling]  measured request finished in full  entry no ceiling  tolerance 214 ms  margin n/a
+PASS  lightship-shutdown-delay-9x  [lightship 9.1.0 k8s shutdown delay]  measured 5002.5 ms  entry 5000 ms  tolerance 24 ms  margin 21.5 ms
+NOT RUN  alb-idle-timeout-default  not measurable locally: An Application Load Balancer is an AWS service and cannot run on localhost; no cloud account is used.
+NOT RUN  cfn-lb-idle-timeout-default  not measurable locally: An Application Load Balancer is an AWS service and cannot run on localhost; no cloud account is used.
+NOT RUN  cfn-sqs-visibility-default  not measurable locally: An SQS queue is an AWS service and cannot run on localhost; no cloud account is used.
+NOT RUN  cfn-lambda-timeout-default  not measurable locally: A Lambda function is an AWS service and cannot run on localhost; no cloud account is used.
+NOT RUN  k8s-grace-period-default  not measurable locally: The grace period is applied by the Kubernetes API server and kubelet, which need a cluster; no cluster is used on this project.
+NOT RUN  terraform-lb-idle-timeout-default  not measurable locally: An Application Load Balancer is an AWS service and cannot run on localhost; no cloud account is used.
+NOT RUN  terraform-sqs-visibility-default  not measurable locally: An SQS queue is an AWS service and cannot run on localhost; no cloud account is used.
+NOT RUN  terraform-lambda-timeout-default  not measurable locally: A Lambda function is an AWS service and cannot run on localhost; no cloud account is used.
+NOT RUN  lambda-sqs-batching-window-default  not measurable locally: A Lambda event source mapping is an AWS service and cannot run on localhost; no cloud account is used.
+DEFERRED (B13)  node-headers-trap-10x  not measured: Node 10, 12 and 13 are runnable software but have no arm64 macOS build, and this host has no x64 runtime: Rosetta 2 is absent (`arch -x86_64 /usr/bin/true` fails with "Bad CPU type in executable", checked 2026-11-12). The trap was therefore not measured; bolt B13 (US12.3) measures it where an x64 runtime exists.
+DEFERRED (B13)  node-headers-trap-12x  not measured: Node 10, 12 and 13 are runnable software but have no arm64 macOS build, and this host has no x64 runtime: Rosetta 2 is absent (`arch -x86_64 /usr/bin/true` fails with "Bad CPU type in executable", checked 2026-11-12). The trap was therefore not measured; bolt B13 (US12.3) measures it where an x64 runtime exists.
+DEFERRED (B13)  node-headers-trap-13x  not measured: Node 10, 12 and 13 are runnable software but have no arm64 macOS build, and this host has no x64 runtime: Rosetta 2 is absent (`arch -x86_64 /usr/bin/true` fails with "Bad CPU type in executable", checked 2026-11-12). The trap was therefore not measured; bolt B13 (US12.3) measures it where an x64 runtime exists.
+LANE PASS: 110 of 110 cases within tolerance, 36 entries planned, 36 entries passing, 9 carry a stated reason, 3 deferred and not measured, 0 release blockers, 0 drift findings
+exit 0

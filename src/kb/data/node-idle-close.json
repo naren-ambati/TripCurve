@@ -1,0 +1,534 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "node-idle-close-18x",
+      "subject": "node-idle-close",
+      "value": 5,
+      "unit": "s",
+      "applies": {
+        "runtime": "node",
+        "versionRange": ">=18.20.8 <19.0.0"
+      },
+      "citationName": "Node keepAliveTimeout 5 s",
+      "rangeLabel": "Node 18.x from 18.20.8",
+      "docUrl": "https://nodejs.org/dist/index.json",
+      "docDate": "2026-11-11",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "18.20.8",
+        "date": "2026-11-12",
+        "platform": "darwin-arm64"
+      },
+      "scriptRef": "measure/node-idle-close.mjs",
+      "toleranceMs": 5,
+      "notes": "Nominal 5 s. Measured on 1 release: 18.20.8; 3 runs each, 5001 to 5003 ms (measure/results/2026-11-11-b3-versions.jsonl lines 1 to 3). No keepAliveTimeoutBuffer property (read back null) and no extra second. The interior of the range is bracketed by measured releases but was not measured release by release; releases below the lower bound have no entry and are UNRESOLVED. toleranceMs 5 (re-derived 2026-11-12, B8): the largest absolute deviation from the predicted value is 4 ms over the 7 recorded runs of this entry taken one at a time on a host that was not busy or before the load line existed (basis files only; a run with unknown load, beside other timings, or on a busy host is evidence, not a basis; deviations +1 to +4 ms), plus the 1 ms resolution. test/kb/tolerance-evidence.test.ts recomputes it.",
+      "measuredVersions": ["18.20.8"]
+    },
+    {
+      "id": "node-idle-close-20x",
+      "subject": "node-idle-close",
+      "value": 6,
+      "unit": "s",
+      "applies": {
+        "runtime": "node",
+        "versionRange": ">=20.20.2 <21.0.0"
+      },
+      "citationName": "Node keepAliveTimeout 5 s + 1 s",
+      "rangeLabel": "Node 20.x from 20.20.2",
+      "docUrl": "https://nodejs.org/dist/index.json",
+      "docDate": "2026-11-11",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "20.20.2",
+        "date": "2026-11-12",
+        "platform": "darwin-arm64"
+      },
+      "scriptRef": "measure/node-idle-close.mjs",
+      "toleranceMs": 4,
+      "notes": "Nominal 6 s. Measured on 1 release: 20.20.2; 3 runs each, 6001 to 6003 ms (measure/results/2026-11-11-b3-versions.jsonl lines 7 to 9). The server has no keepAliveTimeoutBuffer property (read back null), so the extra second is older than the property. Where it first appears between 18.20.8 and 20.20.2 was not measured. The interior of the range is bracketed by measured releases but was not measured release by release; releases below the lower bound have no entry and are UNRESOLVED. toleranceMs 4 (re-derived 2026-11-12, B8): the largest absolute deviation from the predicted value is 3 ms over the 7 recorded runs of this entry taken one at a time on a host that was not busy or before the load line existed (basis files only; a run with unknown load, beside other timings, or on a busy host is evidence, not a basis; deviations +1 to +3 ms), plus the 1 ms resolution. test/kb/tolerance-evidence.test.ts recomputes it.",
+      "measuredVersions": ["20.20.2"]
+    },
+    {
+      "id": "node-idle-close-22x",
+      "subject": "node-idle-close",
+      "value": 6,
+      "unit": "s",
+      "applies": {
+        "runtime": "node",
+        "versionRange": ">=22.12.0 <23.0.0"
+      },
+      "citationName": "Node keepAliveTimeout 5 s + 1 s",
+      "rangeLabel": "Node 22.x from 22.12",
+      "docUrl": "https://nodejs.org/docs/latest-v22.x/api/http.html#serverkeepalivetimeoutbuffer",
+      "docDate": "2026-11-11",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "22.23.5",
+        "date": "2026-11-11",
+        "platform": "darwin-arm64"
+      },
+      "scriptRef": "measure/node-idle-close.mjs",
+      "toleranceMs": 5,
+      "notes": "Nominal 6 s. Measured on 5 releases: 22.12.0, 22.18.0, 22.19.0, 22.23.2, 22.23.5; 3 runs each, 6000 to 6004 ms (measure/results/2026-11-11-b0.jsonl lines 1 to 6; measure/results/2026-11-11-b3-versions.jsonl lines 13 to 15, 19 to 21, 25 to 27). Releases below the first one that has the keepAliveTimeoutBuffer property (22.19.0, 24.6.0) read it back as null and still close 1 s late: the extra second is older than the property (Node docs \"Added in\" v22.19.0 and v24.6.0, read 2026-11-11). The interior of the range is bracketed by measured releases but was not measured release by release; releases below the lower bound have no entry and are UNRESOLVED. toleranceMs 5 (re-derived 2026-11-12, B8): the largest absolute deviation from the predicted value is 4 ms over the 27 recorded runs of this entry taken one at a time on a host that was not busy or before the load line existed (basis files only; a run with unknown load, beside other timings, or on a busy host is evidence, not a basis; deviations +0 to +4 ms), plus the 1 ms resolution. test/kb/tolerance-evidence.test.ts recomputes it.",
+      "measuredVersions": ["22.12.0", "22.18.0", "22.19.0", "22.23.2", "22.23.5"]
+    },
+    {
+      "id": "node-idle-close-24x",
+      "subject": "node-idle-close",
+      "value": 6,
+      "unit": "s",
+      "applies": {
+        "runtime": "node",
+        "versionRange": ">=24.0.0 <25.0.0"
+      },
+      "citationName": "Node keepAliveTimeout 5 s + 1 s",
+      "rangeLabel": "Node 24.x from 24.0",
+      "docUrl": "https://nodejs.org/docs/latest-v24.x/api/http.html#serverkeepalivetimeoutbuffer",
+      "docDate": "2026-11-11",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "24.22.3",
+        "date": "2026-11-11",
+        "platform": "darwin-arm64"
+      },
+      "scriptRef": "measure/node-idle-close.mjs",
+      "toleranceMs": 5,
+      "notes": "Nominal 6 s. Measured on 4 releases: 24.0.0, 24.5.0, 24.6.0, 24.22.3; 3 runs each, 6001 to 6004 ms (measure/results/2026-11-11-b0.jsonl lines 7 to 9; measure/results/2026-11-11-b3-versions.jsonl lines 34 to 36, 40 to 42, 46 to 48). Releases below the first one that has the keepAliveTimeoutBuffer property (22.19.0, 24.6.0) read it back as null and still close 1 s late: the extra second is older than the property (Node docs \"Added in\" v22.19.0 and v24.6.0, read 2026-11-11). The interior of the range is bracketed by measured releases but was not measured release by release; releases below the lower bound have no entry and are UNRESOLVED. toleranceMs 5 (re-derived 2026-11-12, B8): the largest absolute deviation from the predicted value is 4 ms over the 22 recorded runs of this entry taken one at a time on a host that was not busy or before the load line existed (basis files only; a run with unknown load, beside other timings, or on a busy host is evidence, not a basis; deviations +1 to +4 ms), plus the 1 ms resolution. test/kb/tolerance-evidence.test.ts recomputes it.",
+      "measuredVersions": ["24.0.0", "24.5.0", "24.6.0", "24.22.3"]
+    },
+    {
+      "id": "node-idle-close-26x",
+      "subject": "node-idle-close",
+      "value": 6,
+      "unit": "s",
+      "applies": {
+        "runtime": "node",
+        "versionRange": ">=26.0.0 <27.0.0"
+      },
+      "citationName": "Node keepAliveTimeout 5 s + 1 s",
+      "rangeLabel": "Node 26.x from 26.0",
+      "docUrl": "https://nodejs.org/docs/latest-v26.x/api/http.html#serverkeepalivetimeoutbuffer",
+      "docDate": "2026-11-11",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "26.13.1",
+        "date": "2026-11-11",
+        "platform": "darwin-arm64"
+      },
+      "scriptRef": "measure/node-idle-close.mjs",
+      "toleranceMs": 4,
+      "notes": "Nominal 6 s. Measured on 2 releases: 26.0.0, 26.13.1; 3 runs each, 6002 to 6003 ms (measure/results/2026-11-11-b0.jsonl lines 10 to 12; measure/results/2026-11-11-b3-versions.jsonl lines 55 to 57). The interior of the range is bracketed by measured releases but was not measured release by release; releases below the lower bound have no entry and are UNRESOLVED. toleranceMs 4 (re-derived 2026-11-12, B8): the largest absolute deviation from the predicted value is 3 ms over the 12 recorded runs of this entry taken one at a time on a host that was not busy or before the load line existed (basis files only; a run with unknown load, beside other timings, or on a busy host is evidence, not a basis; deviations +1 to +3 ms), plus the 1 ms resolution. test/kb/tolerance-evidence.test.ts recomputes it.",
+      "measuredVersions": ["26.0.0", "26.13.1"]
+    },
+    {
+      "id": "node-explicit-keepalive-18x",
+      "subject": "node-keepalive-explicit",
+      "value": 0,
+      "unit": "s",
+      "applies": {
+        "runtime": "node",
+        "versionRange": ">=18.20.8 <19.0.0"
+      },
+      "citationName": "explicit keepAliveTimeout, Node",
+      "rangeLabel": "Node 18.x from 18.20.8",
+      "docUrl": "https://nodejs.org/dist/index.json",
+      "docDate": "2026-11-11",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "18.20.8",
+        "date": "2026-11-12",
+        "platform": "darwin-arm64"
+      },
+      "scriptRef": "measure/node-explicit.mjs",
+      "toleranceMs": 5,
+      "notes": "Value 0 s is what the idle close adds to an explicit keepAliveTimeout K when keepAliveTimeoutBuffer is not written. Measured with the assigned value on 1 release (18.20.8) at each of K = 7, 12 and 65 s, 3 runs each (measure/results/2026-11-11-b3-versions.jsonl lines 4 to 6; measure/results/2026-11-11-b3-points.jsonl lines 1 to 6); the idle close was K + 0 s within 1 to +4 ms. measuredSpan 7 to 65 s: K between the measured values follows by the same rule, not by measurement. Only a value assigned before listen was measured; a value set after listen, or where the order cannot be read, a K outside the span and a fractional K are not measured, so the resolver leaves them UNRESOLVED. The interior of the range is bracketed by measured releases but was not measured release by release; releases below the lower bound have no entry and are UNRESOLVED. toleranceMs 5 (re-derived 2026-11-12, B8): the largest absolute deviation from the predicted value is 4 ms over the 21 recorded runs of this entry taken one at a time on a host that was not busy or before the load line existed (basis files only; a run with unknown load, beside other timings, or on a busy host is evidence, not a basis; deviations +1 to +4 ms), plus the 1 ms resolution. test/kb/tolerance-evidence.test.ts recomputes it.",
+      "measuredSpan": {
+        "min": 7,
+        "max": 65
+      },
+      "measuredVersions": ["18.20.8"],
+      "measuredKs": [7, 12, 65]
+    },
+    {
+      "id": "node-explicit-keepalive-20x",
+      "subject": "node-keepalive-explicit",
+      "value": 1,
+      "unit": "s",
+      "applies": {
+        "runtime": "node",
+        "versionRange": ">=20.20.2 <21.0.0"
+      },
+      "citationName": "explicit keepAliveTimeout + 1 s, Node",
+      "rangeLabel": "Node 20.x from 20.20.2",
+      "docUrl": "https://nodejs.org/dist/index.json",
+      "docDate": "2026-11-11",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "20.20.2",
+        "date": "2026-11-12",
+        "platform": "darwin-arm64"
+      },
+      "scriptRef": "measure/node-explicit.mjs",
+      "toleranceMs": 5,
+      "notes": "Value 1 s is what the idle close adds to an explicit keepAliveTimeout K when keepAliveTimeoutBuffer is not written. Measured with the assigned value on 1 release (20.20.2) at each of K = 7, 12 and 65 s, 3 runs each (measure/results/2026-11-11-b3-versions.jsonl lines 10 to 12; measure/results/2026-11-11-b3-points.jsonl lines 7 to 12); the idle close was K + 1 s within 0 to +3 ms. measuredSpan 7 to 65 s: K between the measured values follows by the same rule, not by measurement. Only a value assigned before listen was measured; a value set after listen, or where the order cannot be read, a K outside the span and a fractional K are not measured, so the resolver leaves them UNRESOLVED. The interior of the range is bracketed by measured releases but was not measured release by release; releases below the lower bound have no entry and are UNRESOLVED. toleranceMs 5 (re-derived 2026-11-12, B8): the largest absolute deviation from the predicted value is 4 ms over the 21 recorded runs of this entry taken one at a time on a host that was not busy or before the load line existed (basis files only; a run with unknown load, beside other timings, or on a busy host is evidence, not a basis; deviations +0 to +4 ms), plus the 1 ms resolution. test/kb/tolerance-evidence.test.ts recomputes it.",
+      "measuredSpan": {
+        "min": 7,
+        "max": 65
+      },
+      "measuredVersions": ["20.20.2"],
+      "measuredKs": [7, 12, 65]
+    },
+    {
+      "id": "node-explicit-keepalive-22x",
+      "subject": "node-keepalive-explicit",
+      "value": 1,
+      "unit": "s",
+      "applies": {
+        "runtime": "node",
+        "versionRange": ">=22.12.0 <23.0.0"
+      },
+      "citationName": "explicit keepAliveTimeout + 1 s, Node",
+      "rangeLabel": "Node 22.x from 22.12",
+      "docUrl": "https://nodejs.org/docs/latest-v22.x/api/http.html#serverkeepalivetimeoutbuffer",
+      "docDate": "2026-11-11",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "22.23.5",
+        "date": "2026-11-12",
+        "platform": "darwin-arm64"
+      },
+      "scriptRef": "measure/node-explicit.mjs",
+      "toleranceMs": 5,
+      "notes": "Value 1 s is what the idle close adds to an explicit keepAliveTimeout K when keepAliveTimeoutBuffer is not written. Measured with the assigned value on 5 releases (22.12.0, 22.18.0, 22.19.0, 22.23.2, 22.23.5) at each of K = 7, 12 and 65 s, 3 runs each (measure/results/2026-11-11-b3.jsonl lines 1 to 9, 16 to 24; measure/results/2026-11-11-b3-versions.jsonl lines 16 to 18, 22 to 24, 28 to 30; measure/results/2026-11-11-b3-points.jsonl lines 13 to 18, 22 to 33); the idle close was K + 1 s within -1 to +4 ms. The createServer options form was run on 22.12.0, 22.23.2, 22.23.5 (K = 7 and 65 s; measure/results/2026-11-11-b3.jsonl lines 13 to 15, 28 to 30; measure/results/2026-11-11-b3-points.jsonl lines 19 to 21, 40 to 42): same result. measuredSpan 7 to 65 s: K between the measured values follows by the same rule, not by measurement. Only a value assigned before listen was measured; a value set after listen, or where the order cannot be read, a K outside the span and a fractional K are not measured, so the resolver leaves them UNRESOLVED. The interior of the range is bracketed by measured releases but was not measured release by release; releases below the lower bound have no entry and are UNRESOLVED. toleranceMs 5 (re-derived 2026-11-12, B8): the largest absolute deviation from the predicted value is 4 ms over the 105 recorded runs of this entry taken one at a time on a host that was not busy or before the load line existed (basis files only; a run with unknown load, beside other timings, or on a busy host is evidence, not a basis; deviations -1 to +4 ms), plus the 1 ms resolution. test/kb/tolerance-evidence.test.ts recomputes it.",
+      "measuredSpan": {
+        "min": 7,
+        "max": 65
+      },
+      "measuredVersions": ["22.12.0", "22.18.0", "22.19.0", "22.23.2", "22.23.5"],
+      "measuredKs": [7, 12, 65],
+      "measuredOptions": [
+        {
+          "k": 7,
+          "versions": ["22.23.2", "22.23.5"]
+        },
+        {
+          "k": 65,
+          "versions": ["22.12.0", "22.23.5"]
+        }
+      ]
+    },
+    {
+      "id": "node-explicit-keepalive-24x",
+      "subject": "node-keepalive-explicit",
+      "value": 1,
+      "unit": "s",
+      "applies": {
+        "runtime": "node",
+        "versionRange": ">=24.0.0 <25.0.0"
+      },
+      "citationName": "explicit keepAliveTimeout + 1 s, Node",
+      "rangeLabel": "Node 24.x from 24.0",
+      "docUrl": "https://nodejs.org/docs/latest-v24.x/api/http.html#serverkeepalivetimeoutbuffer",
+      "docDate": "2026-11-11",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "24.22.3",
+        "date": "2026-11-12",
+        "platform": "darwin-arm64"
+      },
+      "scriptRef": "measure/node-explicit.mjs",
+      "toleranceMs": 5,
+      "notes": "Value 1 s is what the idle close adds to an explicit keepAliveTimeout K when keepAliveTimeoutBuffer is not written. Measured with the assigned value on 4 releases (24.0.0, 24.5.0, 24.6.0, 24.22.3) at each of K = 7, 12 and 65 s, 3 runs each (measure/results/2026-11-11-b3.jsonl lines 31 to 39; measure/results/2026-11-11-b3-versions.jsonl lines 37 to 39, 43 to 45, 49 to 51; measure/results/2026-11-11-b3-points.jsonl lines 49 to 54, 58 to 69); the idle close was K + 1 s within 0 to +4 ms. The createServer options form was run on 24.0.0, 24.22.3 (K = 7 and 65 s; measure/results/2026-11-11-b3.jsonl lines 43 to 45; measure/results/2026-11-11-b3-points.jsonl lines 55 to 57): same result. measuredSpan 7 to 65 s: K between the measured values follows by the same rule, not by measurement. Only a value assigned before listen was measured; a value set after listen, or where the order cannot be read, a K outside the span and a fractional K are not measured, so the resolver leaves them UNRESOLVED. The interior of the range is bracketed by measured releases but was not measured release by release; releases below the lower bound have no entry and are UNRESOLVED. toleranceMs 5 (re-derived 2026-11-12, B8): the largest absolute deviation from the predicted value is 4 ms over the 78 recorded runs of this entry taken one at a time on a host that was not busy or before the load line existed (basis files only; a run with unknown load, beside other timings, or on a busy host is evidence, not a basis; deviations +0 to +4 ms), plus the 1 ms resolution. test/kb/tolerance-evidence.test.ts recomputes it.",
+      "measuredSpan": {
+        "min": 7,
+        "max": 65
+      },
+      "measuredVersions": ["24.0.0", "24.5.0", "24.6.0", "24.22.3"],
+      "measuredKs": [7, 12, 65],
+      "measuredOptions": [
+        {
+          "k": 7,
+          "versions": ["24.22.3"]
+        },
+        {
+          "k": 65,
+          "versions": ["24.0.0"]
+        }
+      ]
+    },
+    {
+      "id": "node-explicit-keepalive-26x",
+      "subject": "node-keepalive-explicit",
+      "value": 1,
+      "unit": "s",
+      "applies": {
+        "runtime": "node",
+        "versionRange": ">=26.0.0 <27.0.0"
+      },
+      "citationName": "explicit keepAliveTimeout + 1 s, Node",
+      "rangeLabel": "Node 26.x from 26.0",
+      "docUrl": "https://nodejs.org/docs/latest-v26.x/api/http.html#serverkeepalivetimeoutbuffer",
+      "docDate": "2026-11-11",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "26.13.1",
+        "date": "2026-11-12",
+        "platform": "darwin-arm64"
+      },
+      "scriptRef": "measure/node-explicit.mjs",
+      "toleranceMs": 5,
+      "notes": "Value 1 s is what the idle close adds to an explicit keepAliveTimeout K when keepAliveTimeoutBuffer is not written. Measured with the assigned value on 2 releases (26.0.0, 26.13.1) at each of K = 7, 12 and 65 s, 3 runs each (measure/results/2026-11-11-b3.jsonl lines 46 to 54; measure/results/2026-11-11-b3-versions.jsonl lines 58 to 60; measure/results/2026-11-11-b3-points.jsonl lines 82 to 87); the idle close was K + 1 s within 0 to +4 ms. The createServer options form was run on 26.0.0, 26.13.1 (K = 7 and 65 s; measure/results/2026-11-11-b3.jsonl lines 58 to 60; measure/results/2026-11-11-b3-points.jsonl lines 88 to 90): same result. measuredSpan 7 to 65 s: K between the measured values follows by the same rule, not by measurement. Only a value assigned before listen was measured; a value set after listen, or where the order cannot be read, a K outside the span and a fractional K are not measured, so the resolver leaves them UNRESOLVED. The interior of the range is bracketed by measured releases but was not measured release by release; releases below the lower bound have no entry and are UNRESOLVED. toleranceMs 5 (re-derived 2026-11-12, B8): the largest absolute deviation from the predicted value is 4 ms over the 48 recorded runs of this entry taken one at a time on a host that was not busy or before the load line existed (basis files only; a run with unknown load, beside other timings, or on a busy host is evidence, not a basis; deviations +0 to +4 ms), plus the 1 ms resolution. test/kb/tolerance-evidence.test.ts recomputes it.",
+      "measuredSpan": {
+        "min": 7,
+        "max": 65
+      },
+      "measuredVersions": ["26.0.0", "26.13.1"],
+      "measuredKs": [7, 12, 65],
+      "measuredOptions": [
+        {
+          "k": 7,
+          "versions": ["26.13.1"]
+        },
+        {
+          "k": 65,
+          "versions": ["26.0.0"]
+        }
+      ]
+    },
+    {
+      "id": "node-explicit-buffer-22x-0",
+      "subject": "node-keepalive-buffer-explicit",
+      "value": 0,
+      "unit": "s",
+      "applies": {
+        "runtime": "node",
+        "versionRange": ">=22.19.0 <23.0.0"
+      },
+      "citationName": "explicit keepAliveTimeout + 0 s buffer, Node",
+      "rangeLabel": "Node 22.x from 22.19",
+      "docUrl": "https://nodejs.org/docs/latest-v22.x/api/http.html#serverkeepalivetimeoutbuffer",
+      "docDate": "2026-11-11",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "22.23.5",
+        "date": "2026-11-12",
+        "platform": "darwin-arm64"
+      },
+      "scriptRef": "measure/node-explicit.mjs",
+      "toleranceMs": 5,
+      "notes": "Value 0 s is an explicit keepAliveTimeoutBuffer of 0 ms assigned before listen. Measured on 2 releases (22.19.0, 22.23.5) at K = 7 and 65 s, 3 runs each (measure/results/2026-11-11-b3.jsonl lines 25 to 27; measure/results/2026-11-11-b3-versions.jsonl lines 31 to 33; measure/results/2026-11-11-b3-points.jsonl lines 37 to 39, 46 to 48); the idle close was K + 0 s within 1 to +4 ms. The keepAliveTimeoutBuffer property exists from 22.19.0 in this line; on an earlier release it does not exist and setting it is not measured, so the range starts there. Any other K, other buffer value and a fractional value are UNRESOLVED. The interior of the range is bracketed by measured releases but was not measured release by release; releases below the lower bound have no entry and are UNRESOLVED. toleranceMs 5 (re-derived 2026-11-12, B8): the largest absolute deviation from the predicted value is 4 ms over the 27 recorded runs of this entry taken one at a time on a host that was not busy or before the load line existed (basis files only; a run with unknown load, beside other timings, or on a busy host is evidence, not a basis; deviations +1 to +4 ms), plus the 1 ms resolution. test/kb/tolerance-evidence.test.ts recomputes it.",
+      "measuredSpan": {
+        "min": 7,
+        "max": 65
+      },
+      "measuredVersions": ["22.19.0", "22.23.5"],
+      "measuredKs": [7, 65]
+    },
+    {
+      "id": "node-explicit-buffer-22x-1",
+      "subject": "node-keepalive-buffer-explicit",
+      "value": 1,
+      "unit": "s",
+      "applies": {
+        "runtime": "node",
+        "versionRange": ">=22.19.0 <23.0.0"
+      },
+      "citationName": "explicit keepAliveTimeout + 1 s buffer, Node",
+      "rangeLabel": "Node 22.x from 22.19",
+      "docUrl": "https://nodejs.org/docs/latest-v22.x/api/http.html#serverkeepalivetimeoutbuffer",
+      "docDate": "2026-11-11",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "22.23.5",
+        "date": "2026-11-12",
+        "platform": "darwin-arm64"
+      },
+      "scriptRef": "measure/node-explicit.mjs",
+      "toleranceMs": 5,
+      "notes": "Value 1 s is an explicit keepAliveTimeoutBuffer of 1000 ms assigned before listen. Measured on 2 releases (22.19.0, 22.23.5) at K = 7 s, 3 runs each (measure/results/2026-11-11-b3-points.jsonl lines 34 to 36, 43 to 45); the idle close was K + 1 s within 0 to +4 ms. The keepAliveTimeoutBuffer property exists from 22.19.0 in this line; on an earlier release it does not exist and setting it is not measured, so the range starts there. Any other K, other buffer value and a fractional value are UNRESOLVED. Only K = 7 s was run with an explicit buffer of 1000 ms; the same K + 1 s at 12 and 65 s was measured only with the buffer left alone (see the node-explicit-keepalive entry of this line). The interior of the range is bracketed by measured releases but was not measured release by release; releases below the lower bound have no entry and are UNRESOLVED. toleranceMs 5 (re-derived 2026-11-12, B8): the largest absolute deviation from the predicted value is 4 ms over the 12 recorded runs of this entry taken one at a time on a host that was not busy or before the load line existed (basis files only; a run with unknown load, beside other timings, or on a busy host is evidence, not a basis; deviations +0 to +4 ms), plus the 1 ms resolution. test/kb/tolerance-evidence.test.ts recomputes it.",
+      "measuredSpan": {
+        "min": 7,
+        "max": 7
+      },
+      "measuredVersions": ["22.19.0", "22.23.5"],
+      "measuredKs": [7]
+    },
+    {
+      "id": "node-explicit-buffer-24x-0",
+      "subject": "node-keepalive-buffer-explicit",
+      "value": 0,
+      "unit": "s",
+      "applies": {
+        "runtime": "node",
+        "versionRange": ">=24.6.0 <25.0.0"
+      },
+      "citationName": "explicit keepAliveTimeout + 0 s buffer, Node",
+      "rangeLabel": "Node 24.x from 24.6",
+      "docUrl": "https://nodejs.org/docs/latest-v24.x/api/http.html#serverkeepalivetimeoutbuffer",
+      "docDate": "2026-11-11",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "24.22.3",
+        "date": "2026-11-12",
+        "platform": "darwin-arm64"
+      },
+      "scriptRef": "measure/node-explicit.mjs",
+      "toleranceMs": 5,
+      "notes": "Value 0 s is an explicit keepAliveTimeoutBuffer of 0 ms assigned before listen. Measured on 2 releases (24.6.0, 24.22.3) at K = 7 and 65 s, 3 runs each (measure/results/2026-11-11-b3.jsonl lines 40 to 42; measure/results/2026-11-11-b3-versions.jsonl lines 52 to 54; measure/results/2026-11-11-b3-points.jsonl lines 73 to 75, 79 to 81); the idle close was K + 0 s within 1 to +4 ms. The keepAliveTimeoutBuffer property exists from 24.6.0 in this line; on an earlier release it does not exist and setting it is not measured, so the range starts there. Any other K, other buffer value and a fractional value are UNRESOLVED. The interior of the range is bracketed by measured releases but was not measured release by release; releases below the lower bound have no entry and are UNRESOLVED. toleranceMs 5 (re-derived 2026-11-12, B8): the largest absolute deviation from the predicted value is 4 ms over the 24 recorded runs of this entry taken one at a time on a host that was not busy or before the load line existed (basis files only; a run with unknown load, beside other timings, or on a busy host is evidence, not a basis; deviations +0 to +4 ms), plus the 1 ms resolution. test/kb/tolerance-evidence.test.ts recomputes it.",
+      "measuredSpan": {
+        "min": 7,
+        "max": 65
+      },
+      "measuredVersions": ["24.6.0", "24.22.3"],
+      "measuredKs": [7, 65]
+    },
+    {
+      "id": "node-explicit-buffer-24x-1",
+      "subject": "node-keepalive-buffer-explicit",
+      "value": 1,
+      "unit": "s",
+      "applies": {
+        "runtime": "node",
+        "versionRange": ">=24.6.0 <25.0.0"
+      },
+      "citationName": "explicit keepAliveTimeout + 1 s buffer, Node",
+      "rangeLabel": "Node 24.x from 24.6",
+      "docUrl": "https://nodejs.org/docs/latest-v24.x/api/http.html#serverkeepalivetimeoutbuffer",
+      "docDate": "2026-11-11",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "24.22.3",
+        "date": "2026-11-12",
+        "platform": "darwin-arm64"
+      },
+      "scriptRef": "measure/node-explicit.mjs",
+      "toleranceMs": 5,
+      "notes": "Value 1 s is an explicit keepAliveTimeoutBuffer of 1000 ms assigned before listen. Measured on 2 releases (24.6.0, 24.22.3) at K = 7 s, 3 runs each (measure/results/2026-11-11-b3-points.jsonl lines 70 to 72, 76 to 78); the idle close was K + 1 s within 0 to +4 ms. The keepAliveTimeoutBuffer property exists from 24.6.0 in this line; on an earlier release it does not exist and setting it is not measured, so the range starts there. Any other K, other buffer value and a fractional value are UNRESOLVED. Only K = 7 s was run with an explicit buffer of 1000 ms; the same K + 1 s at 12 and 65 s was measured only with the buffer left alone (see the node-explicit-keepalive entry of this line). The interior of the range is bracketed by measured releases but was not measured release by release; releases below the lower bound have no entry and are UNRESOLVED. toleranceMs 5 (re-derived 2026-11-12, B8): the largest absolute deviation from the predicted value is 4 ms over the 12 recorded runs of this entry taken one at a time on a host that was not busy or before the load line existed (basis files only; a run with unknown load, beside other timings, or on a busy host is evidence, not a basis; deviations +0 to +4 ms), plus the 1 ms resolution. test/kb/tolerance-evidence.test.ts recomputes it.",
+      "measuredSpan": {
+        "min": 7,
+        "max": 7
+      },
+      "measuredVersions": ["24.6.0", "24.22.3"],
+      "measuredKs": [7]
+    },
+    {
+      "id": "node-explicit-buffer-26x-0",
+      "subject": "node-keepalive-buffer-explicit",
+      "value": 0,
+      "unit": "s",
+      "applies": {
+        "runtime": "node",
+        "versionRange": ">=26.0.0 <27.0.0"
+      },
+      "citationName": "explicit keepAliveTimeout + 0 s buffer, Node",
+      "rangeLabel": "Node 26.x from 26.0",
+      "docUrl": "https://nodejs.org/docs/latest-v26.x/api/http.html#serverkeepalivetimeoutbuffer",
+      "docDate": "2026-11-11",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "26.13.1",
+        "date": "2026-11-12",
+        "platform": "darwin-arm64"
+      },
+      "scriptRef": "measure/node-explicit.mjs",
+      "toleranceMs": 4,
+      "notes": "Value 0 s is an explicit keepAliveTimeoutBuffer of 0 ms assigned before listen. Measured on 2 releases (26.0.0, 26.13.1) at K = 7 and 65 s, 3 runs each (measure/results/2026-11-11-b3.jsonl lines 55 to 57; measure/results/2026-11-11-b3-versions.jsonl lines 61 to 63; measure/results/2026-11-11-b3-points.jsonl lines 94 to 96, 100 to 102); the idle close was K + 0 s within 0 to +3 ms. The keepAliveTimeoutBuffer property exists from 26.0.0 in this line; on an earlier release it does not exist and setting it is not measured, so the range starts there. Any other K, other buffer value and a fractional value are UNRESOLVED. The interior of the range is bracketed by measured releases but was not measured release by release; releases below the lower bound have no entry and are UNRESOLVED. toleranceMs 4 (re-derived 2026-11-12, B8): the largest absolute deviation from the predicted value is 3 ms over the 24 recorded runs of this entry taken one at a time on a host that was not busy or before the load line existed (basis files only; a run with unknown load, beside other timings, or on a busy host is evidence, not a basis; deviations +0 to +3 ms), plus the 1 ms resolution. test/kb/tolerance-evidence.test.ts recomputes it.",
+      "measuredSpan": {
+        "min": 7,
+        "max": 65
+      },
+      "measuredVersions": ["26.0.0", "26.13.1"],
+      "measuredKs": [7, 65]
+    },
+    {
+      "id": "node-explicit-buffer-26x-1",
+      "subject": "node-keepalive-buffer-explicit",
+      "value": 1,
+      "unit": "s",
+      "applies": {
+        "runtime": "node",
+        "versionRange": ">=26.0.0 <27.0.0"
+      },
+      "citationName": "explicit keepAliveTimeout + 1 s buffer, Node",
+      "rangeLabel": "Node 26.x from 26.0",
+      "docUrl": "https://nodejs.org/docs/latest-v26.x/api/http.html#serverkeepalivetimeoutbuffer",
+      "docDate": "2026-11-11",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "26.13.1",
+        "date": "2026-11-12",
+        "platform": "darwin-arm64"
+      },
+      "scriptRef": "measure/node-explicit.mjs",
+      "toleranceMs": 4,
+      "notes": "Value 1 s is an explicit keepAliveTimeoutBuffer of 1000 ms assigned before listen. Measured on 2 releases (26.0.0, 26.13.1) at K = 7 s, 3 runs each (measure/results/2026-11-11-b3-points.jsonl lines 91 to 93, 97 to 99); the idle close was K + 1 s within 0 to +3 ms. The keepAliveTimeoutBuffer property exists from 26.0.0 in this line; on an earlier release it does not exist and setting it is not measured, so the range starts there. Any other K, other buffer value and a fractional value are UNRESOLVED. Only K = 7 s was run with an explicit buffer of 1000 ms; the same K + 1 s at 12 and 65 s was measured only with the buffer left alone (see the node-explicit-keepalive entry of this line). The interior of the range is bracketed by measured releases but was not measured release by release; releases below the lower bound have no entry and are UNRESOLVED. toleranceMs 4 (re-derived 2026-11-12, B8): the largest absolute deviation from the predicted value is 3 ms over the 12 recorded runs of this entry taken one at a time on a host that was not busy or before the load line existed (basis files only; a run with unknown load, beside other timings, or on a busy host is evidence, not a basis; deviations +0 to +3 ms), plus the 1 ms resolution. test/kb/tolerance-evidence.test.ts recomputes it.",
+      "measuredSpan": {
+        "min": 7,
+        "max": 7
+      },
+      "measuredVersions": ["26.0.0", "26.13.1"],
+      "measuredKs": [7]
+    },
+    {
+      "id": "node-headers-trap-10x",
+      "subject": "node-headers-timeout-trap",
+      "value": 40,
+      "unit": "s",
+      "applies": {
+        "runtime": "node",
+        "versionRange": ">=10.15.2 <11.0.0"
+      },
+      "citationName": "Node headersTimeout trap: smaller of keepAliveTimeout and headersTimeout",
+      "rangeLabel": "Node 10.x from 10.15.2",
+      "docUrl": "https://github.com/nodejs/node/issues/27363",
+      "docDate": "2026-11-02",
+      "basis": "from-changelogs",
+      "deferredTo": {
+        "bolt": "B13",
+        "reason": "Attempted in B13 (2026-11-12): cannot run on this host. Node 10, 12 and 13 have no arm64 macOS build, and this host has no x64 runtime: Rosetta 2 is absent (`arch -x86_64 /usr/bin/true` fails with \"Bad CPU type in executable\"; record: measure/results/2026-11-12-b13-attempt.txt). The trap was not measured; it needs Rosetta 2 or an x64 host."
+      },
+      "notes": "Value 40 s is the default headersTimeout on 10.x (doc/api/http.md at v10.15.3 and v10.24.1, docs/research.md section 6). From the CVE-2019-5737 change until nodejs/node PR #32329 (12.19.0 and 13.13.0, never backported to 10.x) the headers timer also ran across the idle gap between keep-alive requests, so the idle close of an explicit keepAliveTimeout K is the smaller of K and headersTimeout. From the changelogs (CHANGELOG_V10, V12, V13) and the issue thread; not measured (docs/research.md sections 6 and 12). The extra second that later releases add to the idle close (see the Node 20.x and 22.x entries) was not measured on these releases and is not added. The research also lists 6.17.0, 8.15.1 and 11.10.1 as starts of the trap, but cites no default headersTimeout for 6.x, 8.x or 11.x, so those lines have no entry and are UNRESOLVED."
+    },
+    {
+      "id": "node-headers-trap-12x",
+      "subject": "node-headers-timeout-trap",
+      "value": 60,
+      "unit": "s",
+      "applies": {
+        "runtime": "node",
+        "versionRange": ">=12.0.0 <12.19.0"
+      },
+      "citationName": "Node headersTimeout trap: smaller of keepAliveTimeout and headersTimeout",
+      "rangeLabel": "Node 12.x before 12.19.0",
+      "docUrl": "https://github.com/nodejs/node/issues/27363",
+      "docDate": "2026-11-02",
+      "basis": "from-changelogs",
+      "deferredTo": {
+        "bolt": "B13",
+        "reason": "Attempted in B13 (2026-11-12): cannot run on this host. Node 10, 12 and 13 have no arm64 macOS build, and this host has no x64 runtime: Rosetta 2 is absent (`arch -x86_64 /usr/bin/true` fails with \"Bad CPU type in executable\"; record: measure/results/2026-11-12-b13-attempt.txt). The trap was not measured; it needs Rosetta 2 or an x64 host."
+      },
+      "notes": "Value 60 s is the default headersTimeout on 12.x (doc/api/http.md at v12.18.4, docs/research.md section 6). From the CVE-2019-5737 change until nodejs/node PR #32329 (12.19.0 and 13.13.0, never backported to 10.x) the headers timer also ran across the idle gap between keep-alive requests, so the idle close of an explicit keepAliveTimeout K is the smaller of K and headersTimeout. From the changelogs (CHANGELOG_V10, V12, V13) and the issue thread; not measured (docs/research.md sections 6 and 12). The extra second that later releases add to the idle close (see the Node 20.x and 22.x entries) was not measured on these releases and is not added. The research also lists 6.17.0, 8.15.1 and 11.10.1 as starts of the trap, but cites no default headersTimeout for 6.x, 8.x or 11.x, so those lines have no entry and are UNRESOLVED. The range starts at 12.0.0, the first 12.x release, which is later than the CVE-2019-5737 change in 11.10.1; that the trap was present from 12.0.0 is an inference from the changelogs, not a separate check."
+    },
+    {
+      "id": "node-headers-trap-13x",
+      "subject": "node-headers-timeout-trap",
+      "value": 60,
+      "unit": "s",
+      "applies": {
+        "runtime": "node",
+        "versionRange": ">=13.0.0 <13.13.0"
+      },
+      "citationName": "Node headersTimeout trap: smaller of keepAliveTimeout and headersTimeout",
+      "rangeLabel": "Node 13.x before 13.13.0",
+      "docUrl": "https://github.com/nodejs/node/issues/27363",
+      "docDate": "2026-11-02",
+      "basis": "from-changelogs",
+      "deferredTo": {
+        "bolt": "B13",
+        "reason": "Attempted in B13 (2026-11-12): cannot run on this host. Node 10, 12 and 13 have no arm64 macOS build, and this host has no x64 runtime: Rosetta 2 is absent (`arch -x86_64 /usr/bin/true` fails with \"Bad CPU type in executable\"; record: measure/results/2026-11-12-b13-attempt.txt). The trap was not measured; it needs Rosetta 2 or an x64 host."
+      },
+      "notes": "Value 60 s is the default headersTimeout on 13.x (doc/api/http.md at v13.12.0, docs/research.md section 6). From the CVE-2019-5737 change until nodejs/node PR #32329 (12.19.0 and 13.13.0, never backported to 10.x) the headers timer also ran across the idle gap between keep-alive requests, so the idle close of an explicit keepAliveTimeout K is the smaller of K and headersTimeout. From the changelogs (CHANGELOG_V10, V12, V13) and the issue thread; not measured (docs/research.md sections 6 and 12). The extra second that later releases add to the idle close (see the Node 20.x and 22.x entries) was not measured on these releases and is not added. The research also lists 6.17.0, 8.15.1 and 11.10.1 as starts of the trap, but cites no default headersTimeout for 6.x, 8.x or 11.x, so those lines have no entry and are UNRESOLVED."
+    }
+  ]
+}

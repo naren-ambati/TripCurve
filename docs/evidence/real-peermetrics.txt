@@ -1,0 +1,49 @@
+tripcurve 0.1.0   checked "test/fixtures/real/peermetrics__pe..."   4 files read
+
+Workload "peermetrics-web" (Deployment) in "k8s/base/web.yaml"
+  FAIL T2  no drain delay before SIGTERM
+           target-type ip   "k8s/base/ingress.yaml":8
+           preStop none     in "k8s/base/web.yaml"
+           drain none       in-process drains are read for Node source only;
+                            none declared
+  UNRESOLVED T1  idle close not established: envFrom may set GUNICORN_CMD_ARGS
+                 from a source that is not read
+           worker           envFrom may set GUNICORN_CMD_ARGS from a source that
+                            is not read
+           LB idle 60 s     assumed, not set in the files: default: ALB idle
+                            timeout (AWS docs, ALB; documented)
+           give the setting as a literal flag in the container command, or link
+           the gunicorn config in tripcurve.yaml
+  NOT EVALUATED T3  T2 failed for this workload
+
+Workload "peermetrics-api" (Deployment) in "k8s/base/api.yaml"
+  UNRESOLVED T1  idle close not established: the server is not identified as a
+                 Node program
+           idle close       the server is not identified as a Node program
+           LB idle 60 s     assumed, not set in the files: default: ALB idle
+                            timeout (AWS docs, ALB; documented)
+           name the program in the container command or args (node, npm,
+           gunicorn or uvicorn); for Node, tripcurve.yaml can instead declare
+           runtime.node for this workload, with source for its entry file
+  UNRESOLVED T2  the search for a drain is not complete
+           preStop none     in "k8s/base/api.yaml"
+           drain            the server is not recognised, so the search for a
+                            drain is not complete
+           declare drain.in_process_s for this workload in tripcurve.yaml
+  UNRESOLVED T3  drain not established; grace cannot be checked
+           grace 30 s       default: Kubernetes terminationGracePeriodSeconds
+                            (documented)
+           drain            the server is not recognised, so the search for a
+                            drain is not complete
+           declare drain.in_process_s for this workload in tripcurve.yaml
+
+Assumptions
+  - The load balancer idle timeout is assumed to be the documented default of 60
+    s, because no file or declaration sets it; the console can change it outside
+    Git.
+  - Green never means zero-downtime: the SIGTERM race and the deregistration
+    delay are outside these rules.
+
+Summary: 1 failed, 4 unresolved, 1 not evaluated; not a clean result
+
+[exit 1]

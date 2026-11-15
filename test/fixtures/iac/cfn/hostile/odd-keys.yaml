@@ -1,0 +1,14 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Resources:
+  __proto__:
+    Type: AWS::SQS::Queue
+    Properties:
+      __proto__: {VisibilityTimeout: 1}
+      VisibilityTimeout: 60
+  constructor:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      EventSourceArn: !GetAtt constructor.Arn
+      FunctionName: !Ref toString
+  "Q.1":
+    Type: AWS::SQS::Queue

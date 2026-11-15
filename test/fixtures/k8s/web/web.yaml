@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  namespace: shop
+  labels:
+    app: web
+    tier: frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      terminationGracePeriodSeconds: 45
+      containers:
+        - name: app
+          image: node:22.23
+          command: ["node", "src/server.js"]
+          args: ["--port", "8080"]
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: api
+                  key: key
+            - name: EMPTY
+          ports:
+            - name: http
+              containerPort: 8080
+          lifecycle:
+            preStop:
+              exec:
+                command: ["sleep", "10"]

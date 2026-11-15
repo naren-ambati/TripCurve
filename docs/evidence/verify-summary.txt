@@ -1,0 +1,19 @@
+[excerpt of docs/evidence/verify.txt: the summary line of each step; the full log is 210 lines]
+
+step: typecheck
+step: lint
+step: test:coverage
+step: measure:selftest
+step: build
+step: timed-check
+
+ Test Files  141 passed (141)
+      Tests  13115 passed (13115)
+All files          |   94.62 |    89.56 |   98.67 |   96.74 |                   
+selftest: all cases passed
+timed check: demo 0.40 s fastest of 3 (runs 0.41, 0.40, 0.41; budget under 2 s) on Mac17,3, Apple M5, Node v22.23.2, 2026-11-15
+timed check: tree 3.15 s fastest of 3 (runs 3.31, 3.15, 3.16; budget under 30 s) on Mac17,3, Apple M5, Node v22.23.2, 2026-11-15
+timed check: within budget on the recorded machine
+Checked 282 files in 175ms. No fixes applied.
+
+[exit 0]

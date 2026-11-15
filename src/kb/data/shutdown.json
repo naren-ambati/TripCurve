@@ -1,0 +1,245 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "k8s-grace-period-default",
+      "subject": "k8s-grace-period",
+      "value": 30,
+      "unit": "s",
+      "applies": {
+        "runtime": "kubernetes",
+        "versionRange": "*"
+      },
+      "citationName": "Kubernetes terminationGracePeriodSeconds",
+      "docUrl": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/",
+      "docDate": "2026-11-12",
+      "basis": "documented",
+      "scriptRef": {
+        "notMeasurableLocally": "The grace period is applied by the Kubernetes API server and kubelet, which need a cluster; no cluster is used on this project."
+      },
+      "notes": "Kubernetes pod lifecycle page, read 2026-11-12: \"The default terminationGracePeriodSeconds setting is 30 seconds.\" The PodSpec page says that when the field is nil the default grace period is used, and the lifecycle hooks page says the countdown begins before the preStop hook runs and covers the preStop hook plus the container stopping. When terminationGracePeriodSeconds is absent from the pod spec in a file, the API server applies this value, so it follows from the file itself and may support a PASS."
+    },
+    {
+      "id": "gunicorn-graceful-timeout-26x",
+      "subject": "gunicorn-graceful-timeout",
+      "value": 30,
+      "unit": "s",
+      "applies": {
+        "runtime": "gunicorn",
+        "versionRange": ">=26.2.0 <27.0.0",
+        "condition": "workerClass in [sync, gthread, uvicorn]"
+      },
+      "citationName": "gunicorn graceful_timeout",
+      "rangeLabel": "gunicorn 26.x",
+      "docUrl": "https://gunicorn.org/reference/settings/",
+      "docDate": "2026-11-12",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "26.2.0",
+        "date": "2026-11-12",
+        "platform": "darwin-arm64, CPython 3.14.7"
+      },
+      "measuredVersions": ["26.2.0"],
+      "scriptRef": "measure/shutdown-b4.mjs",
+      "toleranceMs": 120,
+      "notes": "The longest a request still running at SIGTERM is waited for: gunicorn 26.2.0, one worker (-w 1), a 60 s request in flight, SIGTERM to the main process: the connection closed by FIN with no response bytes 30003 to 30099 ms later (the worker was gone by 30118 ms) and the main process exited with code 0, for the sync worker, gthread (--threads 2) and the uvicorn worker (uvicorn_worker 0.4.0 with uvicorn 0.54.0), three runs each (bolt B4, measure/results/2026-11-11-b4.jsonl, lines 1 to 3, 10 to 15 and, for the 3 s request, 16 to 18 and 25 to 30; --timeout 120: lines 7 to 9). A request that ends before the ceiling completes normally (3 s request, 200 in full). --timeout 120 did not move it, so the value is graceful_timeout, not the worker timeout. Documented default 30 (gunicorn.org settings page, read 2026-11-12); the page says 'restart signal', the runs show SIGTERM behaves the same. The runs above used one worker (-w 1); with two workers (-w 2) the connection also closed 30004 to 30090 ms after SIGTERM (measure/results/2026-11-11-b4-more.jsonl lines 1 to 3), so the ceiling does not depend on the worker count (graceful_timeout is a timer of the main process). gevent, eventlet and tornado workers were not measured, so they have no entry. toleranceMs 120: the largest overshoot seen was 118 ms (worker gone), plus the 10 ms polling."
+    },
+    {
+      "id": "gunicorn-explicit-graceful-timeout-flag-26x",
+      "subject": "gunicorn-graceful-timeout-explicit",
+      "value": "n/a",
+      "unit": "s",
+      "applies": {
+        "runtime": "gunicorn",
+        "versionRange": ">=26.2.0 <27.0.0",
+        "condition": "workerClass in [sync, gthread, uvicorn]"
+      },
+      "citationName": "explicit graceful timeout",
+      "rangeLabel": "gunicorn 26.x",
+      "docUrl": "https://gunicorn.org/reference/settings/",
+      "docDate": "2026-11-12",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "26.2.0",
+        "date": "2026-11-12",
+        "platform": "darwin-arm64, CPython 3.14.7"
+      },
+      "measuredVersions": ["26.2.0"],
+      "scriptRef": "measure/shutdown-b4-more.mjs",
+      "toleranceMs": 120,
+      "notes": "No default value: with --graceful-timeout 10 on the command line a request still running at SIGTERM was cut after 10 s, on gunicorn 26.2.0: the sync worker with one worker (lines 4 to 6 and 19 to 21 of measure/results/2026-11-11-b4.jsonl) and with two (-w 2, lines 4 to 6 of measure/results/2026-11-11-b4-more.jsonl), gthread with --threads 2 (lines 16 to 18) and the uvicorn worker (uvicorn-worker 0.4.0, uvicorn 0.54.0; lines 13 to 15), three runs each, 10003 to 10102 ms, no response bytes, FIN. All lines named without a file are in measure/results/2026-11-11-b4-more.jsonl. Only the value 10 and only the command-line flag are claimed (measuredSpan, sources); another value, another worker class, or the setting from anywhere else is UNRESOLVED unless another entry covers it. toleranceMs 120 as for the default.",
+      "measuredSpan": {
+        "min": 10,
+        "max": 10
+      },
+      "sources": ["command"]
+    },
+    {
+      "id": "gunicorn-explicit-graceful-timeout-sync-env-conf-26x",
+      "subject": "gunicorn-graceful-timeout-explicit",
+      "value": "n/a",
+      "unit": "s",
+      "applies": {
+        "runtime": "gunicorn",
+        "versionRange": ">=26.2.0 <27.0.0",
+        "condition": "workerClass in [sync]"
+      },
+      "citationName": "explicit graceful timeout, sync worker",
+      "rangeLabel": "gunicorn 26.x",
+      "docUrl": "https://gunicorn.org/reference/settings/",
+      "docDate": "2026-11-12",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "26.2.0",
+        "date": "2026-11-12",
+        "platform": "darwin-arm64, CPython 3.14.7"
+      },
+      "measuredVersions": ["26.2.0"],
+      "scriptRef": "measure/shutdown-b4-more.mjs",
+      "toleranceMs": 120,
+      "notes": "No default value: a graceful timeout of 10 s set for the sync worker through GUNICORN_CMD_ARGS='--graceful-timeout 10' (lines 7 to 9) and through a -c file with graceful_timeout = 10 (lines 10 to 12) cut a request still running at SIGTERM after 10 s, on gunicorn 26.2.0, three runs each, 10003 to 10099 ms (measure/results/2026-11-11-b4-more.jsonl). Only the sync worker and only these two sources are claimed; gthread and the uvicorn worker were run with the flag only. A value in a Dockerfile ENV of GUNICORN_CMD_ARGS is the same variable at run time and is read as the environment form. Two sources that disagree are UNRESOLVED: precedence was measured for keepalive only. toleranceMs 120 as for the default.",
+      "measuredSpan": {
+        "min": 10,
+        "max": 10
+      },
+      "sources": ["env", "config-file"]
+    },
+    {
+      "id": "gunicorn-graceful-timeout-27x",
+      "subject": "gunicorn-graceful-timeout",
+      "value": 30,
+      "unit": "s",
+      "applies": {
+        "runtime": "gunicorn",
+        "versionRange": ">=27.0.0 <28.0.0",
+        "condition": "workerClass in [sync, gthread, uvicorn]"
+      },
+      "citationName": "gunicorn graceful_timeout",
+      "rangeLabel": "gunicorn 27.x",
+      "docUrl": "https://gunicorn.org/reference/settings/",
+      "docDate": "2026-11-12",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "27.0.0",
+        "date": "2026-11-12",
+        "platform": "darwin-arm64, CPython 3.14.7"
+      },
+      "measuredVersions": ["27.0.0"],
+      "scriptRef": "measure/shutdown-b4.mjs",
+      "toleranceMs": 120,
+      "notes": "The longest a request still running at SIGTERM is waited for: gunicorn 27.0.0, one worker (-w 1), a 60 s request in flight, SIGTERM to the main process: the connection closed by FIN with no response bytes 30003 to 30099 ms later (the worker was gone by 30118 ms) and the main process exited with code 0, for the sync worker, gthread (--threads 2) and the uvicorn worker (uvicorn_worker 0.4.0 with uvicorn 0.54.0), three runs each (bolt B4, measure/results/2026-11-11-b4.jsonl, lines 31 to 33, 40 to 45 and, for the 3 s request, 46 to 48 and 55 to 60; --timeout 120: lines 37 to 39). A request that ends before the ceiling completes normally (3 s request, 200 in full). --timeout 120 did not move it, so the value is graceful_timeout, not the worker timeout. Documented default 30 (gunicorn.org settings page, read 2026-11-12); the page says 'restart signal', the runs show SIGTERM behaves the same. The runs above used one worker (-w 1); with two workers (-w 2) the connection also closed 30021 to 30088 ms after SIGTERM (measure/results/2026-11-11-b4-more.jsonl lines 19 to 21), so the ceiling does not depend on the worker count (graceful_timeout is a timer of the main process). gevent, eventlet and tornado workers were not measured, so they have no entry. toleranceMs 120: the largest overshoot seen was 118 ms (worker gone), plus the 10 ms polling."
+    },
+    {
+      "id": "gunicorn-explicit-graceful-timeout-flag-27x",
+      "subject": "gunicorn-graceful-timeout-explicit",
+      "value": "n/a",
+      "unit": "s",
+      "applies": {
+        "runtime": "gunicorn",
+        "versionRange": ">=27.0.0 <28.0.0",
+        "condition": "workerClass in [sync, gthread, uvicorn]"
+      },
+      "citationName": "explicit graceful timeout",
+      "rangeLabel": "gunicorn 27.x",
+      "docUrl": "https://gunicorn.org/reference/settings/",
+      "docDate": "2026-11-12",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "27.0.0",
+        "date": "2026-11-12",
+        "platform": "darwin-arm64, CPython 3.14.7"
+      },
+      "measuredVersions": ["27.0.0"],
+      "scriptRef": "measure/shutdown-b4-more.mjs",
+      "toleranceMs": 120,
+      "notes": "No default value: with --graceful-timeout 10 on the command line a request still running at SIGTERM was cut after 10 s, on gunicorn 27.0.0: the sync worker with one worker (lines 34 to 36 and 49 to 51 of measure/results/2026-11-11-b4.jsonl) and with two (-w 2, lines 22 to 24 of measure/results/2026-11-11-b4-more.jsonl), gthread with --threads 2 (lines 34 to 36) and the uvicorn worker (uvicorn-worker 0.4.0, uvicorn 0.54.0; lines 31 to 33), three runs each, 10003 to 10102 ms, no response bytes, FIN. All lines named without a file are in measure/results/2026-11-11-b4-more.jsonl. Only the value 10 and only the command-line flag are claimed (measuredSpan, sources); another value, another worker class, or the setting from anywhere else is UNRESOLVED unless another entry covers it. toleranceMs 120 as for the default.",
+      "measuredSpan": {
+        "min": 10,
+        "max": 10
+      },
+      "sources": ["command"]
+    },
+    {
+      "id": "gunicorn-explicit-graceful-timeout-sync-env-conf-27x",
+      "subject": "gunicorn-graceful-timeout-explicit",
+      "value": "n/a",
+      "unit": "s",
+      "applies": {
+        "runtime": "gunicorn",
+        "versionRange": ">=27.0.0 <28.0.0",
+        "condition": "workerClass in [sync]"
+      },
+      "citationName": "explicit graceful timeout, sync worker",
+      "rangeLabel": "gunicorn 27.x",
+      "docUrl": "https://gunicorn.org/reference/settings/",
+      "docDate": "2026-11-12",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "27.0.0",
+        "date": "2026-11-12",
+        "platform": "darwin-arm64, CPython 3.14.7"
+      },
+      "measuredVersions": ["27.0.0"],
+      "scriptRef": "measure/shutdown-b4-more.mjs",
+      "toleranceMs": 120,
+      "notes": "No default value: a graceful timeout of 10 s set for the sync worker through GUNICORN_CMD_ARGS='--graceful-timeout 10' (lines 25 to 27) and through a -c file with graceful_timeout = 10 (lines 28 to 30) cut a request still running at SIGTERM after 10 s, on gunicorn 27.0.0, three runs each, 10003 to 10099 ms (measure/results/2026-11-11-b4-more.jsonl). Only the sync worker and only these two sources are claimed; gthread and the uvicorn worker were run with the flag only. A value in a Dockerfile ENV of GUNICORN_CMD_ARGS is the same variable at run time and is read as the environment form. Two sources that disagree are UNRESOLVED: precedence was measured for keepalive only. toleranceMs 120 as for the default.",
+      "measuredSpan": {
+        "min": 10,
+        "max": 10
+      },
+      "sources": ["env", "config-file"]
+    },
+    {
+      "id": "uvicorn-explicit-graceful-timeout-0-54x",
+      "subject": "uvicorn-graceful-timeout-explicit",
+      "value": "n/a",
+      "unit": "s",
+      "applies": {
+        "runtime": "uvicorn",
+        "versionRange": ">=0.54.0 <0.55.0"
+      },
+      "citationName": "explicit graceful shutdown timeout, uvicorn",
+      "rangeLabel": "uvicorn 0.54.x",
+      "docUrl": "https://uvicorn.dev/settings/",
+      "docDate": "2026-11-12",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "0.54.0",
+        "date": "2026-11-12",
+        "platform": "darwin-arm64, CPython 3.14.7"
+      },
+      "measuredVersions": ["0.54.0"],
+      "scriptRef": "measure/shutdown-b4.mjs",
+      "toleranceMs": 214,
+      "notes": "No default value: uvicorn 0.54.0 alone has NO ceiling by default (a 60 s request in flight at SIGTERM finished in full, 59452 to 59456 ms later; measure/results/2026-11-11-b4.jsonl lines 61 to 63), so without --timeout-graceful-shutdown no ceiling is known. With --timeout-graceful-shutdown 5 on the command line the request was cut after 5116 to 5152 ms (lines 67 to 69, three runs). Only the value 5 and only the command-line flag were measured (measuredSpan); another value, or UVICORN_TIMEOUT_GRACEFUL_SHUTDOWN, is UNRESOLVED. The docs page (uvicorn.dev/settings, read 2026-11-12) gives no default; the installed 0.54.0 code has None. toleranceMs 214 (derived 2026-11-12, re-derived after the B8 review): the largest deviation above 5000 ms is 203.6 ms over the 22 recorded runs of this case taken one at a time (B8 lane runs at --jobs=1 or alone, measure/results/2026-11-12-lanes-*.jsonl, +115.8 to +203.6 ms), plus the 10 ms polling resolution. The runs of B4, which were taken with other timings running (+116 to +152 ms), and the parallel lane runs are evidence and not a basis. The deviation was measured at 5 s only, so no growth with the value is claimed. test/kb/tolerance-evidence.test.ts recomputes it from the result files.",
+      "measuredSpan": {
+        "min": 5,
+        "max": 5
+      }
+    },
+    {
+      "id": "lightship-shutdown-delay-9x",
+      "subject": "lightship-shutdown-delay",
+      "value": 5000,
+      "unit": "ms",
+      "applies": {
+        "runtime": "lightship",
+        "versionRange": ">=9.1.0 <10.0.0"
+      },
+      "citationName": "lightship shutdownDelay",
+      "rangeLabel": "lightship 9.x",
+      "docUrl": "https://github.com/gajus/lightship/blob/main/README.md",
+      "docDate": "2026-11-12",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "9.1.0",
+        "date": "2026-11-12",
+        "platform": "darwin-arm64, node v22.23.5"
+      },
+      "measuredVersions": ["9.1.0"],
+      "scriptRef": "measure/lightship-b4.mjs",
+      "toleranceMs": 24,
+      "notes": "createLightship({}) with no shutdownDelay, KUBERNETES_SERVICE_HOST set (lightship's own test for Kubernetes): the shutdown handlers started 5002.5 to 5003.9 ms after SIGTERM, and /ready answered not-ready at once (measure/results/2026-11-11-b4.jsonl lines 70 to 72, three runs). Outside Kubernetes (the variable unset, lightship's local mode) the delay is 0 (lines 73 to 75), as the README documents. The README documents 5000 as the default (read 2026-11-12). The range is one major line from the measured version (the B2 convention); only 9.1.0 was run. The report assumes the pod runs under Kubernetes because the workload is a Kubernetes manifest, and lists that assumption. gracefulShutdownTimeout and shutdownHandlerTimeout were not measured. toleranceMs 24 (derived 2026-11-12, B8 review): the script polls every 20 ms (resolution.pollMs 20), so the tolerance cannot be below 20 ms. The largest deviation above 5000 ms over the 14 recorded runs taken one at a time (B8 lane runs at --jobs=1 or alone, measure/results/2026-11-12-lanes-*.jsonl) is 3.9 ms (+0.6 to +3.9 ms); plus the 20 ms resolution that is 24 ms. The three B4 runs, taken with other timings running, are evidence and not a basis. test/kb/tolerance-evidence.test.ts recomputes it from the result files."
+    }
+  ]
+}

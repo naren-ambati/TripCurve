@@ -1,0 +1,5 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "web[31m evil"
+  namespace: "a]0;titleb"

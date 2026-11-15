@@ -1,0 +1,27 @@
+# Lookups for bolt B19 (ready for the first hosted run). All read-only, on 2026-11-13 (about 01:33Z UTC).
+# Nothing was cloned, written or run on GitHub. The pins of actions/checkout, actions/setup-node and
+# github/codeql-action are unchanged from docs/lookups-b9.txt (not looked up again).
+
+## 1. Composite action steps: the default status check, and why the upload step needs always()
+Source: https://raw.githubusercontent.com/github/docs/main/content/actions/reference/workflows-and-actions/expressions.md (the GitHub docs source, read 2026-11-13).
+Quoted: "You can use the following status check functions as expressions in `if` conditionals. A default status check of `success()` is applied unless you include one of these functions."
+Quoted: "You can include extra conditions for a step to run after a failure, but you must still include `failure()` to override the default status check of `success()` that is automatically applied to `if` conditions that don't contain a status check function."
+Source: .../metadata-syntax.md, section runs.steps.if, same date: the example "The `my backup step` only runs when the previous step of a composite action fails" uses `if: ${{ failure() }}` in a composite action's steps.
+Rendered docs page for always(): "Causes the step to always execute, and returns `true`, even when canceled." and "success(): Returns `true` when all previous steps have succeeded." (https://docs.github.com/en/actions/reference/workflows-and-actions/expressions, fetched 2026-11-13).
+Conclusion used: an `if` without a status check function gets `success()`, so the upload step needs `always()` (as B19 writes it) to run after the check step failed.
+Not stated in the docs I read: that composite steps are skipped after a failure in so many words; that follows from the default `success()` above. Unverified until the first hosted run.
+Caution from the same page, not applicable here but recorded: "Avoid using `always` for any task that could suffer from a critical failure, for example: getting sources" (the upload step is not such a task; it is guarded by the input and by a non-empty sarif-file output).
+
+## 2. Does GitHub expose repository visibility to a workflow?
+- The `github` context documentation (contents.md of the docs source, "contexts" page, 2026-11-13) lists no visibility or private property of its own; `github.event` is "The full event webhook payload".
+- The webhook payload schema, octokit/webhooks `payload-schemas/api.github.com/common/repository.schema.json` (read 2026-11-13): the repository object has `private` (boolean, "Whether the repository is private or public.") and `visibility` (string, enum "public", "private", "internal"). The `push` schema refers to this object (`"repository": { "$ref": "common/repository.schema.json" }`).
+- So `github.event.repository.visibility` is expected to be readable on `push` and `pull_request`. I checked the push schema only; I did not read the pull_request payload documentation text. The action-selftest `upload` job therefore guards on `github.event.repository.visibility == 'public'`; if the expression were empty on some event, the job would be skipped (a safe failure), never run.
+
+## 3. github/codeql-action/upload-sarif v4.39.3 (commit 33d7b85d...), action.yml read 2026-11-13
+Inputs: sarif_file (default "../results"), checkout_path, ref, sha, token (default `${{ github.token }}`), matrix, category, wait-for-processing (default "true"). Runtime node24.
+Consequence: with no token input given, it uses the job's GITHUB_TOKEN, which needs `security-events: write`. B19 passes no token and no secret.
+
+## Not looked up (stated as assumptions in the B19 report)
+- Whether a pull request from a fork gets a read-only GITHUB_TOKEN (widely documented; the upload job is guarded for it, but this was not re-read today).
+- Whether private repositories need GitHub code security for SARIF upload (the maintainer's brief says so; not re-read today).
+- Whether `steps.<id>.outputs.*` of a failed composite step (set by run.sh before it exits non-zero) are readable by the caller after `continue-on-error`.

@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stream
+  # tripcurve: ignore T2 reason="drain is in the sidecar" until=2026-12-01
+spec:
+  selector:
+    matchLabels:
+      app: stream
+  template:
+    metadata:
+      labels:
+        app: stream
+    spec:
+      containers:
+        - name: app
+          # tripcurve: ignore T3 reason="grace period reviewed by the platform team" until=2027-01-15
+          image: node:22.23
+          ports:
+            - containerPort: 9000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: stream
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: external
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
+spec:
+  type: LoadBalancer
+  selector:
+    app: stream
+  ports:
+    - name: tcp
+      port: 443
+      targetPort: 9000

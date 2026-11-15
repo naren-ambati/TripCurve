@@ -1,0 +1,20 @@
+Third-party fixture copy.
+
+Source:   https://github.com/akhileshmishrabiz/DevOpsDojo
+Commit:   13162e3d0f91d2cd253d2e36dccf2968055935e0
+Copied:   2026-11-12 (UTC)
+Licence:  MIT (the upstream LICENSE file is copied beside the files, unchanged)
+
+Files copied (relative paths kept):
+  - backend/Dockerfile
+  - backend/requirements.txt
+  - frontend/Dockerfile
+  - frontend/package.json
+  - frontend/server.js
+  - k8s/backend.yaml
+  - k8s/frontend.yaml
+  - k8s/hpa.yaml
+  - k8s/ingress.yaml
+
+Trimmed: only files tripcurve reads; unchanged otherwise (byte-identical to upstream).
+The upstream project is not affiliated with tripcurve and did not review or endorse it.

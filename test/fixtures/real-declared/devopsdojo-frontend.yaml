@@ -1,0 +1,13 @@
+# Written for tripcurve's real-repository check; not part of the upstream project.
+# The upstream manifest names an image that no file in the repository builds, so the
+# Dockerfile and the server source cannot be linked by tripcurve alone. Here the
+# owner of the check declares the two links the Dockerfile and server.js support.
+version: 1
+workloads:
+  - name: frontend
+    source: frontend/server.js
+    runtime:
+      node: "20"
+    load_balancer:
+      ingress: 3-tier-app-ingress
+      idle_timeout_s: 60

@@ -1,0 +1,34 @@
+tripcurve 0.1.0   checked "."   9 files read
+
+Workload "frontend" (Deployment) in "k8s/frontend.yaml"
+  UNRESOLVED T1  idle close not established: the server is not identified as a
+                 Node program
+           idle close       the server is not identified as a Node program
+           LB idle 60 s     assumed, not set in the files: default: ALB idle
+                            timeout (AWS docs, ALB; documented)
+           name the program in the container command or args (node, npm,
+           gunicorn or uvicorn); for Node, tripcurve.yaml can instead declare
+           runtime.node for this workload, with source for its entry file
+  UNRESOLVED T2  the search for a drain is not complete
+           preStop none     in "k8s/frontend.yaml"
+           drain            the server is not recognised, so the search for a
+                            drain is not complete
+           declare drain.in_process_s for this workload in tripcurve.yaml
+  UNRESOLVED T3  drain not established; grace cannot be checked
+           grace 30 s       default: Kubernetes terminationGracePeriodSeconds
+                            (documented)
+           drain            the server is not recognised, so the search for a
+                            drain is not complete
+           declare drain.in_process_s for this workload in tripcurve.yaml
+
+Assumptions
+  - The load balancer idle timeout is assumed to be the documented default of 60
+    s, because no file or declaration sets it; the console can change it outside
+    Git.
+  - Green never means zero-downtime: the SIGTERM race and the deregistration
+    delay are outside these rules.
+  - No load balancer found in the checked files for 1 workload, T1 to T3 not
+    checked for it:
+    Workload "backend" (Deployment) in "k8s/backend.yaml"
+
+Summary: 3 unresolved; not a clean result

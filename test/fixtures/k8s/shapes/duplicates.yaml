@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: twin
+  namespace: a
+spec:
+  template:
+    spec:
+      containers:
+        - name: one
+          image: first
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: twin
+  namespace: a
+spec:
+  template:
+    spec:
+      containers:
+        - name: two
+          image: second
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: twin
+  namespace: b
+spec:
+  template:
+    spec:
+      containers:
+        - name: three
+          image: third
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc

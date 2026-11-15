@@ -1,0 +1,5 @@
+version: 1
+workloads:
+  - name: web
+    namespace: shop
+    longest_request_s: 5

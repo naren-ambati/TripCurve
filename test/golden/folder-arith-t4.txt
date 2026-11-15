@@ -1,0 +1,11 @@
+tripcurve 0.1.0   checked "."   3 files read
+
+Workload "orders" (event source mapping) in "mapping.tf"
+  PASS T4  visibility 240 s covers 240 s ("queue.tf":2)
+
+Assumptions
+  - Green never means zero-downtime: the SIGTERM race and the deregistration
+    delay are outside these rules.
+
+All checks passed (1), 0 not applicable.
+Green does not mean zero-downtime: see Assumptions.

@@ -1,0 +1,17 @@
+tripcurve 0.1.0   checked "test/fixtures/real/DanielDaCosta__..."   4 files read
+
+Workload "event_source_mapping" (event source mapping) in "sqs.tf"
+  FAIL T4  visibility 30 s is less than 6 x 30 s = 180 s; the batching window is
+           not set, and any window only raises the need
+           visibility 30 s  default: Terraform aws_sqs_queue
+                            visibility_timeout_seconds (Terraform AWS provider
+                            docs; documented)
+           timeout 30 s     "lambda.tf":16
+
+Assumptions
+  - Green never means zero-downtime: the SIGTERM race and the deregistration
+    delay are outside these rules.
+
+Summary: 1 failed; not a clean result
+
+[exit 1]

@@ -1,0 +1,1 @@
+-e git+https://github.com/benoitc/gunicorn.git@abc#egg=gunicorn

@@ -1,0 +1,63 @@
+# Lookups for bolt B4 (shutdown chain defaults), raw
+# All read-only GETs (curl / fetch) or local reads of installed packages. Taken 2026-11-12 (UTC 06:18 to 06:21).
+# The file name carries 2026-11-11 because the bolt's outputs are named for the bolt day; the lookups are dated here.
+
+## 1. gunicorn graceful_timeout  [lookup 2026-11-12]
+URL: https://gunicorn.org/reference/settings/   (https://docs.gunicorn.org/en/stable/settings.html answers 301 to gunicorn.org/en/stable/settings.html, which is 404; the page above is the current settings reference)
+Quote (text extracted from the page):
+  "graceful_timeout Command line: --graceful-timeout INT Default: 30 Timeout for graceful workers restart in seconds. After receiving a restart signal, workers have this much time to finish serving requests. Workers still alive after the timeout (starting from the receipt of the restart signal) are force killed."
+Note: the same page has an unrelated dirty-worker setting "--dirty-graceful-timeout INT Default: 30"; it is not the worker setting.
+Note: the sentence says "restart signal"; the measurements in README-b4.md show what SIGTERM does.
+Related, same page: "timeout ... Command line: -t INT , --timeout INT Default: 30 Workers silent for more than this many seconds are killed and restarted."
+Local confirmation (installed packages, read only): gunicorn/config.py class GracefulTimeout: name "graceful_timeout", cli ["--graceful-timeout"], default = 30 in both
+  .cache/py-g26 (gunicorn 26.2.0, config.py line 874) and .cache/py-g27 (gunicorn 27.0.0, config.py line 923).
+
+## 2. uvicorn --timeout-graceful-shutdown  [lookup 2026-11-12]
+URL: https://uvicorn.dev/settings/   (https://www.uvicorn.org/settings/ did not resolve: ENOTFOUND)
+Quote: "--timeout-graceful-shutdown <int> - Maximum number of seconds to wait for graceful shutdown. After this timeout, the server will start terminating requests."
+The page gives no default for this option (the neighbouring --timeout-keep-alive entry says "Default: 5").
+Local confirmation (installed uvicorn 0.54.0, read only): `uvicorn --help` prints "--timeout-graceful-shutdown INTEGER  Maximum number of seconds to wait for graceful shutdown." with no "[default: ...]" (the keep-alive option prints "[default: 5]");
+  uvicorn/config.py line 236: `timeout_graceful_shutdown: int | None = None`.
+So: documented default = none stated; code default = None (no limit). The measurement in README-b4.md is the behavioural check.
+
+## 3. lightship  [lookup 2026-11-12]
+npm: `npm view lightship version` -> 9.1.0 (engines: node >=22.13.0). Installed with `npm install --ignore-scripts lightship@9.1.0` into .cache/lightship (not the repo).
+URL: https://github.com/gajus/lightship/blob/main/README.md (also read from the installed package's README.md, same text)
+Quotes:
+  "@property shutdownDelay Delays the shutdown handler by X milliseconds. This value should match `readinessProbe.periodSeconds`. Default 5000."
+  "@property gracefulShutdownTimeout A number of milliseconds before forcefull termination if process does not gracefully exit. The timer starts when `lightship.shutdown()` is called. This includes the time allowed to live beacons. Default: 30000."
+  "@property shutdownHandlerTimeout A number of milliseconds before forcefull termination if shutdown handlers do not complete. The timer starts when the first shutdown handler is called. Default: 5000."
+  "@property detectKubernetes Run Lightship in local mode when Kubernetes is not detected. Default: true."
+  "If Lightship detects that it is running in a non-Kubernetes environment (e.g. your local machine) then... It starts the HTTP service on any available HTTP port. ... `shutdownDelay` defaults to `0`, i.e. immediately proceed to execute the shutdown routine."
+  "Lightship takes care of the delay in the first step: when the shutdown starts, `/ready` begins to respond with `SERVER_IS_NOT_READY`, and the shutdown handlers are called only after `shutdownDelay` milliseconds. You do not need to add a delay of your own."
+The README does not say how Kubernetes is detected. The installed code does (read only):
+  dist/esm/utilities/isKubernetes.js:  export const isKubernetes = () => { return Boolean(process.env.KUBERNETES_SERVICE_HOST); };
+  dist/esm/factories/createLightship.js:  defaults gracefulShutdownTimeout: 30_000, port: LIGHTSHIP_PORT ? Number(LIGHTSHIP_PORT) : 9_000, shutdownDelay: 5_000, shutdownHandlerTimeout: 5_000, signals: ['SIGTERM','SIGHUP','SIGINT'];
+  line 42: const modeIsLocal = configuration.detectKubernetes === true && isKubernetes() === false;  (local mode and no user shutdownDelay -> shutdownDelay = 0)
+  lines 99-102: app.listen({ host: '0.0.0.0', port: modeIsLocal ? 0 : configuration.port })
+Env var: KUBERNETES_SERVICE_HOST (any non-empty value; Boolean() of the string). That Kubernetes sets this variable in pods was not looked up here.
+Doc/code difference: the README type comment says the signals default is [SIGTERM]; the code default is ['SIGTERM','SIGHUP','SIGINT'].
+
+## 4. Kubernetes default terminationGracePeriodSeconds  [lookup 2026-11-12]
+URL: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/
+Quotes:
+  "A Pod is granted a term to terminate gracefully, which defaults to 30 seconds."
+  "The default terminationGracePeriodSeconds setting is 30 seconds."
+  "You use the kubectl tool to manually delete a specific Pod, with the default grace period (30 seconds)."
+URL: https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/  (PodSpec)
+Quote: "terminationGracePeriodSeconds integer Optional duration in seconds the pod needs to terminate gracefully. May be decreased in delete request. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). If this value is nil, the default grace period will be used instead. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal."
+URL: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
+Quote: "The Pod's termination grace period countdown begins before the PreStop hook is executed, ... This grace period applies to the total time it takes for both the PreStop hook to execute and for the Container to stop normally."
+Not measured: no cluster is allowed (project rule). A first fetch of the PodSpec page through a summariser returned a different wording ("beta field ... class default behavior"); that text is not on the page and is discarded. The quotes above come from the raw page text.
+
+## 5. @godaddy/terminus  [lookup 2026-11-12]
+npm: `npm view @godaddy/terminus version` -> 4.12.1 (last modified 2025-10-06).
+URL: https://raw.githubusercontent.com/godaddy/terminus/main/README.md
+Quotes:
+  "timeout: 1000,                    // [optional = 1000] number of milliseconds before forceful exiting"
+  "beforeShutdown,                   // [optional] called before the HTTP server starts its shutdown"
+  "onSignal,                         // [optional] cleanup function, returning a promise (used to be onSigterm)"
+  "onShutdown,                       // [optional] called right before exiting"
+  "To make sure you don't lose any connections, we recommend delaying the shutdown with the number of milliseconds that's defined by the readiness probe in your deployment configuration. To help with this, terminus exposes an option called `beforeShutdown` that takes any Promise-returning function."
+  Example in the README: beforeShutdown returns a Promise resolved by setTimeout(resolve, 5000), with the comment "given your readiness probes run every 5 second may be worth using a bigger number so you won't run into any race conditions".
+Reading: beforeShutdown is [optional] with no default delay; the 5000 ms is only in the README example (the user's own code). `timeout` defaults to 1000 ms and is documented as "number of milliseconds before forceful exiting"; the README does not say which phases it covers (whether it includes the time spent in beforeShutdown). Not settled by docs; not measured (docs only, as asked).

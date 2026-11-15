@@ -1,0 +1,21 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Conditions:
+  Big: !Equals [!Ref "AWS::Region", us-east-1]
+Resources:
+  QueueIf:
+    Type: AWS::SQS::Queue
+    Properties:
+      VisibilityTimeout: !If [Big, 120, 60]
+  QueueSub:
+    Type: AWS::SQS::Queue
+    Properties:
+      VisibilityTimeout: !Sub "${AWS::Region}"
+  QueueBogus:
+    Type: AWS::SQS::Queue
+    Properties:
+      VisibilityTimeout: !Bogus 60
+  QueueLong:
+    Type: AWS::SQS::Queue
+    Properties:
+      VisibilityTimeout:
+        Fn::FindInMap: [Sizes, Big, Seconds]

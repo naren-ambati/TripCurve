@@ -1,0 +1,6 @@
+{
+  "note": "The recorded machine of the timed check: the maintainer's laptop. Written from `sysctl -n hw.model` and `sysctl -n machdep.cpu.brand_string` on 2026-11-12, not typed from memory. Only a machine with this model and CPU enforces the budgets; any other prints 'skipped'.",
+  "model": "Mac17,3",
+  "cpu": "Apple M5",
+  "recordedOn": "2026-11-12"
+}

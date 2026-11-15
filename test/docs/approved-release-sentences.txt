@@ -1,0 +1,463 @@
+*Status: not released.** The source will be at https://github.com/naren-ambati/TripCurve.
+Every released Node line keeps 5 s until v27.
+## Install from a checkout
+tripcurve is not published to npm.
+[docs/ci-and-sarif.md](docs/ci-and-sarif.md) | the GitHub Action and SARIF;
+[docs/action.md](docs/action.md) | the Action's inputs, outputs and exit behaviour |
+[docs/release-checklist.md](docs/release-checklist.md) | the release checks, what ran locally, and the open questions for the maintainer |
+Licence: decided by the maintainer before release.
+The licence is decided by the maintainer before release.
+*tripcurve 0.1.0 has not been released.** A bolt is one build step: B7 is build step 7.
+what must be true before the maintainer's go is in `docs/release-checklist.md`.
+**B8, measurement lanes.** `npm run verify:measure` (pinned lane) and `node measure/lanes.mjs latest`: every entry has a script run or a stated reason, nothing is retried, and a lookup failure stops the lane.
+**B9, the GitHub Action.** A composite Action built from its own checkout, with pinned third-party SHAs, inputs passed as environment variables, and the SARIF upload disabled.
+It has never run on GitHub.
+(`BUILD-NOTES.md`, "B9 GitHub Action";
+`docs/action.md`)
+**B10, the demo repository and end-to-end test.** `demo/` and `demo-fixed/` with byte-exact expected output, and a timed check that is the last step of `npm run verify`.
+Measuring them needs Rosetta 2 installed by the maintainer, or an x64 or Linux host.
+**B15, documentation and release checks.** The README, the rules reference, how defaults were measured, how to add a knowledge-base entry, CI and SARIF, the security note, this changelog and the release checklist (`docs/release-checklist.md`), with a test that checks the docs' diagrams, quotes and sourced numbers.
+### Known limits of this release candidate
+(`docs/ci-and-sarif.md`)
+The Action and the hosted workflow have never run on GitHub.
+(`docs/action.md`)
+(`docs/release-checklist.md`)
+# The tripcurve GitHub Action
+The Action is a composite Action defined in `action.yml`;
+all its shell logic is in `action/run.sh`, which is tested without GitHub (`test/action/`).
+`-` reads rendered YAML from standard input (which is empty in a workflow).
+## What the Action does
+build the CLI from the Action's own checkout (tripcurve itself is never fetched from a registry at run time;
+Otherwise it fails, and the log says why in the Action's own fixed words:
+The SARIF file is still written when the report run exits 1, so findings can be uploaded after a failure.
+`action.yml` passes the four inputs as environment variables (`TRIPCURVE_PATH`, `TRIPCURVE_CONFIG`, `TRIPCURVE_FORMAT`, `TRIPCURVE_SARIF_FILE`) and the script quotes them.
+The Action requests no token and prints no secret.
+`actions/setup-node` v7.1.0 and `github/codeql-action/upload-sarif` v4.39.3.
+Hosted-runner details, such as what Node 22.12 setup needs, are unverified.
+`action/dry-run.sh [fixture]` runs the Action's two steps against a copy of a fixture repository in a temporary workspace, with `actions/setup-node` skipped and `npm ci` stubbed so nothing touches the network.
+It is the path tested by the release-quality dry run (metric 5, `docs/release-checklist.md`).
+get the evidence (a dated lookup, or the runtime installed into `.cache/`);
+run `npm run verify` and the lane for the entry;
+Node 22.12.0 or later, then `npm ci --ignore-scripts` in the worktree.
+Run every tool from the worktree's `node_modules` (`npm run ...`, `./node_modules/.bin/...`), never a bare `npx`: a bare `npx` can fetch and run an unrelated registry package.
+The measurement lanes look for installed runtimes in `.cache/` of the worktree, or of the main checkout when you are in a worktree.
+(`measure/lib/lanes-runner.mjs`)
+a default of a runnable server for a new version or release line (a new Node line, a new gunicorn major, a new uvicorn minor) | measured | a script run, `basis: "measured"`, a tolerance |
+A Node entry covers exactly one release line: never `*`, never a range across lines |
+`measuredVersions` | recommended for measured | the exact releases that were run;
+Exit codes: 0 measured, 2 usage, 3 server not installed, 4 could not measure.
+**Install the runtime** into `.cache/`, from a source whose checksum you verify.
+For Node: download the tarball and `SHASUMS256.txt` from the same release folder on `nodejs.org/dist/v<version>/`, check the tarball's SHA-256 against its line in `SHASUMS256.txt`, and unpack it with `tar -xzf node-v<version>-darwin-arm64.tar.gz -C .cache/node`.
+For Python: a `uv` virtualenv with `uv pip compile --generate-hashes` then `uv pip install --require-hashes`.
+For lightship: `npm install --ignore-scripts` into `.cache/lightship-<version>`.
+These are the steps the latest lane performs for a newer release of an existing entry (`measure/lib/lanes-runner.mjs`).
+`npm run verify` runs the typecheck (tests included), Biome, the unit, golden and end-to-end tests with the coverage floor, the measurement self-test, the build, and the timed check.
+`npm run verify:measure` runs the whole pinned lane, which takes many minutes;
+Does every claim in the printed basis correspond to a recorded run (a release, a value K, a platform)?
+The release-quality dry run (metric 5)
+# CI and SARIF
+How to run tripcurve in CI, and how to read its SARIF output so that a gate cannot be fooled.
+**The GitHub Action has never run on GitHub.** `action.yml` and `action/run.sh` are tested without GitHub (`test/action/`), and a local dry run (`action/dry-run.sh`) exercises both steps, but nothing hosted has been tried.
+(`.github/workflows/verify.yml`)
+The Action's name and ref are set at release;
+(`docs/action.md`, "Usage")
+## Using the Action
+See [action.md](action.md) for the inputs (`path`, `config`, `format`, `sarif-file`), the outputs (`sarif-file`, `exit-code`), the exit behaviour and the security notes.
+Text fallback: the Action builds the CLI from its own checkout, runs it twice (once for the log, once with `--format sarif` into a temporary file), checks the file is a SARIF 2.1.0 document with a non-empty `runs` list, moves it to `sarif-file` and sets the outputs.
+the run is recorded in `docs/release-check-run-b15.txt`.
+The Action's own `exit-code` output is the simplest gate of all, because it is the CLI's exit code (0 to 3;
+(`docs/action.md`, "Outputs")
+**A CI job should therefore run `tripcurve .
+--format sarif` from the repository root**: then `SRCROOT` is the repository root and GitHub resolves each path against it.
+(`docs/limits.md`, "Review of B7", m8) The Action changes into the job's workspace before it runs the CLI, so its default `path` of `.` checks the workspace;
+that is the repository root when the repository is checked out into the workspace, the usual setup (not verified on a hosted runner).
+(`action/run.sh`;
+A result from standard input has no file, so it has no `physicalLocation`, and GitHub code scanning cannot show it.
+whether GitHub's viewer decodes `{{` back to `{` has not been checked.
+**The Action has not run on a hosted runner**, so runner details (what Node 22.12 setup needs, whether a failed step's outputs are kept) are unverified.
+(`docs/action.md`, "Not tested")
+No ALB, no cluster, no CI runner and no Linux host was involved;
+`measure/selftest.mjs` checks the client against fake servers with known behaviour, and runs inside `npm run verify`.
+The Node versions are official tarballs whose SHA-256 was checked against that release's `SHASUMS256.txt`;
+`npm run verify:measure` runs the **pinned lane**: each entry's script against the exact releases the entry cites, from `.cache/`.
+`node measure/lanes.mjs latest` runs the **latest lane**: it looks up the newest release of Node, gunicorn, uvicorn, uvicorn-worker and lightship with GET only, installs what is missing with its checksum or hash verified, runs the same cases, and fails when the newest release of a runtime falls outside every range of that runtime.
+Neither lane is part of `npm run verify`: they start real servers, take many minutes, and are sensitive to load.
+`npm run verify` runs only the lane logic against recorded lines and fakes, a gap test and a planted-drift test (`test/kb/lanes.test.ts`).
+The third is the B15 release-check run, which includes them.
+The pre-release record is the run on the day of the maintainer's go (`docs/release-checklist.md`).
+They are not measurements, and a release does not claim they are.
+Three entries, `node-idle-close-22x`, `node-idle-close-24x` and `node-idle-close-26x`, keep 2026-11-11, because the release their `measuredOn` names was measured in B0 on that date, although lower releases in their ranges were measured on 2026-11-12;
+The interior of a version range: each range is bracketed by measured releases, not measured release by release, and where the extra second of Node's idle close first appears between 18.20.8 and 20.20.2 was not measured.
+The `yaml` library composes nodes recursively and catches a stack overflow itself, reporting it as the error code `RESOURCE_EXHAUSTION` (read in `compose-node.js` of the installed yaml 2.9.1, 2026-11-11);
+tripcurve reads no release list: that needs the network, which `check` never uses.
+The range is anchored by the lowest measured version of its release line, not by a list of published releases.
+Reason: intake reads no other `.py` file, and reading every Python file is more input than this release takes.
+**An explicit `keepalive` equals the idle close, only where measured.** Entries of subject `gunicorn-keepalive-explicit` (and `uvicorn-keepalive-explicit`) in `src/kb/data/python-servers.json` say for which worker class and releases the idle close was measured equal to the explicit value;
+Everything else stays UNRESOLVED ("the effect of an explicit keepalive on the idle close is not measured yet", with the value and line shown): gevent, eventlet and tornado, gthread or the uvicorn worker on a release outside the covered lines, and uvicorn alone on a release outside 0.54.x.
+**Option lines and URL requirements.** In a `requirements*.txt`, a line that starts with `-r`, `--requirement`, `-c`, `--constraint`, `-e` or `--editable` (glued or spaced) and a requirement that is a URL, a path, a wheel or archive file name or any text that is not a requirement make that file unreadable for the package, whatever package they name: they can install or constrain the package at another version.
+**Not read, so UNRESOLVED ("a gunicorn pin in the repository is not in a form tripcurve reads"):** a pre-release, a local version, a version of four parts, `===`, a direct URL, a VCS line naming the package in its `egg=` fragment, a Poetry git or path dependency, an unterminated or multi-line-string `dependencies` array, a lock block with no plain version.
+A release no entry covers is UNRESOLVED ("gunicorn 26.1.0 is not covered by a measured default").
+**Classes with no entry.** gevent, eventlet and tornado have no measured default, so they are UNRESOLVED ("to be measured") whatever the release.
+the protocol class was read from the live protocol object serving each request) and is identical to h11 within 0 to 4 ms: the uvicorn worker's default 2.0 s and explicit 3, 75 and 300 s, plain uvicorn's default 5.0 s and explicit 7 and 300 s, and `--http auto`, which picks httptools when installed.
+**uvloop note:** the standard-install runs used uvloop and the plain runs used asyncio, so the two loops were not separated;
+Other httptools, uvloop or uvicorn-worker releases are not checked.
+**One entry per release line, from the lowest measured version to the end of the line.** The interior of a range is bracketed by measured versions but not measured release by release.
+**Every claim in a basis is a run.** Each measured Node entry lists the releases that were run (`measuredVersions`) and, for explicit entries, the values K (`measuredKs`);
+the printed basis says `measured on 5 releases from 22.12.0 to 22.23.5` or `measured at K = 7, 12 and 65 s on 5 releases from 22.12.0 to 22.23.5`.
+`test/kb/node-evidence.test.ts` reads the result files (`2026-11-11-b0`, `-b3`, `-b3-versions` and `-b3-points`) and checks that every listed release and K has at least 3 runs in the right case, with the idle close the entry's rule predicts.
+The interior of a range is still not measured release by release, and K between the listed values follows by the same rule, not by measurement.
+**Default idle close:** 18.x from 18.20.8 (1 release) is 5 s;
+measured on 5 releases from 22.12.0 to 22.23.5)`.
+K = 7, 12 and 65 s were run on every release listed above;
+Buffer 1000 (K + 1 s) at K = 7 s only on the same releases;
+A buffer on a release without the property, any other value (`keepAliveTimeoutBuffer N ms is not measured`) and a buffer written without a `keepAliveTimeout` are UNRESOLVED.
+6.x, 8.x and 11.x are listed by the research as trap releases but it cites no default `headersTimeout` for them, so they have no entry.
+The extra second that later releases add was not measured on these releases and is not added.
+24.x and 26.x have one release for each K;
+A K that is not one of the measured values reads `K = 30 s interpolated between measured K = 7, 12 and 65 s on 5 releases ...`.
+each entry's `notes` cite the result lines in `measure/results/2026-11-11-b4.jsonl`, and `test/kb/shutdown-evidence.test.ts` checks every claimed release, worker class, value and source against those lines and `measure/results/2026-11-11-lookups-b4.txt`.
+The printed basis is `measured on 26.2.0` (or `27.0.0`), per major line, from the measured release to the end of that line (the B2 convention);
+other releases, other major lines, and the gevent, eventlet and tornado workers have no entry and are UNRESOLVED.
+The range is `>=9.1.0 <10.0.0` (one major line from the measured release, as for gunicorn);
+A literal `shutdownDelay` in the code is the number the code writes, with no Kubernetes assumption, but the release must still be known and covered, because what `shutdownDelay` means was measured (and documented) on 9.1.0 only.
+### Where the lightship release comes from
+An exact pin in `package.json` (`dependencies`, `devDependencies`, `optionalDependencies`, `peerDependencies`), or the locked version in `package-lock.json`, `npm-shrinkwrap.json`, `yarn.lock` (classic and berry) or `pnpm-lock.yaml`, in the nearest folder from the entry file's folder up to the root that names the package at all (the rules of the Python pins).
+An alias, a git, file, link or workspace spec, a pre-release, an `overrides`, `resolutions` or `pnpm` entry that names the package, a lock file that does not parse, a nested copy with a different version, or a file skipped for size is UNRESOLVED ("declare drain.in_process_s") and never lets the search go on to a parent folder.
+**HTTP protocol of uvicorn.** The shutdown runs were made on a plain install (h11).
+**Pins** (minor 4): a `package-lock.json` entry whose `name` is not the package (an npm alias) is UNRESOLVED;
+The GitHub API reports the licence as NOASSERTION.
+A SARIF consumer that validates against the official schema is the real test, and that happens only after the maintainer's go (no upload before then).
+GitHub code scanning cannot show such a result.
+tripcurve has no published documentation address yet, so there is no address to put there and none is invented.
+SARIF 3.49.13 says `help` is for the case where "help information is not available at a URI").
+The maintainer can add the URI at release.
+whether GitHub's viewer decodes `{{` back to `{` is unverified.
+`%SRCROOT%` is a different convention.) **How to run it:** the paths are relative to the directory that was checked, so a CI job should run `tripcurve .
+then `SRCROOT` is the repository root and GitHub resolves each path against it.
+`npm run verify` ends with a labelled step, `npm run timed-check` (`scripts/timed-check.mjs`), after `npm run build`.
+The two figures in each row are from two full `npm run verify` runs on 2026-11-12 (the three runs inside them were 0.23, 0.23, 0.23 s both times for the demo, and 1.75, 1.86, 1.76 s and 1.80, 1.77, 1.78 s for the tree).
+**The hosted workflow** (a checked file that has never run) would run on Linux, so the step would be skipped there.
+The budgets are therefore enforced only where the maintainer runs `npm run verify` locally.
+A YAML file is a candidate when a template key (`AWSTemplateFormatVersion`, `Transform`, `Resources`) is a key of the top-level mapping of a document, at the indentation that document's first line of content uses (so a template whose keys are all indented is read, while a nested `Resources:` in a Helm values file, a Serverless Framework file, a Compose file or a workflow is not a candidate);
+(Maintainer decision to confirm before release: a link to a JSON file nothing names could instead be ignored when it dangles.)
+no ordinary values, Compose, workflow or OpenAPI file has both keys at the top.
+`npm run verify:measure` runs the pinned
+It is a separate labelled step and is not part of `npm run verify`: it starts real servers on
+`npm run verify` runs only the lane
+Bolt B13 attempted the measurement on 2026-11-12 and recorded that it cannot run here (`measure/results/2026-11-12-b13-attempt.txt`, `measure/README-b13.md`): no release up to Node 15 has an `osx-arm64` build, and Rosetta 2 is not installed;
+installing it, or using an x64 host, is the maintainer's decision.
+They are not release blockers, because their basis `from changelogs, not measured` is an allowed basis;
+interior of a version range (releases the entry does not cite), the precedence of settings given in several
+**The latest lane** looks up the newest release of each runtime (GET only), installs it into `.cache/` with
+its checksum or hash verified, runs the same cases, and fails when the newest release of a runtime is outside
+**Uvicorn worker.** Every case that runs the uvicorn worker also requires that the uvicorn release in its environment is one a uvicorn entry covers (the worker's timers are uvicorn's code), and the default case reads the worker class back from gunicorn's startup line (`py-idle-close.mjs` gained that field;
+`src/factories/createLightship.ts` lines 153 to 156 of the installed package (`.cache/lightship/node_modules/lightship/src/`) read `const address = await app.listen({ host: '0.0.0.0', port: modeIsLocal ?
+**Parallel runs.** The runner starts one script at a time by default (`--jobs=1`): a timing measurement must not share the CPU with another one.
+**Release checklist (for B15).** The release checklist must list every `DEFERRED` entry by name (today `node-headers-trap-10x`, `-12x` and `-13x`, deferred to B13) and say that each is unmeasured, so a release never reads a deferred entry as measured.
+# Release checklist: tripcurve 0.1.0 (unreleased)
+**Nothing here publishes anything.** Releasing means publishing to npm and the GitHub Action, by hand, and only on the maintainer's explicit go;
+until then the package stays `private: true` with `license: UNLICENSED`, and the name is neither reserved nor published.
+**done locally**: it ran in this bolt, with the command and its real output (the raw record is `docs/release-check-run-b15.txt`, and the lookups are in `docs/lookups-b15.txt`);
+## The release checks
+1 | One local command passes: typecheck (tests included), Biome, unit, golden and end-to-end tests with the 80% coverage floor, measurement self-test, build and timed check | **done locally** | `npm run verify`: see "What ran" below |
+3 | Pinned measurement lane (`npm run verify:measure`) | **done locally**: passed on a quiet host | 110 of 110 cases including the nine stated-reason entries, run 2026-11-12 from 20:27Z to 21:07Z;
+raw output in `measure/results/2026-11-12-lanes-pinned-b15.txt` and `.jsonl`, and in `docs/release-check-run-b15.txt` |
+it needs the network (GET only) and installs into `.cache/` |
+see "npm audit" below |
+8 | The docs | **done locally** (written in B15) | README, rules, how defaults were measured, add an entry, CI and SARIF, security, CHANGELOG, this page;
+11 | A fresh re-check of the npm name | **done locally on 2026-11-12;
+repeat on the day of the go** | `npm view tripcurve` returned 404 at 2026-11-12T20:21Z (`docs/lookups-b15.txt`) |
+15 | Publish to npm;
+publish the Action | **cannot run before the maintainer's go** | |
+16 | The licence | **open maintainer decision**: decided by the maintainer before release | no LICENSE file exists, and a test checks that |
+Precision fixtures green | **done locally** | the gunicorn sync worker, `--threads` above 1, `GUNICORN_CMD_ARGS` overrides, Node with and without the buffer, resolved and unresolved terminus `beforeShutdown`: part of `npm run verify` |
+### `npm run verify`: done locally
+`npm run verify` runs the typecheck (the typecheck configuration includes `test/`), Biome, the unit, golden and end-to-end tests with the 80% line-coverage floor, the measurement self-test, the build and the timed check.
+Verbatim from `docs/release-check-run-b15.txt`:
+anywhere else it prints `skipped` and passes, so the hosted Linux workflow will not enforce them.
+### The pinned lane (`npm run verify:measure`): done locally
+`test/report/sarif-validate.test.ts` and `test/report/sarif.test.ts` passed (177 tests, `docs/release-check-run-b15.txt`);
+they are also part of `npm run verify`.
+`npm run build` ran as the build step of `npm run verify` (above) and again on its own at the end of this bolt;
+see the end of `docs/release-check-run-b15.txt`.
+`npm audit` and the npm-name check are in `docs/lookups-b15.txt`.
+## npm audit
+The CI workflow and the Action install with `--ignore-scripts`, so `fsevents`'s script never runs there.
+**Open maintainer decision:** is "no install scripts" satisfied by "none in the production tree", or must the dev tree have none too?
+`docs/ci-and-sarif.md`)
+*Deferred and not measured (3).** A release must never read these as measured.
+Measuring them needs Rosetta 2 installed by the maintainer, or an x64 or arm64 Linux host.
+*Release blockers.** An entry with the basis `to be measured` is a release blocker and fails the lane.
+The GitHub Action, the hosted workflow and the SARIF upload have never run on GitHub;
+runner details are unverified.
+(`docs/action.md`;
+Whether GitHub's viewer decodes the doubled braces `{{` in SARIF messages back to `{` has not been checked.
+the first group blocks the release.
+2 | The go: publish to npm and publish the Action;
+3 | `npm audit`: 3 moderate findings (`minimatch` through `ts-morph`).
+4 | "No install scripts": is a dev-only optional package (`fsevents`) with an install script acceptable when the production tree has none?
+7 | The Action's name and ref (`<owner>/tripcurve@<sha>`), its first hosted run, and when to enable the upload step;
+10 | The three old-Node trap entries: install Rosetta 2 (`softwareupdate --install-rosetta --agree-to-license`), provide an x64 or arm64 Linux host, or release with them deferred and unmeasured.
+Stars and push dates come from the GitHub REST API (`pushed_at`).
+Measured numbers come from local experiments on one 10-core macOS laptop, not on an ALB or a CI runner.
+No fresh web lookups were made when this workspace was set up, except two: **[lookup 2026-11-10]** `npm view tripcurve` returned 404 (name still free) and `npm view mel-check` returned 404.
+Anything that moves (stars, issue state, Node release lines, gunicorn/uvicorn versions) must be re-checked before it is quoted in a public README.
+A static config linter that reads values spread across Kubernetes YAML, container args, app code and Terraform, fills in unwritten defaults from a versioned, sourced knowledge base, and fails CI when the timeouts *between* infrastructure layers are ordered wrongly.
+Node: every released line keeps the 5 s default until v27.
+Node 26 entered LTS on 2026-10-28 and is supported until 2029-04-30 (nodejs/Release `schedule.json`), so the 5 s default stays in supported Node until then.
+CI reruns it against each pinned server version, so a default that changes upstream fails tripcurve's own build before it gives users a wrong verdict (the report's plan;
+no hosted CI has run).
+https://github.com/cdklabs/cdk-nag (rule `LambdaEventSourceSQSVisibilityTimeout`) | 1,051 | 2026-11-02 (rule added 2024-11-01, PR #1813) | "SQS queue visibility timeout of Lambda Event Source Mapping is at least 6 times timeout of Lambda function".
+https://github.com/hasanyelaldi/plimsoll | 0 | 2026-10-28 (created 10-14) | Extracts retry, timeout and circuit-breaker settings from Java/Spring/Istio config with a library-defaults knowledge base;
+https://github.com/zegl/kube-score | 3,106 | 2026-05-20 | Single-object Kubernetes checks.
+npm `@neurocode.io/k8s-graceful-shutdown`: a runtime library.
+**GitHub repo queries, zero results:** `preStop hook lint`, `deregistration delay kubernetes`, `keep-alive timeout load balancer 502`, `visibility timeout lambda check`, `keepalive timeout lint`, `sqs visibility timeout lint`, `drain timing kubernetes lint`, `kubernetes graceful shutdown checker`.
+tenable/terrascan, fugue/regula, terraform-compliance/cli, aquasecurity/tfsec, aws-cloudformation/aws-guard-rules-registry, stelligent/cfn_nag: 0.
+**npm:** `keepalive timeout lint`, `graceful shutdown kubernetes lint`, `prestop`, `load balancer idle timeout`, `sqs visibility timeout` return only runtime libraries and SDKs.
+**Name:** npm `tripcurve` free (404 on 11-02;
+GitHub `tripcurve in:name` has 2 unrelated repos.
+Terraform via npm `@cdktf/hcl2json` (v0.21.0): `aws_lb.idle_timeout`, `aws_sqs_queue.visibility_timeout_seconds`, `aws_lambda_function.timeout`, `aws_lambda_event_source_mapping.maximum_batching_window_in_seconds`;
+SARIF, JSON and a GitHub Action;
+day 5 SARIF with suppressions, waivers, the Action, fixture tests;
+Versions checked: lightship 9.1.0 (532 stars), `@godaddy/terminus` 4.12.1 (1,912 stars), gunicorn latest release 26.2.2 (2026-09-06), Kludex/uvicorn-worker (130 stars, last push 2025-12-01;
+Hosted fleet scan with a read-only AWS role: compares Git with live LB and queue attributes ("Git says 60 s, the live ALB says 120 s"), ranks findings by the ALB's CloudWatch `HTTPCode_ELB_502_Count`.
+The report's definition: a free OSS core that produces a verdict, plus a hosted or team tier that keeps verdicts over time and across repos or clusters.
+Upload `--format sarif` and the earlier findings appear as code-scanning annotations on the PR (the report's expectation;
+no upload has been made).
+gunicorn 26.2.0 and 27.0.0, each with uvicorn-worker 0.4.0 and uvicorn 0.54.0 | 2.0 s (2001 to 2003 ms) | gunicorn 27.0.0 was uploaded to PyPI on 2026-11-10 |
+uvicorn 0.54.0 alone (plain install, h11) | 5.0 s (5002 to 5003 ms) | |
+Each range is bracketed by the versions above, not measured release by release.
+It is not always the setting's value: on the Node 20, 22, 24 and 26 releases that were measured, the idle close is 1 s more than an explicit `keepAliveTimeout` (so 6 s by default, where the documented default is 5 s).
+A Node server that imports any npm package gives UNRESOLVED rather than FAIL, because the package could drain without being handed the server.
+What tripcurve does and does not do with the files it reads, what the GitHub Action does, and the one thing a reviewer must watch: **a pull request can add a waiver.** Dates are 2026.
+**It never sends credentials anywhere.** There is nowhere to send them: no network, and the Action requests no token (below).
+## The GitHub Action
+The Action has never run on GitHub (`docs/action.md`, [ci-and-sarif.md](ci-and-sarif.md)).
+Its design, as checked by tests without GitHub:
+**It builds from its own checkout.** tripcurve itself is built from the Action's checkout and is never fetched from a registry at run time.
+After a release the maintainer may replace the build with an exact pinned version of tripcurve.
+**Third-party Actions are pinned by commit SHA.** `actions/setup-node` v7.1.0 and `github/codeql-action/upload-sarif` v4.39.3 in `action.yml`, and `actions/checkout` v7.0.1 with the same setup-node in `.github/workflows/verify.yml`, looked up read-only with `git ls-remote` on 2026-11-12 (`docs/lookups-b9.txt`).
+**No input is ever written into a script body.** The four inputs reach `action/run.sh` as environment variables (`TRIPCURVE_PATH`, `TRIPCURVE_CONFIG`, `TRIPCURVE_FORMAT`, `TRIPCURVE_SARIF_FILE`) and are quoted in the script.
+No workflow command (`::`) can start a log line, tested with hostile names.
+(`docs/action.md`, "Security notes";
+(`docs/action.md`, "Inputs";
+**Least privilege.** The Action requests no token and prints no secret;
+optional packages such as `fsevents` are skipped on Linux) from the registry with `npm ci --ignore-scripts`, which checks the integrity hashes and runs no install scripts.
+the small open questions were decided (`docs/release-checklist.md`, "Decided on 2026-11-12");
+(`docs/release-checklist.md`;
+`docs/release-check-run-b16.txt`;
+`npm run verify` validates SARIF with a subset validator;
+(`docs/release-checklist.md`, "Platform audit of `src/`")
+`npm run verify` uses `test/support/sarif-validate.ts`, which validates the subset tripcurve emits, citing SARIF 2.1.0 Errata 01 (read 2026-11-12), and refuses more than 100 kinds of broken document.
+On 2026-11-12 (B16) the official schema, downloaded read-only into a scratch folder, validated every SARIF golden and the SARIF of `demo/` and `demo-fixed/`, and rejected four deliberately broken documents (`docs/release-check-run-b16.txt`).
+Each rule carries `help.text` ("Run `tripcurve --explain T1` ...") because there is no published location yet.
+As a dated one-off check in B16 (not part of `npm run verify`), the official SARIF 2.1.0 JSON schema, downloaded read-only into a scratch folder, validated every `test/golden/report-*.sarif.txt` and the SARIF of `demo/` and `demo-fixed/`, and rejected four deliberately broken documents;
+the URL, SHA-256, script and output are in `docs/release-check-run-b16.txt`.
+Why: `npm audit` reported GHSA-g3hv-75wg-m249 (a denial of service in `minimatch`, vulnerable range 7.0.0 to before 11.0.1) through `ts-morph` 28.0.0, the newest release, whose `@ts-morph/common` 0.29.0 asks for `minimatch` `^10.0.1`;
+With the override `npm audit` prints `found 0 vulnerabilities` and the lockfile has 123 packages.
+`minimatch` 11.0.8 declares `engines.node` as `20 || >=22`, which includes every Node release tripcurve supports.
+`npm run verify` passed with the override, and the test suite passed on Node 22.12.0, 22.23.5, 24.22.3 and 26.13.1 (`docs/release-checklist.md`, "Compatibility across Node releases").
+The override is a pin the maintainer should drop when `ts-morph` ships a release that bumps `minimatch` itself, and `npm audit` and `npm ls minimatch` should be run again on the day of the maintainer's go.
+Updated in bolt B16 on 2026-11-12: rows 5, 6, 7 and 18, the "Compatibility across Node releases" section, the platform audit, and the maintainer questions that were decided (the "Decided on 2026-11-12" section).
+The raw record of B16 is `docs/release-check-run-b16.txt`.
+18 | Compatibility across the supported Node releases | **done locally (B16, 2026-11-12)** | the tests, the build and the demo on four Node releases, and the unsupported-Node message on Node 20 and 18;
+see "Compatibility across Node releases" below |
+`npm run verify` still uses `test/support/sarif-validate.ts`, a subset validator, because the official schema (OASIS IPR terms) is not vendored (decided 2026-11-12) |
+The only fix `npm audit` offered was `npm audit fix --force`, which installs `ts-morph@17.0.1`, a breaking change, and was not taken (first reported in B1, `BUILD-NOTES.md`).
+The dated lookups of 2026-11-12 (`docs/lookups-b15.txt`) found `ts-morph` 28.0.0 to be the newest release and `minimatch` 11.0.8 the newest `minimatch`.
+The reason: `npm audit` flags every `minimatch` below 11.0.1, `ts-morph` has no newer release that bumps it, and a downgrade of `ts-morph` is a breaking change.
+How the override was checked on 2026-11-12 (`docs/release-check-run-b16.txt`):
+`npm ls minimatch` shows one copy, `minimatch@11.0.8 overridden`, under `ts-morph@28.0.0` and `@ts-morph/common@0.29.0`.
+`npm run verify` passed with the override, and the tests also passed on the four Node releases below.
+The override should be dropped when `ts-morph` ships a release that bumps `minimatch` itself.
+`npm audit` run again at 2026-11-12T23:06Z (B16), verbatim from `docs/release-check-run-b16.txt`:
+**Install scripts:** one package is flagged `hasInstallScript`: `fsevents` 2.3.3, optional, dev-only and for macOS only, reached through `vitest` and `vite`.
+The production tree (`npm ls --omit=dev --all`: `commander`, `ts-morph`, `yaml` and their dependencies) has none.
+The installed `fsevents` `package.json` lists `clean`, `build`, `test` and `prepublishOnly` scripts and no `install`, `preinstall` or `postinstall`, and the package ships a prebuilt `fsevents.node` (checked 2026-11-12);
+why npm flags it was not investigated further.
+Instead, as a dated one-off check that is not part of `npm run verify`:
+its URL, size and SHA-256 are in `docs/release-check-run-b16.txt`.
+It declares JSON Schema draft-04, which plain `ajv` 8 does not load, so the check used `ajv-draft-04` with `ajv-formats`, installed with `--ignore-scripts` in a scratch folder outside the repository (none of them is a dependency of tripcurve);
+the script and its real output are in `docs/release-check-run-b16.txt`.
+`npm run verify` keeps using the hand-written validator for the subset tripcurve emits (`test/support/sarif-validate.ts`), so the day-to-day check does not depend on the downloaded schema.
+What was not checked: how GitHub's code scanning reads the file, which waits for the maintainer's go.
+## Compatibility across Node releases
+On 2026-11-12 (B16) the full test suite, the build and the demo were run with each of four official darwin-arm64 binaries first on `PATH` (the binaries are cached in `.cache/node/`), and the unsupported-Node message was checked on two older releases.
+Each row is one run of `node ./node_modules/vitest/vitest.mjs run`, then `npm run build`, then `node ../dist/cli/main.js .` inside `demo/`;
+Raw output: `docs/release-check-run-b16.txt`.
+one 4x step straddled a one-off cost jump (a V8 string or heap step), and the same tests passed on the other three releases.
+Linux cannot be run on the build host, so "macOS and Linux" rests on the source audit below and on the first hosted Linux run, which waits for the maintainer's go.
+Rosetta 2 for the three old-Node entries (10) | **decided (2026-11-12): not installed**, because installing system software is not done;
+Reporting a vulnerability (9) | **decided (2026-11-12): once the repository is public, reports go through GitHub's private vulnerability reporting for the repository;
+The licence (1) | **left as the maintainer said**: decided by the maintainer before release;
+*Not decidable here, so still open.** Each is an external write that waits for the maintainer's explicit go: publish to npm, reserve the name `tripcurve`, the first hosted CI run, and enabling the SARIF upload.
+(above, "npm audit")
+The official SARIF schema was applied once, on 2026-11-12, to the goldens and the demo output, not to a real upload.
+1 | The licence for tripcurve: decided by the maintainer before release | B15 (all) | **open**: decided by the maintainer before release |
+whether the `exit-code` output survives a failed step on GitHub (untested) | B9 | **open**: the name and ref, the first hosted run and the upload step are external writes that wait for the maintainer's go |
+9 | A channel for reporting a vulnerability, decided at release (none exists without a remote) | B15 | **decided (2026-11-12)**: GitHub private vulnerability reporting once the repository is public;
+The v0.1.0 definition asks for a script on every entry | B13 | **decided (2026-11-12)**: Rosetta 2 is not installed;
+23 | The `{{` and `}}` doubling of braces in SARIF messages (SARIF 3.11.5): untested on GitHub's viewer | B7 | **decided (2026-11-12)**: keep, as SARIF 3.11.5 requires;
+*One exception, accepted (decided 2026-11-12).** `measure/lightship-b4.mjs` runs lightship 9.1.0, whose own status server is started with a fixed `host: '0.0.0.0'` (`src/factories/createLightship.ts`, lines 153 to 156 of the installed package) and no option to change it.
+an npm `overrides` entry in `package.json` now pins `minimatch` to 11.0.8, because `ts-morph` 28.0.0 is the newest release and a downgrade is a breaking change.
+The override was checked by one call (`require('minimatch').minimatch` from `@ts-morph/common`'s directory) and by `npm run verify`, not on every `ts-morph` code path;
+(`docs/release-checklist.md`, "npm audit";
+the only package with an install script is the optional, dev-only, macOS-only `fsevents`.
+Once the repository is public, report a vulnerability through GitHub's private vulnerability reporting for the repository.
+how GitHub presents it was not looked up.
+(`docs/release-checklist.md`, "Decided on 2026-11-12")
+So what `npm run verify` runs in place of the repo-kept schema is `test/support/sarif-validate.ts`, a hand-written validator for the subset of SARIF 2.1.0 that tripcurve emits:
+*Decided (2026-11-12): the official schema is not vendored, and this is a recorded deviation from the acceptance criterion.** `npm run verify` keeps this subset validator in its place.
+Instead, one-off on 2026-11-12: every SARIF golden and the SARIF of `demo/` and `demo-fixed/` validate against the official SARIF 2.1.0 JSON schema (`docs/release-check-run-b16.txt`);
+Found when a `npm run verify` on 2026-11-13 timed the demo at 2.25 s with a load average of 72 on this machine.
+**Which Node lines get an entry.** Even-numbered release lines only: 18, 20, 22, 24 and 26 today.
+To add the next even line, list the releases with a read-only GET of `https://nodejs.org/dist/index.json` (a JSON array;
+each item has `version`, `date` and `lts`), pick the lowest and newest plain releases of the line, and note the date you read it.
+**Build and environment.** `npm run verify` builds the command twice: into `dist/` (the build step) and, for the golden and end-to-end tests, into `.cache/e2e-build` (git-ignored;
+The tests call `node_modules/.bin/tsc` from the repository root, so `node_modules` must resolve from the root of the worktree you run in: run `npm ci --ignore-scripts` there, or link the main checkout's `node_modules`.
+A `to-be-measured` placeholder is not a way round it: its basis never supports PASS, it is a release blocker, and the shipped-knowledge-base test (`test/kb/knowledge-base.test.ts`, "no seed is to-be-measured") refuses it.
+(The release-quality dry run of 2026-11-13 stopped at exactly this point: its tolerance stayed provisional because the host never got quiet;
+`docs/release-checklist.md`, row 10.)
+Assertions: each release in `measuredVersions` lies in the range, and each release (and each K) has at least 3 runs in the right case with the idle close the rule predicts.
+[ ] **`test/kb/knowledge-base.test.ts`, "the default idle close, one entry per release line ...":** add a tuple `[id, value s, range, measuredOn version]` to `expected`.
+[ ] **the same test, the notes check:** `notes` must name a result file that exists (`measure/results/<file>.jsonl` or `.txt`, any date) and contain "not measured release by release".
+[ ] **`test/kb/lanes.test.ts`, "picks the newest plain release inside each range ...":** nothing to edit;
+Add the new line's release to the input list only if you want it exercised.
+The first dry run was done on 2026-11-13 and was a partial success: the entry, the tests, the lane and `npm run verify` all worked, and the tolerance stayed provisional because the host never got quiet.
+(`docs/release-checklist.md`, row 10)
+10 | Release-quality dry run (metric 5): a fresh session adds an entry using only the docs | **done 2026-11-13: partial success** (the maintainer reviews it;
+A fresh session, given only the published docs, added a Node 25 entry, `node-idle-close-25x`, together with its script run, in a scratch copy.
+**Result: partial success.** The entry, the tests, the lane and `npm run verify` all worked;
+**The build and environment notes were missing** (`.cache/e2e-build`, where `node_modules` must resolve, how to list Node releases).
+it is not in the production tree (0 install scripts there), and every install here runs with `--ignore-scripts` |
+25 | `measuredOn.date` of `node-idle-close-22x`, `-24x` and `-26x` is 2026-11-11 although lower releases in their ranges were measured on 2026-11-12: one date field cannot say both | B10 | **decided (2026-11-13)**: keep.
+Each `measuredOn` names one release and the date that release was measured (B0, 2026-11-11);
+the lower releases and their dates are in the result files |
+The release-quality dry run (metric 5) was run once, on 2026-11-13, against the guide before its B16 fixes;
+**B19, ready for the first hosted run (2026-11-13).** The Action gets an opt-in input `upload-sarif` (default `false`);
+the upload step runs only when it is `true` and a SARIF file was written, and its condition uses `always()` so it also runs after a failed check.
+`.github/workflows/verify.yml` becomes a matrix (Ubuntu with Node 22.12.0, 24 and 26;
+A new `.github/workflows/action-selftest.yml` runs the Action on `demo-fixed` (clean), `demo` (failing) and `demo` with the upload (public repositories only).
+`action/dry-run.sh` simulates the three scenarios and never the upload.
+Nothing has run on GitHub yet;
+`docs/release-checklist.md`, rows 12 to 14)
+It has never run on GitHub.** The first hosted run is prepared (B19) and waits for the push;
+`upload-sarif` | `false` | The string `true` (compared without regard to case, as GitHub's `==` does) uploads the SARIF file to GitHub code scanning after the check, including after a failed check.
+Any other value, or no SARIF file written, skips the upload.
+See "The SARIF upload is opt-in".
+the upload step runs only when `upload-sarif` is `true` and a SARIF file was written, and it also runs after a failed check.
+`permissions: contents: read` is enough, unless `upload-sarif` is `true` (see below).
+## The SARIF upload is opt-in
+`action.yml` contains the standard code-scanning upload (`github/codeql-action/upload-sarif`, pinned to a full commit SHA).
+It is off by default: it runs only when the input `upload-sarif` is the string `true` (any case) and the check step wrote a SARIF file.
+Its condition starts with `always()`: a step with no status check function gets the default `success()` and would be skipped after the check step failed, which is exactly when the findings matter (GitHub's expressions documentation, read 2026-11-13;
+`upload-sarif` is used only in that condition and never in a script body.
+To enable it, the calling workflow needs:
+The Action passes no token and no secret;
+the upload action defaults to the job's own `GITHUB_TOKEN` (its `action.yml`, read 2026-11-13).
+A public repository, or a private one with GitHub code security.
+Without that, GitHub is expected to reject the upload, and the upload step would fail (not verified).
+A workflow that is not a pull request from a fork: a fork's token is read-only (not re-read today), so the upload is expected to fail there.
+`with: upload-sarif: "true"`.
+see `docs/ci-and-sarif.md`.
+The upload is an external write to a repository's code-scanning data.
+The upload has never run: it is exercised for the first time by the `upload` job of `.github/workflows/action-selftest.yml` after the push.
+## The self-test workflow
+`.github/workflows/action-selftest.yml` (prepared in B19;
+it has never run) runs the repository's own Action with `uses: ./` in three jobs:
+`upload` | `demo`, with `upload-sarif: "true"` and `continue-on-error: true` | the same as `failing`;
+the job has `security-events: write` and runs only for a public repository (`github.event.repository.visibility == 'public'`) and for a push or a same-repository pull request |
+Because the Action step has `continue-on-error`, the `upload` job cannot tell a failed upload from the expected failed check: it shows that the SARIF file was written and the step failed with exit code 1, and the result of the upload is read from the log of the upload step and from the repository's code-scanning page.
+Example: `action/dry-run.sh demo` exits 1, as the Action would.
+It never runs the upload: it only evaluates the step's condition and prints whether the step would run, marked NOT SIMULATED, because uploading is an external write.
+Anything on GitHub itself: the runner, `actions/setup-node`, composite-step output handling (for example that `steps.build.outputs.exit-code` is readable after the build step failed), the `always()` condition on the upload step, the repository-visibility expression, and the SARIF upload.
+The first hosted run (after the push) is the check.
+Its first hosted run is prepared (B19, `.github/workflows/action-selftest.yml`) and waits for the push;
+publishing it waits for the maintainer's go.
+**The hosted verify workflow** (`.github/workflows/verify.yml`) is a checked file that has never run.
+It is prepared (B19) to run `npm run verify` on Ubuntu with Node 22.12.0, 24 and 26 and on macOS with Node 22.12.0, and it first runs after the push.
+**The SARIF upload is opt-in and has never run.** `action.yml` contains the standard code-scanning upload step.
+It is off by default and runs only when the input `upload-sarif` is `true` and a SARIF file was written;
+To enable it, set `upload-sarif: "true"` and give the job `permissions: security-events: write`;
+it needs a public repository or one with GitHub code security, and it is expected not to work for a pull request from a fork.
+Uploading is an external write to a repository's code-scanning data.
+(`docs/action.md`, "The SARIF upload is opt-in")
+12 | The hosted CI workflow runs | **prepared in B19;
+first run pending the push**: `.github/workflows/verify.yml` runs `npm run verify` on Ubuntu (Node 22.12.0, 24, 26) and macOS (Node 22.12.0);
+a hosted run is an external action | `docs/ci-and-sarif.md`;
+`test/action/workflows.test.ts` |
+13 | The GitHub Action runs on a hosted runner | **prepared in B19;
+first run pending the push**: `.github/workflows/action-selftest.yml` runs the Action on `demo-fixed` (clean) and `demo` (failing);
+it has never run | `docs/action.md`, "The self-test workflow" and "Not tested" |
+14 | SARIF upload to code scanning | **prepared in B19;
+first run pending the push**: the upload is opt-in (`upload-sarif: "true"`, default off) and the `upload` job of the self-test enables it only on a public repository;
+uploading is an external write and has never run | `docs/action.md`, "The SARIF upload is opt-in";
+The SARIF upload is off by default, and turning it on (`upload-sarif: "true"`) needs `security-events: write` in the calling job.
+tripcurve is not published to npm, so there is no `npm install tripcurve`.
+tripcurve is not published to npm, and there has been no hosted CI run and no hosted run of the GitHub Action.
+Release definition item | Status | Evidence or reason |
+the command name `npm run verify`;
+the Action builds from its own checkout;
+33 | The public repository: where the source will live | B20 | **decided (2026-11-14)**: https://github.com/naren-ambati/TripCurve, the source goes there only on the maintainer's go, and tripcurve stays unpublished to npm |
+Do not publish to npm: the package is private until the maintainer decides a licence.
+5 | `npm audit`, checkout and `npm ci` from `npm-shrinkwrap.json` | **done locally, 0 vulnerabilities (B16, 2026-11-12;
+not the same as row 5b | `npm audit` printed `found 0 vulnerabilities`, with an npm `overrides` entry that pins `minimatch` to 11.0.8;
+`docs/release-check-run-b21.txt`);
+closed only by a ts-morph release that allows `minimatch` 11 or by replacing ts-morph;
+It is NOT clean for a consumer who installs the packed tarball: npm `overrides` do not ship, and a shrinkwrap entry outside the dependent's declared range is dropped (`@ts-morph/common` 0.29.0 declares `minimatch ^10.0.1`;
+The package is private and not published to npm, so no such consumer exists;
+before any npm publish this must be closed by a ts-morph release that allows minimatch 11 or by replacing ts-morph.
+*Clean for the checkout, with an override (B16, 2026-11-12).** Until B16, `npm audit` reported 3 moderate severity vulnerabilities: a denial of service in `minimatch` (GHSA-g3hv-75wg-m249, vulnerable range 7.0.0 to before 11.0.1), reached through `ts-morph` 28.0.0 and `@ts-morph/common` 0.29.0, which asks for `minimatch` `^10.0.1`.
+reopened for the packed tarball by B21, see row 5b: the audit is NOT clean for a fresh install of it |
+`npm-shrinkwrap.json`)
+`npm audit` on the checkout printed `found 0 vulnerabilities` on 2026-11-12 and again on 2026-11-14.
+(`docs/release-checklist.md`, row 5b)
+(`docs/release-checklist.md`, "Reviews")
+**B16, release fixes (2026-11-12).** An npm `overrides` entry pins `minimatch` to 11.0.8, so `npm audit` finds 0 vulnerabilities (see the release checklist row 5b for the tarball caveat) (the lockfile then had 123 packages);
+**B18, the lane runner flushes its output before it exits (2026-11-13).** `measure/lib/exit-after-flush.mjs` writes an empty chunk to standard output, then to standard error, and exits in the last callback, so every earlier write has reached the operating system before the process ends.
+**B20, publication clean-up (2026-11-14).** Every file that would be published stands on its own: design-process references, home and scratch paths and personal identifiers are removed, 12 measurement records say `<repo>` instead of an absolute path, and `package.json` carries `repository`, `homepage`, `bugs`, `keywords` and `author` (`private: true` and `license: UNLICENSED` unchanged).
+A test (`test/docs/publication.test.ts`) scans every published file, and the local export script refuses to run on any hit.
+The release checklist and this changelog carry re-run, dated figures and one entry per bolt, B0 to B22.
+The tarball audit caveat is stated in `docs/security.md`, `docs/release-checklist.md` (row 5b) and here: the audit is clean for a clone followed by `npm ci` and for the tree that the hosted workflows would install (they have never run), and NOT clean for a fresh install of the packed tarball;
+the package is private and not published to npm.
+`npm audit` is clean only because of the `minimatch` override, which was checked by one call and the test suite, not on every `ts-morph` code path (see the release checklist row 5b for the tarball caveat).
+`npm audit` is NOT clean for a fresh install of the packed tarball: npm `overrides` do not ship, and ts-morph 28.0.0 (the newest) pulls `minimatch` 10.2.6 (4 moderate advisories).
+The package is private and not published to npm, so no such consumer exists today;
+it must be closed before any npm publish.
+its pinned dependencies are, by `npm ci --ignore-scripts`, checked against the shrinkwrap's integrity hashes);
+The documents say "a run of `tripcurve [path]`", and `test/docs/docs.test.ts` fails on any published text that shows a subcommand (derived from `--help`).
+The "What ran" figures of `docs/release-checklist.md` and the CHANGELOG are re-run and dated;
+5b | Fresh-install audit of the packed tarball | **NOT CLEAN;
+must be clean before any npm publish** | 4 moderate findings, `minimatch` 10.2.6 (B21, 2026-11-14;
+the package is private and not published to npm, so no such consumer exists today;
+6 | Pinned shrinkwrap with no install scripts | **done locally, with one finding, open maintainer decision** | exact direct pins and integrity hashes on all 123 packages of the shrinkwrap;
+The shrinkwrap (then the lock file), `npm ls` and SARIF-gate checks are in `docs/release-check-run-b15.txt`;
+The audit is clean (0 vulnerabilities) for every way this repository is used: a `git clone` followed by `npm ci` from `npm-shrinkwrap.json`, and the tree that the hosted workflows would install (they have never run).
+registry reads only, in scratch folders): `npm audit` in the checkout printed `found 0 vulnerabilities`;
+`npm pack` and `npm install --ignore-scripts` of that tarball into a fresh project, then `npm audit`, printed `4 moderate severity vulnerabilities`, with `npm ls minimatch` showing `minimatch@10.2.6` under `@ts-morph/common@0.29.0` under `ts-morph@28.0.0`.
+The shrinkwrap (`npm-shrinkwrap.json`) has 123 packages, all with integrity hashes (counted again on 2026-11-14, B22).
+**Pinned:** the 8 direct dependencies are exact versions (no `^` or `~`), and every one of the 123 packages has an integrity hash (counted with a short script, `docs/release-check-run-b16.txt`).
+no package is published;
+Its dependencies are: the build step (`action/run.sh`) and `.github/workflows/verify.yml` run `npm ci --ignore-scripts`, which downloads every package the shrinkwrap requires for the platform from the registry, development dependencies included (optional packages such as `fsevents` are skipped on Linux).
+The shrinkwrap pins each version and records an integrity hash that `npm ci` checks, and install scripts are disabled.
+That does not protect against a compromised version that was already locked: a bad release pinned in `npm-shrinkwrap.json` is installed as pinned, and the hash only proves it is the release that was locked.
+The CI and Action install every package the shrinkwrap requires for the platform (development dependencies included;
+One dev-only optional package in the shrinkwrap (`fsevents`, through vitest) is flagged as having an install script;
+The audit is clean (0 vulnerabilities) for every way this repository is used: a `git clone` followed by `npm ci`, and the tree that the hosted workflows would install (they have never run).
+The shrinkwrap (`npm-shrinkwrap.json`) has 123 packages, all with integrity hashes;
+(`docs/release-checklist.md`, "The shrinkwrap")
+**B22, documentation corrections and two small code items (2026-11-14).** A `check` subcommand is no longer written anywhere: the command has none, and a test fails on a published text that shows one.
+The B15 figures (263 files, 123 test files, 12,614 tests) are history, kept in `docs/release-check-run-b15.txt`.
+Verbatim from the second run (`npm run verify`, exit 0):
+Nothing in this section was run on GitHub.
+`npm run verify` | typecheck (tests included), Biome, 13,115 tests in 141 files with 96.74% line coverage, the measurement self-test, the build, the timed check (`docs/evidence/verify-summary.txt`) | pass |
+Node releases | the full suite and the demo on Node 22.12.0 (the oldest supported), 24.22.3 and 26.13.1;
+Supply chain | `npm audit`: 0 vulnerabilities for the checkout;
+every dependency pinned with an integrity hash in `npm-shrinkwrap.json`;
+GitHub Action | dry runs of the composite steps on `demo-fixed` (exit 0, SARIF written) and `demo` (exit 1, SARIF still written);
+the upload step is off by default (`docs/evidence/action-dry-fixed.txt`, `docs/evidence/action-dry-demo.txt`) | pass |
+![npm run verify](docs/screenshots/verify.png)
+![Node releases](docs/screenshots/node-matrix.png)
+![The Action's dry runs](docs/screenshots/action.png)
+**B23, test evidence (2026-11-15).** The README gains a "Test evidence" section: a table of every check run on a fresh checkout after the black-box testing, with verbatim screenshots under `docs/screenshots/` and the full transcripts under `docs/evidence/` (the verify summary, the demo before and after the fix, the four real repositories, the JSON and SARIF outputs and the official-schema validation, the Node release matrix, the dependency scan and the tarball listing, the Action's dry runs, the measurement lanes' case list).
+The README's no-badge rule now allows a local screenshot under `docs/screenshots/` and still refuses any other image.

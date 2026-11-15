@@ -1,0 +1,127 @@
+{
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "tripcurve",
+          "version": "0.1.0",
+          "rules": [
+            {
+              "id": "T1",
+              "shortDescription": {
+                "text": "The app's effective idle close must exceed the load balancer's idle timeout. Equal is a FAIL."
+              },
+              "help": {
+                "text": "Run \"tripcurve --explain T1\" for the rule, its sources and the values it uses."
+              }
+            },
+            {
+              "id": "T2",
+              "shortDescription": {
+                "text": "A workload behind a load balancer must delay its shutdown after SIGTERM, with a preStop sleep, an in-process drain or a declared drain, so that endpoint removal can propagate before the server stops. A delay of 0 s is not a drain."
+              },
+              "help": {
+                "text": "Run \"tripcurve --explain T2\" for the rule, its sources and the values it uses."
+              }
+            },
+            {
+              "id": "T3",
+              "shortDescription": {
+                "text": "terminationGracePeriodSeconds must be at least the preStop delay + the in-process drain + L + 1 s, where L is the declared longest_request_s, or else the graceful timeout of the server as a ceiling."
+              },
+              "help": {
+                "text": "Run \"tripcurve --explain T3\" for the rule, its sources and the values it uses."
+              }
+            },
+            {
+              "id": "T4",
+              "shortDescription": {
+                "text": "The visibility timeout of an SQS queue must be at least 6 x the timeout of the Lambda function that reads it + the batching window of the event source mapping. Equal passes."
+              },
+              "help": {
+                "text": "Run \"tripcurve --explain T4\" for the rule, its sources and the values it uses."
+              }
+            },
+            {
+              "id": "tripcurve-file",
+              "shortDescription": {
+                "text": "A file, waiver or configuration entry that tripcurve did not check or apply, or a run in which nothing was checked."
+              },
+              "help": {
+                "text": "The run is not complete: fix the file, waiver or configuration entry the message names."
+              }
+            },
+            {
+              "id": "tripcurve-run",
+              "shortDescription": {
+                "text": "The run as a whole is not clean, although no single result above note level says so."
+              },
+              "help": {
+                "text": "The run is not clean: see the run properties for the outcome and the counts."
+              }
+            },
+            {
+              "id": "tripcurve-not-checked",
+              "shortDescription": {
+                "text": "A workload, Ingress or kind for which no check was made: no load balancer was found for the workload, or the object is not one tripcurve checks."
+              },
+              "help": {
+                "text": "This does not make the run unclean. For a workload, declare the load balancer in tripcurve.yaml or add it to the checked files to have T1 to T3 checked."
+              }
+            }
+          ]
+        }
+      },
+      "originalUriBaseIds": {
+        "SRCROOT": {
+          "description": {
+            "text": "The directory that was checked. Every relative uri in this log is relative to it."
+          }
+        }
+      },
+      "results": [
+        {
+          "ruleId": "tripcurve-file",
+          "level": "warning",
+          "message": {
+            "text": "nothing checked: no Kubernetes, server or Terraform files found under \".\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".",
+                  "uriBaseId": "SRCROOT"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "tripcurve": {
+              "reason": "no-recognised-files"
+            }
+          }
+        }
+      ],
+      "properties": {
+        "tripcurve": {
+          "outcome": "NothingChecked",
+          "clean": false,
+          "summary": {
+            "failed": 0,
+            "warning": 0,
+            "unresolved": 0,
+            "versionDependent": 0,
+            "notEvaluated": 0,
+            "waived": 0,
+            "notApplicable": 0,
+            "passed": 0
+          },
+          "exitCode": 2,
+          "notChecked": 0
+        }
+      }
+    }
+  ]
+}

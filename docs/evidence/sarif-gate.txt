@@ -1,0 +1,6 @@
+version 2.1.0
+clean false
+results 6
+rules T1 T2 T3 T4 tripcurve-file tripcurve-run tripcurve-not-checked
+
+[exit 0]

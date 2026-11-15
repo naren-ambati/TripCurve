@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Resources:
+  Events:
+    Type: AWS::Kinesis::Stream
+    Properties:
+      ShardCount: 1
+  EventsFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: index.handler
+      Runtime: nodejs22.x
+      Role: arn:aws:iam::000000000000:role/events
+      Code:
+        ZipFile: "exports.handler = async () => {};"
+      Timeout: 30
+  EventsMapping:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      EventSourceArn: !GetAtt Events.Arn
+      FunctionName: !Ref EventsFunction
+      StartingPosition: LATEST
+      MaximumBatchingWindowInSeconds: 5

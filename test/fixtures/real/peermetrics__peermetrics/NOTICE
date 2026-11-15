@@ -1,0 +1,15 @@
+Third-party fixture copy.
+
+Source:   https://github.com/peermetrics/peermetrics
+Commit:   4447defd13602af03904218b8e16dfde7cc7b80d
+Copied:   2026-11-12 (UTC)
+Licence:  MIT (the upstream LICENSE file is copied beside the files, unchanged)
+
+Files copied (relative paths kept):
+  - k8s/base/api.yaml
+  - k8s/base/ingress.yaml
+  - k8s/base/kustomization.yaml
+  - k8s/base/web.yaml
+
+Trimmed: only files tripcurve reads; unchanged otherwise (byte-identical to upstream).
+The upstream project is not affiliated with tripcurve and did not review or endorse it.

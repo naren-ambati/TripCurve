@@ -1,0 +1,30 @@
+## gunicorn-explicit-keepalive-gthread-26x run 1
+PASS  gunicorn-explicit-keepalive-gthread-26x  [gunicorn 26.2.0 gthread-keepalive 7s]  measured 7013 ms  entry 7000 ms  tolerance 15 ms
+LANE PASS: 1 of 1 cases within tolerance, 1 entries measured, 0 carry a stated reason, 0 release blockers, 0 drift findings
+## gunicorn-explicit-keepalive-gthread-26x run 2
+FAIL  gunicorn-explicit-keepalive-gthread-26x  [gunicorn 26.2.0 gthread-keepalive 7s]  measured 7016 ms  entry 7000 ms  tolerance 15 ms  <- differs by +16 ms, more than the tolerance
+LANE FAIL: 0 of 1 cases within tolerance, 1 entries measured, 0 carry a stated reason, 0 release blockers, 0 drift findings
+## gunicorn-explicit-keepalive-gthread-26x run 3
+PASS  gunicorn-explicit-keepalive-gthread-26x  [gunicorn 26.2.0 gthread-keepalive 7s]  measured 7007 ms  entry 7000 ms  tolerance 15 ms
+LANE PASS: 1 of 1 cases within tolerance, 1 entries measured, 0 carry a stated reason, 0 release blockers, 0 drift findings
+## gunicorn-explicit-keepalive-gthread-27x run 1
+PASS  gunicorn-explicit-keepalive-gthread-27x  [gunicorn 27.0.0 gthread-keepalive 7s]  measured 7008 ms  entry 7000 ms  tolerance 15 ms
+LANE PASS: 1 of 1 cases within tolerance, 1 entries measured, 0 carry a stated reason, 0 release blockers, 0 drift findings
+## gunicorn-explicit-keepalive-gthread-27x run 2
+PASS  gunicorn-explicit-keepalive-gthread-27x  [gunicorn 27.0.0 gthread-keepalive 7s]  measured 7011 ms  entry 7000 ms  tolerance 15 ms
+LANE PASS: 1 of 1 cases within tolerance, 1 entries measured, 0 carry a stated reason, 0 release blockers, 0 drift findings
+## gunicorn-explicit-keepalive-gthread-27x run 3
+PASS  gunicorn-explicit-keepalive-gthread-27x  [gunicorn 27.0.0 gthread-keepalive 7s]  measured 7014 ms  entry 7000 ms  tolerance 15 ms
+LANE PASS: 1 of 1 cases within tolerance, 1 entries measured, 0 carry a stated reason, 0 release blockers, 0 drift findings
+## uvicorn-explicit-graceful-timeout-0-54x run 1
+FAIL  uvicorn-explicit-graceful-timeout-0-54x  [uvicorn 0.54.0 --timeout-graceful-shutdown 5]  measured 5198 ms  entry 5000 ms  tolerance 160 ms  <- differs by +198 ms, more than the tolerance
+PASS  uvicorn-explicit-graceful-timeout-0-54x  [uvicorn 0.54.0 default: no ceiling]  measured request finished in full  entry no ceiling  tolerance 160 ms
+LANE FAIL: 1 of 2 cases within tolerance, 1 entries measured, 0 carry a stated reason, 0 release blockers, 0 drift findings
+## uvicorn-explicit-graceful-timeout-0-54x run 2
+FAIL  uvicorn-explicit-graceful-timeout-0-54x  [uvicorn 0.54.0 --timeout-graceful-shutdown 5]  measured 5174.1 ms  entry 5000 ms  tolerance 160 ms  <- differs by +174.1 ms, more than the tolerance
+PASS  uvicorn-explicit-graceful-timeout-0-54x  [uvicorn 0.54.0 default: no ceiling]  measured request finished in full  entry no ceiling  tolerance 160 ms
+LANE FAIL: 1 of 2 cases within tolerance, 1 entries measured, 0 carry a stated reason, 0 release blockers, 0 drift findings
+## uvicorn-explicit-graceful-timeout-0-54x run 3
+PASS  uvicorn-explicit-graceful-timeout-0-54x  [uvicorn 0.54.0 --timeout-graceful-shutdown 5]  measured 5134.1 ms  entry 5000 ms  tolerance 160 ms
+PASS  uvicorn-explicit-graceful-timeout-0-54x  [uvicorn 0.54.0 default: no ceiling]  measured request finished in full  entry no ceiling  tolerance 160 ms
+LANE PASS: 2 of 2 cases within tolerance, 1 entries measured, 0 carry a stated reason, 0 release blockers, 0 drift findings

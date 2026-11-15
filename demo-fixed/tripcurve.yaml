@@ -1,0 +1,7 @@
+version: 1
+workloads:
+  - name: api
+    longest_request_s: 5
+  - name: web
+    # the slowest web request is declared the same way
+    longest_request_s: 5

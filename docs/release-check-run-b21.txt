@@ -1,0 +1,89 @@
+Release check for the package, run by hand on 2026-11-14 (macOS arm64, Node 22.23.2, npm 10.9.8).
+Commands were run in scratch copies and a fresh temporary project, outside the checkout; <tmp> stands for the
+temporary folder. Registry reads were GET only (npm install and npm view); nothing was published.
+
+Result in one line: in the checkout the dependency audit is clean (0 vulnerabilities); a fresh install of the packed
+tarball is NOT clean (4 moderate advisories, minimatch 10.2.6), because npm drops the shrinkwrap's minimatch 11.0.8
+where the dependent declares ^10.0.1. See docs/limits.md, "B21", for the options.
+
+$ npm ci --ignore-scripts   (in a scratch copy of the checkout, from npm-shrinkwrap.json)
+added 64 packages, and audited 65 packages in 955ms
+
+16 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+$ npm audit
+found 0 vulnerabilities
+
+$ npm ls minimatch
+tripcurve@0.1.0 <tmp>/h1/copy
+└─┬ ts-morph@28.0.0
+  └─┬ @ts-morph/common@0.29.0
+    └── minimatch@11.0.8 overridden
+
+
+$ npm pack --dry-run --json   (files that are not under dist/, and the count of source maps)
+files: 217
+outside dist/: ['README.md', 'npm-shrinkwrap.json', 'package.json']
+.map files: 0
+size bytes: 307976
+
+$ npm pack --pack-destination <tmp>/pack
+npm notice total files: 217
+npm notice
+tripcurve-0.1.0.tgz
+
+$ npm init -y   (a fresh project)
+ok
+$ npm install --ignore-scripts <tmp>/pack/tripcurve-0.1.0.tgz
+4 moderate severity vulnerabilities
+
+Some issues need review, and may require choosing
+a different dependency.
+
+Run `npm audit` for details.
+
+$ npm audit
+
+Some issues need review, and may require choosing
+a different dependency.
+
+$ npm ls minimatch
+fresh@1.0.0 <tmp>/h1/fresh
+└─┬ tripcurve@0.1.0
+  └─┬ ts-morph@28.0.0
+    └─┬ @ts-morph/common@0.29.0
+      └── minimatch@10.2.6
+
+
+$ ls node_modules/tripcurve
+README.md
+dist
+npm-shrinkwrap.json
+package.json
+$ find node_modules/tripcurve -name "*.map" | wc -l
+       0
+$ node node_modules/.bin/tripcurve --version
+0.1.0
+
+Option tried in a scratch copy only, not adopted: bundleDependencies for commander, ts-morph and yaml
+$ npm pack   (with "bundleDependencies": ["commander","ts-morph","yaml"] added to package.json of the copy)
+npm notice package size: 3.2 MB
+npm notice unpacked size: 17.8 MB
+npm notice total files: 646
+$ npm install --ignore-scripts <tmp>/pack2/tripcurve-0.1.0.tgz   (fresh project)
+found 0 vulnerabilities
+$ npm audit
+found 0 vulnerabilities
+$ npm ls minimatch
+tripcurve@0.1.0
+  ts-morph@28.0.0
+    @ts-morph/common@0.29.0
+      minimatch@11.0.8 invalid: "^10.0.1" from node_modules/tripcurve/node_modules/@ts-morph/common
+npm error code ELSPROBLEMS
+
+Registry reads for the newest releases (2026-11-14):
+$ npm view ts-morph version         -> 28.0.0 (dist-tags latest 28.0.0)
+$ npm view @ts-morph/common version dependencies  -> 0.29.0, minimatch ^10.0.1

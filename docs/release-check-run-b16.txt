@@ -1,0 +1,370 @@
+tripcurve B16 release-check record
+==================================
+Written 2026-11-12 in bolt B16. Raw output of the checks that are described in docs/release-checklist.md.
+Nothing here publishes anything. Paths: <repo> is the B16 worktree, <scratch> a scratch folder outside the
+repository, <main-checkout>/.cache/node holds the cached official Node binaries (darwin-arm64).
+Host: Mac17,3, Apple M5, macOS (darwin-arm64). Nothing was run on Linux.
+
+----------------------------------------------------------------------------------------------------
+1. npm audit and the minimatch override
+----------------------------------------------------------------------------------------------------
+
+$ npm audit        (first run, 2026-11-12T23:06:18Z, as seen at the time)
+found 0 vulnerabilities
+exit 0
+
+$ npm audit        (second run, after all edits of this bolt)
+found 0 vulnerabilities
+exit 0
+2026-11-12T23:48:01Z
+
+$ npm ls minimatch
+tripcurve@0.1.0 <repo>
+└─┬ ts-morph@28.0.0
+  └─┬ @ts-morph/common@0.29.0
+    └── minimatch@11.0.8 overridden
+
+How @ts-morph/common uses minimatch (grep of node_modules/@ts-morph/common/dist/ts-morph-common.js):
+4:var minimatch = require('minimatch');
+33:var minimatch__namespace = /*#__PURE__*/_interopNamespaceCompat(minimatch);
+1199:        return minimatch__namespace.minimatch(path, pattern);
+1287:        return minimatch__namespace.minimatch(path, pattern);
+
+A require of minimatch from @ts-morph/common's own directory (node -e, createRequire):
+typeof require('minimatch').minimatch = function
+minimatch version = 11.0.8
+minimatch('a/b.ts', 'a/*.ts') = true
+minimatch('a/b.js', 'a/*.ts') = false
+
+Lockfile (node -e over package-lock.json, root entry excluded):
+lockfileVersion 3
+packages (without the root): 123
+packages without an integrity hash: 0
+packages with hasInstallScript: ["node_modules/fsevents"]
+
+----------------------------------------------------------------------------------------------------
+2. Compatibility across Node releases
+----------------------------------------------------------------------------------------------------
+
+Script (run from a scratch COPY of the worktree, so that editing docs during a run could not disturb it):
+
+  for v in 22.12.0 22.23.5 24.22.3 26.13.1; do
+    export PATH=<main-checkout>/.cache/node/node-v$v-darwin-arm64/bin:/usr/bin:/bin:/usr/sbin:/sbin
+    echo "=== node $(node --version) $(date -u +%FT%TZ)"
+    node ./node_modules/vitest/vitest.mjs run                       > vitest-$v.log; echo "vitest exit $?"
+    grep -E "Test Files|Tests " vitest-$v.log
+    rm -rf dist; npm run build                                      > build-$v.log;  echo "build exit $?"
+    (cd demo && node ../dist/cli/main.js . > demo-$v.out 2> demo-$v.err; echo "demo exit $?")
+    cmp demo-$v.out demo/expected/first-run.txt && echo "demo byte-equal"
+  done
+
+The demo is run as `tripcurve .` inside demo/ (that is what test/e2e/demo.e2e.test.ts does; there is no `demo`
+subcommand). Exit 1 is expected there.
+
+Final run (full suite after every change of this bolt):
+
+=== node v22.12.0 2026-11-12T23:38:46Z
+vitest exit 0
+ Test Files  124 passed (124)
+      Tests  12623 passed (12623)
+build exit 0
+demo exit 1
+demo byte-equal
+=== node v22.23.5 2026-11-12T23:40:13Z
+vitest exit 0
+ Test Files  124 passed (124)
+      Tests  12623 passed (12623)
+build exit 0
+demo exit 1
+demo byte-equal
+=== node v24.22.3 2026-11-12T23:43:01Z
+vitest exit 0
+ Test Files  124 passed (124)
+      Tests  12623 passed (12623)
+build exit 0
+demo exit 1
+demo byte-equal
+=== node v26.13.1 2026-11-12T23:44:06Z
+vitest exit 0
+ Test Files  124 passed (124)
+      Tests  12623 passed (12623)
+build exit 0
+demo exit 1
+demo byte-equal
+
+First run, before the two test fixes below (the code and docs were the B16 state at 2774245; the suite then had
+123 test files and 12,616 tests). Node 24.22.3 failed two tests; the others passed:
+
+=== node v22.12.0 2026-11-12T23:07:04Z
+vitest exit 0
+ Test Files  123 passed (123)
+      Tests  12616 passed (12616)
+build exit 0
+demo exit 1
+demo byte-equal
+=== node v22.23.5 2026-11-12T23:08:38Z
+vitest exit 0
+ Test Files  123 passed (123)
+      Tests  12616 passed (12616)
+build exit 0
+demo exit 1
+demo byte-equal
+=== node v24.22.3 2026-11-12T23:09:57Z
+vitest exit 1
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  2 failed | 121 passed (123)
+      Tests  2 failed | 12614 passed (12616)
+build exit 0
+demo exit 1
+demo byte-equal
+=== node v26.13.1 2026-11-12T23:10:57Z
+vitest exit 0
+ Test Files  123 passed (123)
+      Tests  12616 passed (12616)
+build exit 0
+demo exit 1
+demo byte-equal
+
+The failures, from the first Node 24.22.3 log:
+     × an inline waiver with n blanks, n backslashes or n quotes in its reason 8289ms
+     × work grows linearly with each file kind 9391ms
+ FAIL  test/parse/python-pins.test.ts > what is not a pin file, and hostile text > work grows linearly with each file kind
+AssertionError: expected 8.051365152343099 to be less than 8
+ FAIL  test/waive/scaling.test.ts > reading one waiver is linear in its text > an inline waiver with n blanks, n backslashes or n quotes in its reason
+AssertionError: expected 11.127182300612315 to be less than 8
+
+Why: probe runs (dist build, process.cpuUsage, best of five) showed linear growth with one cost jump at one size,
+not quadratic growth. readWaiver on one long unterminated reason, ms of CPU, ratio of each 4x step:
+  Node 22.23.5:  n=160000 2.4 | 640000 31.0 (13.01) | 2560000 180.8 (5.83) | 10240000 837.4 (4.63) | 40960000 2956.0 (3.53)
+  Node 24.22.3:  n=160000 1.9 | 640000  7.6 ( 4.09) | 2560000  90.7 (11.88)| 10240000 506.5 (5.58) | 40960000 1621.6 (3.20)
+The one 4x step that straddles the jump reads 12 for linear work. The scaling helper (test/support/scaling.ts) now also
+measures the step below (n/4 to n) when the first two measurements breach, keeps the lowest ratio, and counts the
+lower step only when its smaller run lasts 5 ms or more. test/core/scaling-helper.test.ts shows, with a simulated
+clock, that a single cost jump inside one step reads linear, and that quadratic work (with or without a jump) still
+breaches. Before the helper change, the first of those tests failed with: AssertionError: expected 12 to be less than 8.
+
+A second Node 24.22.3 full run (in the scratch copy, other test runs going on the host) failed one test:
+  test/scripts/timed-check.test.ts > the generated tree has 1,000 files, none over 5 MB, and is removed afterwards
+  AssertionError: expected [ 'tripcurve-timed-test-5ZyA8O', ...(1) ] to deeply equal [ 'tripcurve-timed-test-5ZyA8O', ...(2) ]
+Reproduced with a background loop that creates and removes folders named tripcurve-timed-decoy-* in the temporary
+folder: two of three runs of the old test failed. The old test also could not see what it claimed to check: the script it
+runs has the environment { PATH } only, so its temporary folder is not the test process's. The test now gives the script a
+private TMPDIR and expects it to be empty afterwards. A mutant of scripts/timed-check.mjs with the cleanup removed:
+  old test: 30 passed (the mutant was not caught)
+  new test: AssertionError: expected [ 'tripcurve-timed-hpTCrS' ] to deeply equal []     (caught)
+  new test with the background loop running, three runs: 30 passed each time.
+
+The unsupported-Node message, run with the older binary first on PATH (dist built with Node 22):
+
+  $ PATH=<main-checkout>/.cache/node/node-v20.20.2-darwin-arm64/bin:/usr/bin:/bin node dist/cli/main.js .
+  tripcurve needs Node 22.12.0 or later; this is Node 20.20.2.
+  Nothing was checked.
+  exit 2
+  $ PATH=<main-checkout>/.cache/node/node-v18.20.8-darwin-arm64/bin:/usr/bin:/bin node dist/cli/main.js .
+  tripcurve needs Node 22.12.0 or later; this is Node 18.20.8.
+  Nothing was checked.
+  exit 2
+  (the same two lines and exit 2 from inside demo/)
+
+----------------------------------------------------------------------------------------------------
+3. Platform audit: search of src/ and the one fix
+----------------------------------------------------------------------------------------------------
+
+Search: process.platform, os.platform, darwin, win32, path.sep, realpath, localeCompare, toLocale*, Intl, .sort() with
+no comparator, node:os, readdir order, \r\n handling, process.env, isTTY. Result: the only locale-dependent call was
+`a.reasonCode.localeCompare(b.reasonCode)` in src/parse/intake/intake.ts (sortUnchecked). The new test
+test/platform/portability.test.ts failed before the fix with:
+  AssertionError: expected [ 'src/parse/intake/intake.ts: return c !== 0 ? c : a.reasonCode.localeCompare(b.reasonCode);' ] to deeply equal []
+and passes after `compareBytes(a.reasonCode, b.reasonCode)`. Linux was not run.
+
+----------------------------------------------------------------------------------------------------
+4. SARIF against the official schema
+----------------------------------------------------------------------------------------------------
+
+Lookup, read-only GET, 2026-11-12T23:07:43Z:
+  URL     https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/sarif-2.1/schema/sarif-schema-2.1.0.json
+  HTTP    200, 112768 bytes
+  SHA-256 c3b4bb2d6093897483348925aaa73af03b3e3f4bd4ca38cef26dcb4212a2682e
+  The schema's own "id" is https://docs.oasis-open.org/sarif/sarif/v2.1.0/errata01/os/schemas/sarif-schema-2.1.0.json
+  and it declares "$schema": "http://json-schema.org/draft-04/schema#". Plain ajv 8 does not load draft-04, so
+  ajv-draft-04 (the draft-04 build of ajv) is used with ajv-formats. The schema file is NOT in the repository.
+
+Install, in a scratch folder outside the repository (nothing was added to tripcurve's package.json or lockfile):
+  $ npm init -y
+  $ npm install ajv ajv-formats --ignore-scripts --no-audit --no-fund
+  $ npm install ajv-draft-04 --ignore-scripts --no-audit --no-fund
+  $ npm ls
+  ├── ajv-draft-04@1.0.0
+  ├── ajv-formats@3.0.1
+  └── ajv@8.20.0
+
+Script (validate.mjs), usage: node validate.mjs <repo-root> <built-cli.js>
+
+// One-off release check: validate tripcurve's SARIF against the official SARIF 2.1.0 JSON schema.
+// Run from a scratch folder OUTSIDE the repository, with ajv, ajv-formats and ajv-draft-04 installed there.
+// The official schema declares JSON Schema draft-04, which plain ajv 8 does not load; ajv-draft-04 is its
+// draft-04 build. usage: node validate.mjs <repo-root> <built-cli.js>
+import { readFileSync, readdirSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { join } from 'node:path';
+import Ajv from 'ajv-draft-04';
+import addFormats from 'ajv-formats';
+
+const [repo, cli] = process.argv.slice(2);
+const schema = JSON.parse(readFileSync('sarif-schema-2.1.0.json', 'utf8'));
+const ajv = new Ajv({ strict: false, allErrors: true });
+addFormats(ajv);
+const validate = ajv.compile(schema);
+
+let failures = 0;
+function check(name, text) {
+  let doc;
+  try {
+    doc = JSON.parse(text);
+  } catch (e) {
+    console.log(`INVALID JSON  ${name}: ${e.message}`);
+    failures += 1;
+    return;
+  }
+  if (validate(doc)) {
+    const results = doc.runs.reduce((n, r) => n + (r.results?.length ?? 0), 0);
+    const supp = doc.runs.reduce(
+      (n, r) => n + (r.results ?? []).filter((x) => (x.suppressions ?? []).length > 0).length, 0);
+    console.log(`VALID         ${name} (${results} results, ${supp} with suppressions)`);
+  } else {
+    failures += 1;
+    console.log(`INVALID       ${name}`);
+    for (const e of validate.errors.slice(0, 5)) console.log(`    ${e.instancePath || '/'} ${e.message}`);
+  }
+}
+
+const goldens = readdirSync(join(repo, 'test/golden')).filter((f) => /^report-.*\.sarif\.txt$/.test(f)).sort();
+for (const f of goldens) check(`test/golden/${f}`, readFileSync(join(repo, 'test/golden', f), 'utf8'));
+for (const dir of ['demo', 'demo-fixed']) {
+  const r = spawnSync(process.execPath, [cli, '.', '--format', 'sarif'], { cwd: join(repo, dir), encoding: 'utf8' });
+  console.log(`(${dir}: tripcurve exit ${r.status})`);
+  check(`${dir}/ (live run, --format sarif)`, r.stdout);
+}
+
+// Negative controls: the validator must be able to say no.
+const base = JSON.parse(readFileSync(join(repo, 'test/golden/report-waived.sarif.txt'), 'utf8'));
+const mutants = {
+  'missing version': (d) => { delete d.version; },
+  'unknown top-level property': (d) => { d.bogus = 1; },
+  'result level not in the enum': (d) => { d.runs[0].results[0].level = 'catastrophe'; },
+  'suppression kind not in the enum': (d) => {
+    const r = d.runs[0].results.find((x) => (x.suppressions ?? []).length > 0);
+    r.suppressions[0].kind = 'maybe';
+  },
+};
+for (const [name, mutate] of Object.entries(mutants)) {
+  const d = structuredClone(base);
+  mutate(d);
+  const ok = validate(d);
+  console.log(`${ok ? 'NOT REJECTED (validator cannot fail!)' : 'rejected'}  negative control: ${name}`);
+  if (ok) failures += 1;
+}
+console.log(failures === 0 ? 'RESULT: all documents valid, all negative controls rejected' : `RESULT: ${failures} problem(s)`);
+process.exit(failures === 0 ? 0 : 1);
+
+Output:
+
+VALID         test/golden/report-clean.sarif.txt (0 results, 0 with suppressions)
+VALID         test/golden/report-demo.sarif.txt (6 results, 0 with suppressions)
+VALID         test/golden/report-e1.sarif.txt (1 results, 0 with suppressions)
+VALID         test/golden/report-e10.sarif.txt (2 results, 0 with suppressions)
+VALID         test/golden/report-e4.sarif.txt (1 results, 0 with suppressions)
+VALID         test/golden/report-expired.sarif.txt (3 results, 0 with suppressions)
+VALID         test/golden/report-hostile.sarif.txt (3 results, 1 with suppressions)
+VALID         test/golden/report-noapply.sarif.txt (0 results, 0 with suppressions)
+VALID         test/golden/report-runlevel.sarif.txt (4 results, 2 with suppressions)
+VALID         test/golden/report-stream.sarif.txt (3 results, 0 with suppressions)
+VALID         test/golden/report-unchecked.sarif.txt (3 results, 0 with suppressions)
+VALID         test/golden/report-waived.sarif.txt (3 results, 3 with suppressions)
+(demo: tripcurve exit 1)
+VALID         demo/ (live run, --format sarif) (6 results, 0 with suppressions)
+(demo-fixed: tripcurve exit 0)
+VALID         demo-fixed/ (live run, --format sarif) (0 results, 0 with suppressions)
+rejected  negative control: missing version
+rejected  negative control: unknown top-level property
+rejected  negative control: result level not in the enum
+rejected  negative control: suppression kind not in the enum
+RESULT: all documents valid, all negative controls rejected
+
+The four negative controls are broken copies of test/golden/report-waived.sarif.txt; each was rejected, so the
+check can fail. This is a one-off check, not part of `npm run verify`; the schema is not vendored.
+
+----------------------------------------------------------------------------------------------------
+5. npm run verify (Node v22.23.2, the default node on this host), after every change of this bolt
+----------------------------------------------------------------------------------------------------
+
+Checked 264 files in 226ms. No fixes applied.
+Found 2 infos.
+ Test Files  124 passed (124)
+      Tests  12623 passed (12623)
+Statements   : 94.5% ( 8106/8577 )
+Branches     : 89.37% ( 7229/8088 )
+Functions    : 98.82% ( 1091/1104 )
+Lines        : 96.72% ( 7107/7348 )
+selftest: all cases passed
+timed check: demo 1.02 s fastest of 3 (runs 1.02, 1.09, 1.08; budget under 2 s) on Mac17,3, Apple M5, Node v22.23.2, 2026-11-12
+timed check: tree 4.10 s fastest of 3 (runs 4.73, 4.43, 4.10; budget under 30 s) on Mac17,3, Apple M5, Node v22.23.2, 2026-11-12
+timed check: within budget on the recorded machine
+npm run verify  621.03s user 51.69s system 474% cpu 2:21.68 total
+
+Notes: "Found 2 infos" are the same two Biome style suggestions as in B15 (test/parse/iac-cfn-hostile.test.ts and
+test/report/sarif.test.ts), not errors. The timed check ran under a higher load than in B15 (other bolts were running),
+so its seconds are slower than the B15 record and are still within the budgets.
+
+$ npm run build     (last step of verify, and run again on its own at the end)
+> tsc -p tsconfig.build.json
+(no output; exit 0)
+
+----------------------------------------------------------------------------------------------------
+6. Review fixes (2026-11-13): M1 (AC9.5.1 wording), m1 (scalingRatio), m2 (portability scan)
+----------------------------------------------------------------------------------------------------
+
+M1. The AC9.5.1 text in docs/limits.md, docs/ci-and-sarif.md and docs/release-checklist.md now keeps the approved wording
+("validates against the repo-kept SARIF 2.1.0 schema") and records not vendoring as a deviation (the X5 fallback), with
+the licence lookup in docs/lookups-b16.txt (GET of the sarif-spec LICENSE.md, HTTP 200, read 2026-11-13T00:01:45Z).
+Checklist row 7 reads "done as the X5 fallback; deviation from AC9.5.1 recorded".
+
+m1. scalingRatio keeps a lower-step remeasure only when the breach is below 16. Simulated-clock tests added to
+test/core/scaling-helper.test.ts: linear below T and quadratic above (T = 1500, 2000, 3000, 3900; k = 1e3 and 1e2, 8 tests),
+n^1.8 (must breach), n log n (must pass).
+  before the change: Tests  8 failed | 6 passed (14)   (AssertionError: expected 4 to be greater than 8)
+  after:             Tests  14 passed (14)
+Every test file that uses scalingRatio (19 files, 573 tests), three runs on each Node, all passed:
+  Node 24.22.3: 573 passed, 573 passed, 573 passed
+  Node 22.23.5: 573 passed, 573 passed, 573 passed
+
+m2. test/platform/portability.test.ts: scans os in every import form, process.env (allow-list: src/cli/main.ts, with its reason),
+host path imports (allow-list: src/parse/intake/walk.ts and src/parse/intake/intake.ts, each with reason and exact import line),
+real comment skipping only (a line that starts with * is scanned), and a walk-order test with names whose byte order and locale
+order differ. The header now lists exactly what is and is not checked. Mutants, in a scratch copy of the worktree:
+  walk.ts compareBytes -> localeCompare       : 2 failed (the locale scan and the walk-order test)
+  process.env added to src/version.ts         : 1 failed (process.env allow-list)
+  `resolve` imported from node:path in link   : 1 failed (host path allow-list)
+  `import ... from 'os'` added                : 1 failed (os scan)
+Before the extension none of the last three could be caught: the old scan had no process.env, host path or `from 'os'` pattern.
+
+npm run verify (Node v22.23.2) after these fixes:
+Checked 264 files in 253ms. No fixes applied.
+Found 2 infos.
+ Test Files  124 passed (124)
+      Tests  12638 passed (12638)
+Statements   : 94.5% ( 8106/8577 )
+Branches     : 89.37% ( 7229/8088 )
+Functions    : 98.82% ( 1091/1104 )
+Lines        : 96.72% ( 7107/7348 )
+selftest: all cases passed
+timed check: demo 1.34 s fastest of 3 (runs 1.52, 1.49, 1.34; budget under 2 s) on Mac17,3, Apple M5, Node v22.23.2, 2026-11-13
+timed check: tree 11.90 s fastest of 3 (runs 12.77, 11.90, 12.54; budget under 30 s) on Mac17,3, Apple M5, Node v22.23.2, 2026-11-13
+timed check: within budget on the recorded machine
+npm run verify  580.28s user 49.69s system 291% cpu 3:35.92 total
+(the timed check ran under a high host load, other bolts were running; it stays within its budgets)
+
+$ npm run build     (last step of verify)
+> tsc -p tsconfig.build.json
+(no output; exit 0)
+

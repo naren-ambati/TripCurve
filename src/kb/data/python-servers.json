@@ -1,0 +1,315 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "gunicorn-keepalive-uvicorn-worker-26x",
+      "subject": "gunicorn-keepalive",
+      "value": 2,
+      "unit": "s",
+      "applies": {
+        "runtime": "gunicorn",
+        "versionRange": ">=26.2.0 <27.0.0",
+        "condition": "workerClass in [uvicorn]"
+      },
+      "citationName": "gunicorn keepalive, uvicorn worker",
+      "rangeLabel": "gunicorn 26.x",
+      "docUrl": "https://pypi.org/project/gunicorn/",
+      "docDate": "2026-11-11",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "26.2.0",
+        "date": "2026-11-11",
+        "platform": "darwin-arm64, CPython 3.14.7"
+      },
+      "scriptRef": "measure/py-idle-close.mjs",
+      "toleranceMs": 6,
+      "notes": "Measured 2001 to 2003 ms on gunicorn 26.2.0 with uvicorn-worker 0.4.0 and uvicorn 0.54.0, worker uvicorn_worker.UvicornWorker, defaults (bolt B0, 2026-11-11, measure/results/2026-11-11-b0.jsonl lines 13 to 15). The lower bound is the one measured version: gunicorn 26.0 and 26.1 were not measured, so they have no entry and are unresolved. The value is the uvicorn worker's; gunicorn's own default keepalive is 2 s for the threaded and async workers (docs/research.md section 2) but only this worker and gthread are measured (gevent, eventlet and tornado have no entry). The page in docUrl is where the versions were looked up (2026-11-11), not the source of the value. toleranceMs 6: the largest deviation seen in B0 and B2 (all 120 idle-close values on gunicorn 26.2.0 and 27.0.0) was 5 ms above nominal, plus the 1 ms resolution. Also measured with explicit keepalive 3, 5, 7 and 9 from each source (bolt B2, measure/results/2026-11-11-b2.jsonl). httptools: the same on a standard install (httptools 0.9.0, uvloop 0.23.0, uvicorn 0.54.0, protocol read from the serving object as HttpToolsProtocol): default 2002 to 2003 ms (measure/results/2026-11-11-b2-httptools.jsonl lines 1 to 3). The standard-install runs used uvloop and the plain runs asyncio, so the two loops were not separated: httptools on asyncio and h11 on uvloop are inferred to behave the same, not measured."
+    },
+    {
+      "id": "gunicorn-keepalive-uvicorn-worker-27x",
+      "subject": "gunicorn-keepalive",
+      "value": 2,
+      "unit": "s",
+      "applies": {
+        "runtime": "gunicorn",
+        "versionRange": ">=27.0.0 <28.0.0",
+        "condition": "workerClass in [uvicorn]"
+      },
+      "citationName": "gunicorn keepalive, uvicorn worker",
+      "rangeLabel": "gunicorn 27.x",
+      "docUrl": "https://pypi.org/project/gunicorn/",
+      "docDate": "2026-11-11",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "27.0.0",
+        "date": "2026-11-11",
+        "platform": "darwin-arm64, CPython 3.14.7"
+      },
+      "scriptRef": "measure/py-idle-close.mjs",
+      "toleranceMs": 6,
+      "notes": "Measured 2001 to 2003 ms on gunicorn 27.0.0 (uploaded to PyPI on 2026-11-10) with uvicorn-worker 0.4.0 and uvicorn 0.54.0, defaults (bolt B0, 2026-11-11, measure/results/2026-11-11-b0.jsonl lines 19 to 21). The lower bound is the one measured version, a new major; later 27.x releases are covered by the range, 28 and later are not. toleranceMs 6: the largest deviation seen in B0 and B2 (all 120 idle-close values on gunicorn 26.2.0 and 27.0.0) was 5 ms above nominal, plus the 1 ms resolution. Also measured with explicit keepalive 3, 5, 7 and 9 from each source (bolt B2, measure/results/2026-11-11-b2.jsonl). httptools: the same on a standard install (httptools 0.9.0, uvloop 0.23.0): default 2002 to 2003 ms (measure/results/2026-11-11-b2-httptools.jsonl lines 7 to 9). The standard-install runs used uvloop and the plain runs asyncio, so the two loops were not separated: httptools on asyncio and h11 on uvloop are inferred to behave the same, not measured."
+    },
+    {
+      "id": "uvicorn-keepalive-0-54x",
+      "subject": "uvicorn-keepalive",
+      "value": 5,
+      "unit": "s",
+      "applies": {
+        "runtime": "uvicorn",
+        "versionRange": ">=0.54.0 <0.55.0"
+      },
+      "citationName": "uvicorn keepalive",
+      "rangeLabel": "uvicorn 0.54.x",
+      "docUrl": "https://pypi.org/project/uvicorn/",
+      "docDate": "2026-11-11",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "0.54.0",
+        "date": "2026-11-11",
+        "platform": "darwin-arm64, CPython 3.14.7"
+      },
+      "scriptRef": "measure/py-idle-close.mjs",
+      "toleranceMs": 4,
+      "notes": "Measured 5002 to 5003 ms on uvicorn 0.54.0 alone, plain install (h11, no extras), defaults (bolt B0, 2026-11-11). The range is one 0.x minor line from the measured version, because every 0.x minor can change a default. The page in docUrl is where the version was looked up (2026-11-11). toleranceMs 4: the largest deviation seen in B0 was 3 ms above nominal, plus the 1 ms resolution. httptools: uvicorn 0.54.0 with --http httptools (httptools 0.9.0, uvloop 0.23.0) closed at 5001 to 5004 ms, and --http auto picked httptools when installed and closed at 5001 to 5003 ms (measure/results/2026-11-11-b2-httptools.jsonl lines 23 to 25 and 31 to 33); --http auto without httptools picked h11 and closed at 5003 ms (lines 34 to 36). uvicorn has exactly two HTTP implementations, so the protocol does not change this value. The standard-install runs used uvloop and the plain runs asyncio, so the two loops were not separated: httptools on asyncio and h11 on uvloop are inferred to behave the same, not measured."
+    },
+    {
+      "id": "gunicorn-keepalive-gthread-26x",
+      "subject": "gunicorn-keepalive",
+      "value": 2,
+      "unit": "s",
+      "applies": {
+        "runtime": "gunicorn",
+        "versionRange": ">=26.2.0 <27.0.0",
+        "condition": "workerClass in [gthread]"
+      },
+      "citationName": "gunicorn keepalive, gthread worker",
+      "rangeLabel": "gunicorn 26.x",
+      "docUrl": "https://pypi.org/project/gunicorn/",
+      "docDate": "2026-11-11",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "26.2.0",
+        "date": "2026-11-11",
+        "platform": "darwin-arm64, CPython 3.14.7"
+      },
+      "scriptRef": "measure/py-b2.mjs",
+      "toleranceMs": 6,
+      "notes": "Measured 2002 to 2003 ms on gunicorn 26.2.0 with --threads 2, and 2003 ms with GUNICORN_CMD_ARGS=--threads 4, no -k: gunicorn logged \"Using worker: gthread\" in both (bolt B2, 2026-11-11, measure/results/2026-11-11-b2.jsonl lines 1 to 6). The lower bound is the one measured version; 26.0 and 26.1 were not measured, so they have no entry and are unresolved. Only the default keepalive was measured on gthread, not an explicit --keep-alive. The page in docUrl is where the versions were looked up (2026-11-11). toleranceMs 6: the largest deviation seen in B0 and B2 was 5 ms above nominal, plus the 1 ms resolution."
+    },
+    {
+      "id": "gunicorn-keepalive-gthread-27x",
+      "subject": "gunicorn-keepalive",
+      "value": 2,
+      "unit": "s",
+      "applies": {
+        "runtime": "gunicorn",
+        "versionRange": ">=27.0.0 <28.0.0",
+        "condition": "workerClass in [gthread]"
+      },
+      "citationName": "gunicorn keepalive, gthread worker",
+      "rangeLabel": "gunicorn 27.x",
+      "docUrl": "https://pypi.org/project/gunicorn/",
+      "docDate": "2026-11-11",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "27.0.0",
+        "date": "2026-11-11",
+        "platform": "darwin-arm64, CPython 3.14.7"
+      },
+      "scriptRef": "measure/py-b2.mjs",
+      "toleranceMs": 6,
+      "notes": "Measured 2003 to 2005 ms on gunicorn 27.0.0 with --threads 2, and 2002 to 2005 ms with GUNICORN_CMD_ARGS=--threads 4, no -k: gunicorn logged \"Using worker: gthread\" in both (bolt B2, 2026-11-11, measure/results/2026-11-11-b2.jsonl lines 64 to 69). The lower bound is the one measured version, a new major; 28 and later are not covered. Only the default keepalive was measured on gthread. toleranceMs 6: the largest deviation seen in B0 and B2 was 5 ms above nominal, plus the 1 ms resolution."
+    },
+    {
+      "id": "gunicorn-sync-worker-26x",
+      "subject": "gunicorn-sync-keepalive",
+      "value": "n/a",
+      "unit": "s",
+      "applies": {
+        "runtime": "gunicorn",
+        "versionRange": ">=26.2.0 <27.0.0",
+        "condition": "workerClass in [sync]"
+      },
+      "citationName": "gunicorn sync worker",
+      "rangeLabel": "gunicorn 26.x",
+      "docUrl": "https://pypi.org/project/gunicorn/",
+      "docDate": "2026-11-11",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "26.2.0",
+        "date": "2026-11-11",
+        "platform": "darwin-arm64, CPython 3.14.7"
+      },
+      "scriptRef": "measure/py-b2.mjs",
+      "toleranceMs": 6,
+      "notes": "Not applicable: on gunicorn 26.2.0 with no -k and no --threads, gunicorn logged \"Using worker: sync\", the reply carried Connection: close and the FIN came 0 ms after the last response byte, 3 of 3 runs (bolt B2, 2026-11-11, measure/results/2026-11-11-b2.jsonl lines 7 to 9). The rule T1 result for the sync worker is N/A whatever the release, because the worker closes after every response by design (docs/research.md section 2); this entry is the measured evidence, and it does not gate the N/A."
+    },
+    {
+      "id": "gunicorn-sync-worker-27x",
+      "subject": "gunicorn-sync-keepalive",
+      "value": "n/a",
+      "unit": "s",
+      "applies": {
+        "runtime": "gunicorn",
+        "versionRange": ">=27.0.0 <28.0.0",
+        "condition": "workerClass in [sync]"
+      },
+      "citationName": "gunicorn sync worker",
+      "rangeLabel": "gunicorn 27.x",
+      "docUrl": "https://pypi.org/project/gunicorn/",
+      "docDate": "2026-11-11",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "27.0.0",
+        "date": "2026-11-11",
+        "platform": "darwin-arm64, CPython 3.14.7"
+      },
+      "scriptRef": "measure/py-b2.mjs",
+      "toleranceMs": 6,
+      "notes": "Not applicable: on gunicorn 27.0.0 the sync worker sent Connection: close and the FIN came 0 ms after the last response byte, 3 of 3 runs (bolt B2, 2026-11-11, measure/results/2026-11-11-b2.jsonl lines 70 to 72)."
+    },
+    {
+      "id": "gunicorn-explicit-keepalive-uvicorn-worker-26x",
+      "subject": "gunicorn-keepalive-explicit",
+      "value": "n/a",
+      "unit": "s",
+      "applies": {
+        "runtime": "gunicorn",
+        "versionRange": ">=26.2.0 <27.0.0",
+        "condition": "workerClass in [uvicorn]"
+      },
+      "citationName": "explicit keepalive, uvicorn worker",
+      "rangeLabel": "gunicorn 26.x",
+      "docUrl": "https://pypi.org/project/gunicorn/",
+      "docDate": "2026-11-11",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "26.2.0",
+        "date": "2026-11-11",
+        "platform": "darwin-arm64, CPython 3.14.7"
+      },
+      "scriptRef": "measure/py-b2.mjs",
+      "toleranceMs": 6,
+      "notes": "No default value: for an explicit integer keepalive of 1 or more the idle close equals the setting (never below it in any run). Measured on gunicorn 26.2.0 with the uvicorn worker (uvicorn_worker.UvicornWorker 0.4.0, uvicorn 0.54.0): explicit 3 s from the command line, 5 s from GUNICORN_CMD_ARGS, 7 s from a -c file and 9 s from ./gunicorn.conf.py gave idle closes of 3001 to 3003, 5002 to 5004, 7002 to 7003 and 9003 ms (measure/results/2026-11-11-b2.jsonl lines 13 to 24); docs/research.md section 2 measured --keep-alive 75 as 75 s on 26.2.0 with uvicorn. Values other than 3, 5, 7, 9 and 75 follow by the same rule, not by measurement. toleranceMs 6: the largest deviation was 5 ms above nominal, plus the 1 ms resolution. The rule holds only inside the measured span of this entry (measuredSpan); a value outside it is UNRESOLVED. Explicit 300 s from the command line gave 300001 to 300003 ms (measure/results/2026-11-11-b2-explicit-300.jsonl lines 5 and 6). httptools: explicit 3, 75 and 300 s on a standard install (httptools 0.9.0, uvloop 0.23.0) closed at 3002 to 3003, 75002 to 75003 and 300003 ms (measure/results/2026-11-11-b2-httptools.jsonl lines 4 to 6, 13 to 15, 19 to 20). The standard-install runs used uvloop and the plain runs asyncio, so the two loops were not separated: httptools on asyncio and h11 on uvloop are inferred to behave the same, not measured.",
+      "measuredSpan": {
+        "min": 3,
+        "max": 300
+      }
+    },
+    {
+      "id": "gunicorn-explicit-keepalive-uvicorn-worker-27x",
+      "subject": "gunicorn-keepalive-explicit",
+      "value": "n/a",
+      "unit": "s",
+      "applies": {
+        "runtime": "gunicorn",
+        "versionRange": ">=27.0.0 <28.0.0",
+        "condition": "workerClass in [uvicorn]"
+      },
+      "citationName": "explicit keepalive, uvicorn worker",
+      "rangeLabel": "gunicorn 27.x",
+      "docUrl": "https://pypi.org/project/gunicorn/",
+      "docDate": "2026-11-11",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "27.0.0",
+        "date": "2026-11-11",
+        "platform": "darwin-arm64, CPython 3.14.7"
+      },
+      "scriptRef": "measure/py-b2.mjs",
+      "toleranceMs": 6,
+      "notes": "No default value: for an explicit integer keepalive of 1 or more the idle close equals the setting (never below it in any run). Measured on gunicorn 27.0.0 with the uvicorn worker: explicit 3 s, 5 s, 7 s and 9 s from the command line, GUNICORN_CMD_ARGS, a -c file and ./gunicorn.conf.py gave idle closes of 3000 to 3002, 5001 to 5002, 7001 to 7002 and 9001 to 9002 ms (measure/results/2026-11-11-b2.jsonl lines 76 to 87); explicit 75 s from the command line gave 75002 to 75003 ms (measure/results/2026-11-11-b2-explicit.jsonl lines 13 to 15). toleranceMs 6: the largest deviation in B2 was 5 ms above nominal, plus the 1 ms resolution. The rule holds only inside the measured span of this entry (measuredSpan); a value outside it is UNRESOLVED. Explicit 300 s gave 300001 to 300003 ms (measure/results/2026-11-11-b2-explicit-300.jsonl lines 7 and 8). httptools: explicit 3, 75 and 300 s on a standard install closed at 3001 to 3002, 75000 to 75003 and 300000 to 300003 ms (measure/results/2026-11-11-b2-httptools.jsonl lines 10 to 12, 16 to 18, 21 to 22). The standard-install runs used uvloop and the plain runs asyncio, so the two loops were not separated: httptools on asyncio and h11 on uvloop are inferred to behave the same, not measured.",
+      "measuredSpan": {
+        "min": 3,
+        "max": 300
+      }
+    },
+    {
+      "id": "gunicorn-explicit-keepalive-gthread-26x",
+      "subject": "gunicorn-keepalive-explicit",
+      "value": "n/a",
+      "unit": "s",
+      "applies": {
+        "runtime": "gunicorn",
+        "versionRange": ">=26.2.0 <27.0.0",
+        "condition": "workerClass in [gthread]"
+      },
+      "citationName": "explicit keepalive, gthread worker",
+      "rangeLabel": "gunicorn 26.x",
+      "docUrl": "https://pypi.org/project/gunicorn/",
+      "docDate": "2026-11-11",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "26.2.0",
+        "date": "2026-11-11",
+        "platform": "darwin-arm64, CPython 3.14.7"
+      },
+      "scriptRef": "measure/py-b2.mjs",
+      "toleranceMs": 1201,
+      "notes": "No default value: for an explicit integer keepalive of 1 or more the idle close equals the setting (never below it in any run). Measured on gunicorn 26.2.0 with --threads 2 (gunicorn logged gthread) and --keep-alive 7 and 75: idle closes of 7002 to 7008 ms and 75073 to 75077 ms (measure/results/2026-11-11-b2-explicit.jsonl lines 1 to 6).  The rule holds only inside the measured span of this entry (measuredSpan); a value outside it is UNRESOLVED. Explicit 300 s gave 300487 and 300589 ms (measure/results/2026-11-11-b2-explicit-300.jsonl lines 1 and 2),. Only 7, 75 and 300 s were measured. Tolerance (derived 2026-11-12, re-derived after the B8 review): the rule is the largest observed deviation plus the 1 ms resolution, over the 48 recorded explicit gthread observations on 26.2.0 and 27.0.0 that were taken one at a time (B2 measure/results/2026-11-11-b2-explicit.jsonl, and the B8 lane runs at --jobs=1 or alone, measure/results/2026-11-12-lanes-*.jsonl; runs taken beside other timings are kept as evidence and are not a basis). The overshoot above nominal grows with the value, so the form is proportional: at 7 s it was +2 to +21 ms (36 runs), at 75 s +73 to +137 ms (6 runs), at 300 s +385 to +902 ms (6 runs); a constant overhead would give the same overshoot at 300 s as at 7 s. toleranceRelative is 0.004, the largest relative deviation (0.301 %) rounded up to the next 0.001, and the tolerance at V s is V x 1000 x 0.004 + 1 ms; toleranceMs 1201 is that at the top of the span, 300 s. Because the relative rule cannot see an error of 1 s at 300 s, the lane uses toleranceMsAt for a value that has observations of its own: 22 ms at 7 s, 138 ms at 75 s, 903 ms at 300 s (each the largest deviation at that value plus 1 ms). test/kb/tolerance-evidence.test.ts recomputes all of it from the result files. Rule T1 compares the nominal value, because every overshoot was above nominal and never below, so the tolerance matters only to the measurement lane.",
+      "measuredSpan": {
+        "min": 7,
+        "max": 300
+      },
+      "toleranceRelative": 0.004,
+      "toleranceMsAt": { "7": 22, "75": 138, "300": 903 }
+    },
+    {
+      "id": "gunicorn-explicit-keepalive-gthread-27x",
+      "subject": "gunicorn-keepalive-explicit",
+      "value": "n/a",
+      "unit": "s",
+      "applies": {
+        "runtime": "gunicorn",
+        "versionRange": ">=27.0.0 <28.0.0",
+        "condition": "workerClass in [gthread]"
+      },
+      "citationName": "explicit keepalive, gthread worker",
+      "rangeLabel": "gunicorn 27.x",
+      "docUrl": "https://pypi.org/project/gunicorn/",
+      "docDate": "2026-11-11",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "27.0.0",
+        "date": "2026-11-11",
+        "platform": "darwin-arm64, CPython 3.14.7"
+      },
+      "scriptRef": "measure/py-b2.mjs",
+      "toleranceMs": 1201,
+      "notes": "No default value: for an explicit integer keepalive of 1 or more the idle close equals the setting (never below it in any run). Measured on gunicorn 27.0.0 with --threads 2 and --keep-alive 7 and 75: idle closes of 7007 to 7008 ms and 75115 to 75137 ms (measure/results/2026-11-11-b2-explicit.jsonl lines 7 to 12).  The rule holds only inside the measured span of this entry (measuredSpan); a value outside it is UNRESOLVED. Explicit 300 s gave 300488 and 300579 ms (measure/results/2026-11-11-b2-explicit-300.jsonl lines 3 and 4). Only 7, 75 and 300 s were measured. Tolerance (derived 2026-11-12, re-derived after the B8 review): the rule is the largest observed deviation plus the 1 ms resolution, over the 48 recorded explicit gthread observations on 26.2.0 and 27.0.0 that were taken one at a time (B2 measure/results/2026-11-11-b2-explicit.jsonl, and the B8 lane runs at --jobs=1 or alone, measure/results/2026-11-12-lanes-*.jsonl; runs taken beside other timings are kept as evidence and are not a basis). The overshoot above nominal grows with the value, so the form is proportional: at 7 s it was +2 to +21 ms (36 runs), at 75 s +73 to +137 ms (6 runs), at 300 s +385 to +902 ms (6 runs); a constant overhead would give the same overshoot at 300 s as at 7 s. toleranceRelative is 0.004, the largest relative deviation (0.301 %) rounded up to the next 0.001, and the tolerance at V s is V x 1000 x 0.004 + 1 ms; toleranceMs 1201 is that at the top of the span, 300 s. Because the relative rule cannot see an error of 1 s at 300 s, the lane uses toleranceMsAt for a value that has observations of its own: 22 ms at 7 s, 138 ms at 75 s, 903 ms at 300 s (each the largest deviation at that value plus 1 ms). test/kb/tolerance-evidence.test.ts recomputes all of it from the result files. Rule T1 compares the nominal value, because every overshoot was above nominal and never below, so the tolerance matters only to the measurement lane.",
+      "measuredSpan": {
+        "min": 7,
+        "max": 300
+      },
+      "toleranceRelative": 0.004,
+      "toleranceMsAt": { "7": 22, "75": 138, "300": 903 }
+    },
+    {
+      "id": "uvicorn-explicit-keepalive-0-54x",
+      "subject": "uvicorn-keepalive-explicit",
+      "value": "n/a",
+      "unit": "s",
+      "applies": {
+        "runtime": "uvicorn",
+        "versionRange": ">=0.54.0 <0.55.0"
+      },
+      "citationName": "explicit keepalive, uvicorn",
+      "rangeLabel": "uvicorn 0.54.x",
+      "docUrl": "https://pypi.org/project/uvicorn/",
+      "docDate": "2026-11-11",
+      "basis": "measured",
+      "measuredOn": {
+        "version": "0.54.0",
+        "date": "2026-11-11",
+        "platform": "darwin-arm64, CPython 3.14.7"
+      },
+      "scriptRef": "measure/py-b2.mjs",
+      "toleranceMs": 6,
+      "notes": "No default value: for an explicit integer keepalive of 1 or more the idle close equals the setting (never below it in any run). Measured on uvicorn 0.54.0 alone (plain install) with --timeout-keep-alive 7 and with UVICORN_TIMEOUT_KEEP_ALIVE=7: idle closes of 7000 to 7005 ms in every run (measure/results/2026-11-11-b2-explicit.jsonl lines 16 to 27). Only 7 s was measured; other whole numbers follow by the same rule, not by measurement. toleranceMs 6: the largest deviation was 5 ms above nominal, plus the 1 ms resolution. The rule holds only inside the measured span of this entry (measuredSpan); a value outside it is UNRESOLVED. Explicit 300 s from --timeout-keep-alive gave 300003 ms twice (measure/results/2026-11-11-b2-explicit-300.jsonl lines 9 and 10). Only 7 and 300 s were measured. httptools: --http httptools with --timeout-keep-alive 7 and 300 closed at 7002 to 7003 and 300000 to 300001 ms (measure/results/2026-11-11-b2-httptools.jsonl lines 26 to 30). The standard-install runs used uvloop and the plain runs asyncio, so the two loops were not separated: httptools on asyncio and h11 on uvloop are inferred to behave the same, not measured.",
+      "measuredSpan": {
+        "min": 7,
+        "max": 300
+      }
+    }
+  ]
+}

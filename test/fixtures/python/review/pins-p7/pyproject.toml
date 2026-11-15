@@ -1,0 +1,2 @@
+[tool.poetry.dependencies.gunicorn]
+version = "20.1.0"

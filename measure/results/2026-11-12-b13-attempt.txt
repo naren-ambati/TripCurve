@@ -1,0 +1,51 @@
+B13 attempt: measure old Node (10.15.x, 12.18.x, 13.12.x) on this host
+Run at (UTC): 2026-11-12T20:00:27Z
+Host: arm64, macOS 26.6 (25G72)
+Nothing was installed and no x64 tarball was downloaded.
+
+$ arch -x86_64 /usr/bin/true
+arch: posix_spawnp: /usr/bin/true: Bad CPU type in executable
+[exit 1]
+
+$ /usr/bin/pgrep oahd
+[exit 1]
+
+$ sysctl -n sysctl.proc_translated
+0
+[exit 0]
+
+$ ls /Library/Apple/usr/share/rosetta
+ls: /Library/Apple/usr/share/rosetta: No such file or directory
+[exit 1]
+
+Lookups on nodejs.org (read-only GET), 2026-11-12T20:00:27Z:
+
+$ curl -sS https://nodejs.org/dist/index.json   (entries v10.15.x, v12.18.x, v13.12.x, files field)
+v10.15.3 2019-03-05 osx-x64-pkg,osx-x64-tar
+v10.15.2 2019-02-28 osx-x64-pkg,osx-x64-tar
+v10.15.1 2019-01-29 osx-x64-pkg,osx-x64-tar
+v10.15.0 2018-12-26 osx-x64-pkg,osx-x64-tar
+v12.18.4 2020-09-15 osx-x64-pkg,osx-x64-tar
+v12.18.3 2020-07-22 osx-x64-pkg,osx-x64-tar
+v12.18.2 2020-06-30 osx-x64-pkg,osx-x64-tar
+v12.18.1 2020-06-17 osx-x64-pkg,osx-x64-tar
+v12.18.0 2020-06-02 osx-x64-pkg,osx-x64-tar
+v13.12.0 2020-03-26 osx-x64-pkg,osx-x64-tar
+osx-arm64 in any release up to v15: none
+oldest release with osx-arm64: v16.0.0
+
+$ curl -sS https://nodejs.org/dist/v10.15.3/   (darwin and linux-arm64 file names)
+http=200
+node-v10.15.3-darwin-x64.tar.gz
+node-v10.15.3-linux-arm64.tar.gz
+
+$ curl -sS https://nodejs.org/dist/v12.18.4/   (darwin and linux-arm64 file names)
+http=200
+node-v12.18.4-darwin-x64.tar.gz
+node-v12.18.4-linux-arm64.tar.gz
+
+$ curl -sS https://nodejs.org/dist/v13.12.0/   (darwin and linux-arm64 file names)
+http=200
+node-v13.12.0-darwin-x64.tar.gz
+node-v13.12.0-linux-arm64.tar.gz
+

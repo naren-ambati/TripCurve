@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "tool": {
+    "name": "tripcurve",
+    "version": "0.1.0"
+  },
+  "checked": {
+    "path": ".",
+    "filesRead": 1
+  },
+  "workloads": [
+    {
+      "name": "stream",
+      "kind": "Deployment",
+      "namespace": "default",
+      "file": "k8s/stream.yaml",
+      "line": 2,
+      "results": [
+        {
+          "rule": "T1",
+          "kind": "UNRESOLVED",
+          "headline": "no measured evidence for NLBs",
+          "chain": [
+            {
+              "label": "Node 22.23",
+              "detail": "image",
+              "valueType": "value",
+              "value": "node:22.23",
+              "unit": "none",
+              "source": {
+                "type": "file",
+                "file": "k8s/stream.yaml",
+                "line": 16,
+                "basis": "declared"
+              },
+              "confidence": "read"
+            },
+            {
+              "label": "source",
+              "valueType": "unresolved",
+              "value": null,
+              "reason": "source not linked: the container has no literal command",
+              "declareHint": "link the entry file as source for this workload in tripcurve.yaml, or give the container a command of the form node <file>"
+            },
+            {
+              "label": "LB idle",
+              "valueType": "unresolved",
+              "value": null,
+              "reason": "no measured evidence for NLBs"
+            }
+          ],
+          "declare": [
+            "link the entry file as source for this workload in tripcurve.yaml, or give the container a command of the form node <file>"
+          ]
+        },
+        {
+          "rule": "T2",
+          "kind": "UNRESOLVED",
+          "headline": "source not linked; link it or declare a drain",
+          "chain": [
+            {
+              "label": "preStop none",
+              "detail": "in",
+              "valueType": "text",
+              "value": "k8s/stream.yaml"
+            },
+            {
+              "label": "source",
+              "valueType": "unresolved",
+              "value": null,
+              "reason": "source not linked: the container has no literal command"
+            }
+          ],
+          "declare": [
+            "set source for this workload in tripcurve.yaml, or declare drain.in_process_s for it"
+          ]
+        },
+        {
+          "rule": "T3",
+          "kind": "UNRESOLVED",
+          "headline": "drain not known: source not linked; link it or declare a drain",
+          "chain": [
+            {
+              "label": "grace",
+              "valueType": "value",
+              "value": 30,
+              "unit": "s",
+              "source": {
+                "type": "default",
+                "citation": "Kubernetes terminationGracePeriodSeconds",
+                "basis": "documented"
+              },
+              "confidence": "cited"
+            },
+            {
+              "label": "source",
+              "valueType": "unresolved",
+              "value": null,
+              "reason": "source not linked: the container has no literal command"
+            }
+          ],
+          "declare": [
+            "set source for this workload in tripcurve.yaml, or declare drain.in_process_s for it"
+          ]
+        }
+      ]
+    }
+  ],
+  "notChecked": [],
+  "assumptions": [
+    "Green never means zero-downtime: the SIGTERM race and the deregistration delay are outside these rules."
+  ],
+  "waivers": [],
+  "unchecked": [],
+  "configErrors": [],
+  "summary": {
+    "failed": 0,
+    "warning": 0,
+    "unresolved": 3,
+    "versionDependent": 0,
+    "notEvaluated": 0,
+    "waived": 0,
+    "notApplicable": 0,
+    "passed": 0,
+    "outcome": "NotClean",
+    "clean": false,
+    "waivedDates": [],
+    "exitCode": 1
+  }
+}

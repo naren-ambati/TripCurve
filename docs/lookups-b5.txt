@@ -1,0 +1,43 @@
+# Lookups for bolt B5 (T4: SQS visibility vs Lambda timeout), read 2026-11-12 (UTC 07:06Z)
+
+## https://docs.aws.amazon.com/lambda/latest/dg/services-sqs-configure.html
+"To allow your function time to process each batch of records, set the source queue's visibility timeout to at least six times the configuration timeout on your function. The extra time allows Lambda to retry if your function is throttled while processing a previous batch."
+"If you're using a batch window greater than 0 seconds, you must account for the increased processing time in your queue's visibility timeout. We recommend setting your queue's visibility timeout to six times your Event Function timeout, plus the value of MaximumBatchingWindowInSeconds."
+"Your function's timeout must be less than or equal to the queue's visibility timeout. Lambda validates this requirement when you create or update an event source mapping and returns an error if the function timeout exceeds the queue's visibility timeout."
+
+## https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-visibility-timeout.html
+"The default visibility timeout for a queue is 30 seconds"
+
+## https://docs.aws.amazon.com/lambda/latest/dg/configuration-timeout.html
+"The default value for this setting is 3 seconds, but you can adjust this in increments of 1 second up to a maximum value of 900 seconds (15 minutes)."
+
+## Terraform AWS provider docs source (raw.githubusercontent.com/hashicorp/terraform-provider-aws/main/website/docs/r/)
+sqs_queue: "`visibility_timeout_seconds` - (Optional) Visibility timeout for the queue. An integer from 0 to 43200 (12 hours). The default for this attribute is 30."
+lambda_function: "`timeout` - (Optional) Amount of time your Lambda Function has to run in seconds. Defaults to 3. Valid between 1 and 900."
+lambda_event_source_mapping: "`maximum_batching_window_in_seconds` - (Optional) Maximum amount of time to gather records before invoking the function, in seconds (between 0 and 300). ... For streaming event sources, defaults to as soon as records are available in the stream. Only available for stream sources (DynamoDB and Kinesis) and SQS standard queues."
+lb: "`idle_timeout` - (Optional) Time in seconds that the connection is allowed to be idle. Only valid for Load Balancers of type `application`. Default: 60."
+
+## https://docs.aws.amazon.com/lambda/latest/api/API_CreateEventSourceMapping.html (read 2026-11-12)
+"For Kinesis, DynamoDB, and Amazon SQS event sources, the default batching window is 0 seconds."
+"You can configure MaximumBatchingWindowInSeconds to any value from 0 seconds to 300 seconds in increments of seconds."
+
+## Terraform AWS provider source, main branch (read 2026-11-12)
+internal/service/sqs/queue.go: "visibility_timeout_seconds": { Type: schema.TypeInt, Optional: true, Default: defaultQueueVisibilityTimeout, ValidateFunc: validation.IntBetween(0, 43_200) }
+  -> a schema Default: Terraform sets and reconciles 30 when the attribute is absent (drift shows in plan).
+internal/service/lambda/event_source_mapping.go: "maximum_batching_window_in_seconds": { Type: schema.TypeInt, Optional: true } and the value is sent only `if v, ok := d.GetOk(...)`
+  -> no schema Default: when absent, Terraform does not send or manage it; AWS applies its own default (0 for SQS) at create, and later changes outside Terraform are not corrected.
+lambda_function docs: timeout "Defaults to 3" (provider default).
+
+## Main-session reading for B5 (honesty)
+- A Terraform attribute with a provider schema Default (SQS visibility 30, Lambda timeout 3, aws_lb idle_timeout 60) follows from the file itself when absent, like the Kubernetes grace default: basis `documented`, may support PASS/FAIL, printed with its source.
+- An attribute with NO provider default that AWS fills in (event source mapping batching window, 0 for SQS) is NOT established by its absence, like an assumed LB default: UNRESOLVED, printed with the assumed value (0 s) and what it would mean, and listed in Assumptions.
+
+## Terraform AWS provider docs, lb (raw.githubusercontent.com/hashicorp/terraform-provider-aws/main/website/docs/r/lb.html.markdown, read 2026-11-12, UTC 08:50Z; added by the B5 developer agent)
+lb: "`load_balancer_type` - (Optional) Type of load balancer to create. Possible values are `application`, `gateway`, or `network`. The default value is `application`."
+lb: "`idle_timeout` - (Optional) Time in seconds that the connection is allowed to be idle. Only valid for Load Balancers of type `application`. Default: 60."
+(Superseded 2026-11-12T09:07Z: the provider source for aws_lb was read afterwards, see the last section; the aws_lb entry cites the schema default.)
+
+## Terraform AWS provider source, main branch (read 2026-11-12T09:07Z, main session)
+internal/service/lambda/function.go: names.AttrTimeout: { Type: schema.TypeInt, Optional: true, Default: 3, ValidateFunc: validation.IntBetween(1, 900) }
+internal/service/elbv2/load_balancer.go: "idle_timeout": { Type: schema.TypeInt, Optional: true, Default: 60, DiffSuppressFunc: suppressIfLBTypeNot(awstypes.LoadBalancerTypeEnumApplication) }
+  -> both have a schema Default, so Terraform sets and reconciles the value when the attribute is absent (for idle_timeout only on application load balancers).

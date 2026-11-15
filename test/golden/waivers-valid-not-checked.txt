@@ -1,0 +1,33 @@
+tripcurve 0.1.0   checked "."   7 files read
+
+Workload "stream" (Deployment) in "k8s/stream.yaml"
+  WAIVED T1  (was UNRESOLVED: no measured evidence for NLBs) until 2027-03-01:
+           reason "NLB owned by the network team" from "tripcurve.yaml":7
+  WAIVED T2  (was UNRESOLVED: source not linked; link it or declare a drain)
+           until 2026-12-01: reason "drain is in the sidecar"
+           from "k8s/stream.yaml":5
+  WAIVED T3  (was UNRESOLVED: drain not known: source not linked; link it or
+           declare a drain) until 2027-01-15:
+           reason "grace period reviewed by the platform team"
+           from "k8s/stream.yaml":17
+
+Workload "web" (Deployment) in "k8s/web.yaml"
+  PASS T1  idle close 66 s is longer than LB idle 60 s ("src/server.ts":7,
+           keepAliveTimeout 65 s + 1 s (Node 22.x from 22.12; measured at K = 7,
+           12 and 65 s on 5 releases from 22.12.0 to 22.23.5))
+  PASS T2  preStop sleep 10 s ("k8s/web.yaml":25)
+  PASS T3  grace 45 s covers 10 s + 0 s + 5 s + 1 s ("k8s/web.yaml":26)
+
+Assumptions
+  - The container's working directory is taken to be ".".
+  - Endpoint removal needs time to propagate; AWS's EKS guide suggests a preStop
+    of 10 s. tripcurve checks a delay exists, not that it is enough.
+  - Green never means zero-downtime: the SIGTERM race and the deregistration
+    delay are outside these rules.
+  - No load balancer found in the checked files for 1 workload, T1 to T3 not
+    checked for it:
+    Workload "worker" (Deployment) in "k8s/worker.yaml"
+
+No failures: 3 passed, 3 waived (expiring 2026-12-01, 2027-01-15, 2027-03-01), 0
+not applicable; 1 workload not checked.
+Green does not mean zero-downtime: see Assumptions.

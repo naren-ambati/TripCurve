@@ -1,0 +1,71 @@
+{
+  "name": "tripcurve",
+  "version": "0.1.0",
+  "description": "Checks that timeouts between infrastructure layers are ordered correctly.",
+  "author": "naren-ambati",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/naren-ambati/TripCurve.git"
+  },
+  "homepage": "https://github.com/naren-ambati/TripCurve#readme",
+  "bugs": {
+    "url": "https://github.com/naren-ambati/TripCurve/issues"
+  },
+  "keywords": [
+    "timeouts",
+    "keep-alive",
+    "load balancer",
+    "kubernetes",
+    "terraform",
+    "sarif",
+    "sqs",
+    "lambda"
+  ],
+  "private": true,
+  "license": "UNLICENSED",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "bin": {
+    "tripcurve": "./dist/cli/main.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "npm-shrinkwrap.json"
+  ],
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "lint": "biome check .",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "measure:selftest": "node measure/selftest.mjs",
+    "verify:measure": "node measure/lanes.mjs pinned",
+    "timed-check": "node scripts/timed-check.mjs",
+    "build": "node -e \"fs.rmSync('dist',{recursive:true,force:true})\" && tsc -p tsconfig.build.json",
+    "verify": "npm run typecheck && npm run lint && npm run test:coverage && npm run measure:selftest && npm run build && npm run timed-check"
+  },
+  "dependencies": {
+    "commander": "15.1.0",
+    "ts-morph": "28.0.0",
+    "yaml": "2.9.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.6.6",
+    "@types/node": "22.20.5",
+    "@vitest/coverage-v8": "5.1.0",
+    "typescript": "7.0.2",
+    "vitest": "5.1.0"
+  },
+  "overrides": {
+    "minimatch": "11.0.8"
+  }
+}

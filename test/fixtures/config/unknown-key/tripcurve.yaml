@@ -1,0 +1,9 @@
+version: 1
+workloads:
+  - name: web
+    longest_request_s: 5
+    longest_reqest_s: 7
+    runtime:
+      node: "22"
+      npm: "10"
+top_level_idle: 60

@@ -1,0 +1,25 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Parameters:
+  Visibility:
+    Type: Number
+    Default: 60
+Resources:
+  OrdersQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      VisibilityTimeout: !Ref Visibility
+  OrdersFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: index.handler
+      Runtime: nodejs22.x
+      Role: arn:aws:iam::000000000000:role/orders
+      Code:
+        ZipFile: "exports.handler = async () => {};"
+      Timeout: 30
+  OrdersMapping:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      EventSourceArn: !GetAtt OrdersQueue.Arn
+      FunctionName: !Ref OrdersFunction
+      MaximumBatchingWindowInSeconds: 5

@@ -1,0 +1,9 @@
+# Lookups for bolt B16, read-only, taken on the dates and times below (UTC). Nothing was published or written anywhere.
+
+## 1. What licence governs the SARIF schema?  GET https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/LICENSE.md
+Read by the main session at 2026-11-13T00:01Z and again by the build session at 2026-11-13T00:01:45Z. HTTP 200, 1385 bytes.
+The text of that file says the repository content "is governed by the OASIS policies, including the Intellectual Property Rights (IPR) Policy ... (viz, RF on RAND Terms Mode)".
+That is not MIT, Apache-2.0 or BSD. The project rule allows copying a third-party file only under one of those licences, so the schema file is not vendored.
+
+## 2. The official schema itself (the one-off validation of B16)
+URL, size, SHA-256 and the 2026-11-12T23:07:43Z read are in docs/release-check-run-b16.txt, section 4.

@@ -1,0 +1,25 @@
+version: 1
+workloads:
+  - name: web
+    longest_request_s: -1
+  - name: api
+    drain:
+      in_process_s: .nan
+  - name: worker
+    runtime:
+      node: 22.10
+  - name: odd
+    kind: CronJob
+  - namespace: only-ns
+  - name: 5
+  - name: lbs
+    load_balancer:
+      terraform: aws_lb.x
+      ingress: i
+      idle_timeout_s: 60
+  - name: lb2
+    load_balancer:
+      ingress: i
+  - name: lb3
+    load_balancer:
+      terraform: not-a-resource

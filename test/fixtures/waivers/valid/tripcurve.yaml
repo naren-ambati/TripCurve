@@ -1,0 +1,10 @@
+version: 1
+workloads:
+  - name: web
+    namespace: shop
+    longest_request_s: 5
+waive:
+  - rule: T1
+    workload: stream
+    reason: "NLB owned by the network team"
+    until: 2027-03-01

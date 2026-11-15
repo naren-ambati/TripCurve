@@ -1,0 +1,208 @@
+{
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "tripcurve",
+          "version": "0.1.0",
+          "rules": [
+            {
+              "id": "T1",
+              "shortDescription": {
+                "text": "The app's effective idle close must exceed the load balancer's idle timeout. Equal is a FAIL."
+              },
+              "help": {
+                "text": "Run \"tripcurve --explain T1\" for the rule, its sources and the values it uses."
+              }
+            },
+            {
+              "id": "T2",
+              "shortDescription": {
+                "text": "A workload behind a load balancer must delay its shutdown after SIGTERM, with a preStop sleep, an in-process drain or a declared drain, so that endpoint removal can propagate before the server stops. A delay of 0 s is not a drain."
+              },
+              "help": {
+                "text": "Run \"tripcurve --explain T2\" for the rule, its sources and the values it uses."
+              }
+            },
+            {
+              "id": "T3",
+              "shortDescription": {
+                "text": "terminationGracePeriodSeconds must be at least the preStop delay + the in-process drain + L + 1 s, where L is the declared longest_request_s, or else the graceful timeout of the server as a ceiling."
+              },
+              "help": {
+                "text": "Run \"tripcurve --explain T3\" for the rule, its sources and the values it uses."
+              }
+            },
+            {
+              "id": "T4",
+              "shortDescription": {
+                "text": "The visibility timeout of an SQS queue must be at least 6 x the timeout of the Lambda function that reads it + the batching window of the event source mapping. Equal passes."
+              },
+              "help": {
+                "text": "Run \"tripcurve --explain T4\" for the rule, its sources and the values it uses."
+              }
+            },
+            {
+              "id": "tripcurve-file",
+              "shortDescription": {
+                "text": "A file, waiver or configuration entry that tripcurve did not check or apply, or a run in which nothing was checked."
+              },
+              "help": {
+                "text": "The run is not complete: fix the file, waiver or configuration entry the message names."
+              }
+            },
+            {
+              "id": "tripcurve-run",
+              "shortDescription": {
+                "text": "The run as a whole is not clean, although no single result above note level says so."
+              },
+              "help": {
+                "text": "The run is not clean: see the run properties for the outcome and the counts."
+              }
+            },
+            {
+              "id": "tripcurve-not-checked",
+              "shortDescription": {
+                "text": "A workload, Ingress or kind for which no check was made: no load balancer was found for the workload, or the object is not one tripcurve checks."
+              },
+              "help": {
+                "text": "This does not make the run unclean. For a workload, declare the load balancer in tripcurve.yaml or add it to the checked files to have T1 to T3 checked."
+              }
+            }
+          ]
+        }
+      },
+      "originalUriBaseIds": {
+        "SRCROOT": {
+          "description": {
+            "text": "The directory that was checked. Every relative uri in this log is relative to it."
+          }
+        }
+      },
+      "results": [
+        {
+          "ruleId": "T1",
+          "level": "error",
+          "message": {
+            "text": "T1 FAIL: idle close 6 s is not longer than LB idle 60 s"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "k8s/web.yaml",
+                  "uriBaseId": "SRCROOT"
+                },
+                "region": {
+                  "startLine": 17
+                }
+              }
+            }
+          ],
+          "properties": {
+            "tripcurve": {
+              "kind": "FAIL",
+              "workload": {
+                "name": "w\"b\\\u202e\ufffd\ud83d\ude00\u001b[2J",
+                "kind": "Deployment",
+                "namespace": "shop"
+              }
+            }
+          }
+        },
+        {
+          "ruleId": "T3",
+          "level": "warning",
+          "message": {
+            "text": "T3 UNRESOLVED: no graceful-timeout ceiling known for a Node server"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "k8s/web.yaml",
+                  "uriBaseId": "SRCROOT"
+                },
+                "region": {
+                  "startLine": 26
+                }
+              }
+            }
+          ],
+          "suppressions": [
+            {
+              "kind": "external",
+              "justification": "r\"q\"\n\u202e\ud83d\ude00",
+              "properties": {
+                "tripcurve": {
+                  "until": "2027-01-31",
+                  "mechanism": "config",
+                  "source": {
+                    "type": "declared",
+                    "file": "tripcurve.yaml",
+                    "line": 3
+                  }
+                }
+              }
+            }
+          ],
+          "properties": {
+            "tripcurve": {
+              "kind": "WAIVED",
+              "originalKind": "UNRESOLVED",
+              "workload": {
+                "name": "w\"b\\\u202e\ufffd\ud83d\ude00\u001b[2J",
+                "kind": "Deployment",
+                "namespace": "shop"
+              }
+            }
+          }
+        },
+        {
+          "ruleId": "tripcurve-file",
+          "level": "warning",
+          "message": {
+            "text": "file not checked: \"k8s/bad\\\"\\u202e.yaml\": YAML syntax error at line 5"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "k8s/bad%22%E2%80%AE.yaml",
+                  "uriBaseId": "SRCROOT"
+                },
+                "region": {
+                  "startLine": 5
+                }
+              }
+            }
+          ],
+          "properties": {
+            "tripcurve": {
+              "reason": "parse-error"
+            }
+          }
+        }
+      ],
+      "properties": {
+        "tripcurve": {
+          "outcome": "Incomplete",
+          "clean": false,
+          "summary": {
+            "failed": 1,
+            "warning": 0,
+            "unresolved": 1,
+            "versionDependent": 0,
+            "notEvaluated": 0,
+            "waived": 1,
+            "notApplicable": 0,
+            "passed": 1
+          },
+          "exitCode": 1,
+          "notChecked": 0
+        }
+      }
+    }
+  ]
+}

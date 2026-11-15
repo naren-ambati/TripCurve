@@ -1,0 +1,19 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Resources:
+  A:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      EventSourceArn: !GetAtt A.Arn
+      FunctionName: !Ref A
+  B:
+    Type: AWS::Lambda::EventSourceMapping
+    DependsOn: C
+    Properties:
+      EventSourceArn: !GetAtt C.Arn
+      FunctionName: !Ref C
+  C:
+    Type: AWS::Lambda::EventSourceMapping
+    DependsOn: B
+    Properties:
+      EventSourceArn: !GetAtt B.Arn
+      FunctionName: !Ref B

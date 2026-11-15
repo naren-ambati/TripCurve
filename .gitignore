@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.DS_Store
+.worktrees/
+.cache/
+__pycache__/
+coverage/
+.playwright-mcp/
+.claude/
+.env
+.env.*
+*.local.json

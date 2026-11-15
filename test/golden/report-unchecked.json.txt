@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "tool": {
+    "name": "tripcurve",
+    "version": "0.1.0"
+  },
+  "checked": {
+    "path": ".",
+    "filesRead": 2
+  },
+  "workloads": [],
+  "notChecked": [
+    {
+      "subjectKind": "workload",
+      "name": "web",
+      "kind": "Deployment",
+      "file": "good.yaml",
+      "line": 2,
+      "reason": "no load balancer found in the checked files",
+      "reasonCode": "no-recognised-lb"
+    }
+  ],
+  "assumptions": [],
+  "waivers": [],
+  "unchecked": [
+    {
+      "type": "file",
+      "file": "broken.yaml",
+      "reason": "YAML syntax error",
+      "reasonCode": "parse-error",
+      "line": 5
+    }
+  ],
+  "configErrors": [],
+  "summary": {
+    "failed": 0,
+    "warning": 0,
+    "unresolved": 1,
+    "versionDependent": 0,
+    "notEvaluated": 0,
+    "waived": 0,
+    "notApplicable": 0,
+    "passed": 0,
+    "outcome": "NothingChecked",
+    "clean": false,
+    "waivedDates": [],
+    "exitCode": 2
+  }
+}

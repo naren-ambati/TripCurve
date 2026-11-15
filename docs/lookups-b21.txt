@@ -1,0 +1,35 @@
+Lookups for bolt B21 (read-only GETs, each dated)
+
+2026-11-14  https://docs.npmjs.com/cli/v11/commands/npm-shrinkwrap  (page "Last edited October 5, 2025")
+  "This command repurposes package-lock.json into a publishable npm-shrinkwrap.json or simply creates a new one.
+  The file created and updated by this command will then take precedence over any other existing or future
+  package-lock.json files."
+
+2026-11-14  https://docs.npmjs.com/cli/v11/configuring-npm/npm-shrinkwrap-json  (page "Last edited October 5, 2025")
+  "npm-shrinkwrap.json is a file created by npm shrinkwrap. It is identical to package-lock.json, with one major
+  caveat: Unlike package-lock.json, npm-shrinkwrap.json may be included when publishing a package. The recommended
+  use-case for npm-shrinkwrap.json is applications deployed through the publishing process on the registry: for
+  example, daemons and command-line tools intended as global installs or devDependencies. It's strongly discouraged
+  for library authors to publish this file, since that would prevent end users from having control over transitive
+  dependency updates. If both package-lock.json and npm-shrinkwrap.json are present in a package root,
+  npm-shrinkwrap.json will be preferred over the package-lock.json file."
+  (tripcurve is a command-line tool, the recommended case; its library export has one runtime dependency set
+  that the shrinkwrap pins. Whether the library export should ship a shrinkwrap is a note for the owner.)
+
+2026-11-14  https://docs.npmjs.com/cli/v11/configuring-npm/package-json  (section "overrides")
+  "Overrides are only considered in the root package.json file for a project. Overrides in installed dependencies
+  (including workspaces) are not considered in dependency tree resolution. Published packages may dictate their
+  resolutions by pinning dependencies or using an npm-shrinkwrap.json file."
+  This is why the minimatch override (11.0.8) protected the checkout only: a person who installs the tarball gets
+  the dependency ranges, not our overrides.
+
+npm version used for the commands in this bolt (2026-11-14): 10.9.8, Node 22.23.2.
+
+2026-11-14  npm registry, read-only (npm view)
+  ts-morph: latest 28.0.0 (dist-tags: rc 2.0.4-rc, latest 28.0.0).
+  @ts-morph/common 0.29.0: dependencies minimatch ^10.0.1, path-browserify ^1.0.1, tinyglobby ^0.2.14.
+  GHSA-g3hv-75wg-m249 (minimatch 7.0.0 to 11.0.0, globparts amplification, moderate): reported by npm audit for the
+  installed tarball, "No fix available" within the dependency range. The fix is minimatch 11.0.1 or later.
+
+2026-11-14  npm install of the packed tarball into a fresh temporary project (registry GET only): see
+  docs/release-check-run-b21.txt.

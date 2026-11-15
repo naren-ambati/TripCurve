@@ -1,0 +1,43 @@
+// Intake: the file boundary..
+export {
+  classifyByName,
+  classifyShowJson,
+  classifyYamlContent,
+  couldBeCfnJson,
+  isCfnTemplateValue,
+  isJsonName,
+  isK8sCandidateValue,
+  isK8sObjectValue,
+  isShowJsonValue,
+} from './classify.js';
+export {
+  type ConfineResult,
+  confineToRoot,
+  type IntakeOptions,
+  inspectRoot,
+  intake,
+  intakeStdin,
+  intakeStreamBytes,
+  mergeUnchecked,
+  type RootInspection,
+  rawInputTextForParser,
+  rawTextForParser,
+  type StdinOptions,
+} from './intake.js';
+export {
+  DEFAULT_LIMITS,
+  INPUT_CLASSES,
+  type InputClass,
+  type InputFile,
+  type InputStream,
+  type IntakeDocument,
+  type IntakeLimits,
+  type IntakeResult,
+  STDIN,
+  type StdinPath,
+  UNCHECKED_REASONS,
+  type UncheckedInput,
+  type UncheckedReason,
+  uncheckedReasonWords,
+  YAML_CLASSES,
+} from './types.js';

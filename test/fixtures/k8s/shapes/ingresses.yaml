@@ -1,0 +1,70 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: by-class-name
+spec:
+  ingressClassName: alb
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: by-legacy
+  annotations:
+    kubernetes.io/ingress.class: alb
+---
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: aws
+spec:
+  controller: ingress.k8s.aws/alb
+---
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: nginx
+spec:
+  controller: k8s.io/ingress-nginx
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: by-class-object
+spec:
+  ingressClassName: aws
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: by-annotation
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internal
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: plain-nginx
+spec:
+  ingressClassName: nginx
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: no-class
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: class-name-is-not-alb-controller
+spec:
+  ingressClassName: ALB
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: route
+---
+apiVersion: example.dev/v1
+kind: HTTPRoute
+metadata:
+  name: not-gateway-api

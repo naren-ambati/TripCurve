@@ -1,0 +1,15 @@
+Third-party fixture copy.
+
+Source:   https://github.com/sorah/publikes
+Commit:   095cffb6cc26bb002b56dcabdfc0fda604102d50
+Copied:   2026-11-12 (UTC)
+Licence:  MIT (the upstream LICENSE file is copied beside the files, unchanged)
+
+Files copied (relative paths kept):
+  - lambda.tf
+  - sqs.tf
+  - variables.tf
+  - versions.tf
+
+Trimmed: only files tripcurve reads; unchanged otherwise (byte-identical to upstream).
+The upstream project is not affiliated with tripcurve and did not review or endorse it.

@@ -1,0 +1,31 @@
+version: 1
+workloads:
+  - name: web
+    namespace: shop
+    kind: Deployment
+    source: src/server.ts
+    longest_request_s: 5
+    drain:
+      in_process_s: 3
+    runtime:
+      node: "22.23.2"
+    dockerfile: docker/Dockerfile
+    gunicorn_config: app/gunicorn.conf.py
+    load_balancer:
+      ingress: web-ingress
+      idle_timeout_s: 120
+  - name: api
+    load_balancer:
+      terraform: aws_lb.main
+  - name: stream
+    load_balancer:
+      service: stream-svc
+      idle_timeout_s: 350
+waive:
+  - rule: T2
+    workload: api
+    reason: "drains in sidecar"
+    until: 2027-01-31
+  - "not even a mapping"
+  - rule: [T1, T2]
+    reason: 5

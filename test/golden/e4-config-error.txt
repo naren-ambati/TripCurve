@@ -1,0 +1,3 @@
+Config error in "tripcurve.yaml" at line 7: key "workloads[0].longest_request_s"
+must be a number of seconds, for example longest_request_s: 5.
+Nothing was checked.

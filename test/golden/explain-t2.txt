@@ -1,0 +1,23 @@
+T2  A workload behind a load balancer must delay its shutdown after SIGTERM,
+    with a preStop sleep, an in-process drain or a declared drain, so that
+    endpoint removal can propagate before the server stops. A delay of 0 s is
+    not a drain.
+
+Vendor guidance
+  AWS, EKS Best Practices, Load Balancing (read 2026-10-29 to 2026-11-02,
+  research notes):
+  "can be a simple Exec handler such as `sleep 10`"
+  https://docs.aws.amazon.com/eks/latest/best-practices/load-balancing.html
+
+Defaults used by T2
+  - lightship-shutdown-delay-9x, lightship 9.x: 5000 ms; measured on 9.1.0;
+    dated 2026-11-12; script measure/lightship-b4.mjs
+
+When T2 does not apply or cannot decide
+  - Not checked when no load balancer is found for the workload in the checked
+    files.
+  - UNRESOLVED, never PASS, when a drain exists but its duration cannot be
+    established, or when the Node source that would show a drain is not linked
+    and no preStop delay is found.
+  - tripcurve checks that a delay exists, not that it is long enough; the
+    propagation allowance is printed as an assumption.

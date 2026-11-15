@@ -1,0 +1,25 @@
+tripcurve 0.1.0   checked "."   3 files read
+
+Workload "web" (Deployment) in "k8s/web.yaml"
+  UNRESOLVED T1  idle close not established: the server is not identified as a
+                 Node program
+           idle close       the server is not identified as a Node program
+           LB idle 60 s     "k8s/ingress.yaml":9
+           name the program in the container command or args (node, npm,
+           gunicorn or uvicorn); for Node, tripcurve.yaml can instead declare
+           runtime.node for this workload, with source for its entry file
+  UNRESOLVED T3  drain not established; grace cannot be checked
+           grace 45 s       "k8s/web.yaml":25
+           preStop 10 s     "k8s/web.yaml":24
+           drain            the server is not recognised, so the search for a
+                            drain is not complete
+           declare drain.in_process_s for this workload in tripcurve.yaml
+  PASS T2  preStop sleep 10 s ("k8s/web.yaml":24)
+
+Assumptions
+  - Endpoint removal needs time to propagate; AWS's EKS guide suggests a preStop
+    of 10 s. tripcurve checks a delay exists, not that it is enough.
+  - Green never means zero-downtime: the SIGTERM race and the deregistration
+    delay are outside these rules.
+
+Summary: 2 unresolved, 1 passed; not a clean result

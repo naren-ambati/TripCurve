@@ -1,0 +1,13 @@
+tripcurve 0.1.0   checked "."   1 file read
+
+Workload "orders" (event source mapping) in "infra/queue.tf"
+  WAIVED T4  (was FAIL: visibility 60 s is less than 6 x 30 s + 5 s = 185 s)
+           until 2027-01-31: reason "queue is resized next sprint"
+           from "infra/queue.tf":16
+
+Assumptions
+  - Green never means zero-downtime: the SIGTERM race and the deregistration
+    delay are outside these rules.
+
+No failures: 0 passed, 1 waived (expiring 2027-01-31), 0 not applicable.
+Green does not mean zero-downtime: see Assumptions.

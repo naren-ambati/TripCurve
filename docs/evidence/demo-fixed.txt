@@ -1,0 +1,39 @@
+tripcurve 0.1.0   checked "demo-fixed"   15 files read
+
+Workload "admin" (Deployment) in "k8s/admin.yaml"
+  N/A  T1  gunicorn sync worker closes after every response
+           ("k8s/admin.yaml":19, no -k given)
+  PASS T2  preStop sleep 10 s ("k8s/admin.yaml":24)
+  PASS T3  grace 45 s covers 10 s + 0 s + 30 s + 1 s ("k8s/admin.yaml":31)
+
+Workload "api" (Deployment) in "k8s/api.yaml"
+  PASS T1  idle close 75 s is longer than LB idle 60 s ("k8s/api.yaml":21,
+           explicit keepalive, uvicorn worker (gunicorn 26.x; measured from 3 to
+           300 s on 26.2.0))
+  PASS T2  preStop sleep 10 s ("k8s/api.yaml":28)
+  PASS T3  grace 30 s covers 10 s + 0 s + 5 s + 1 s (default: Kubernetes
+           terminationGracePeriodSeconds (documented))
+
+Workload "web" (Deployment) in "k8s/web.yaml"
+  PASS T1  idle close 66 s is longer than LB idle 60 s ("src/server.ts":12,
+           keepAliveTimeout 65 s + 1 s (Node 22.x from 22.12; measured at K = 7,
+           12 and 65 s on 5 releases from 22.12.0 to 22.23.5))
+  PASS T2  preStop sleep 10 s ("k8s/web.yaml":26)
+  PASS T3  grace 45 s covers 10 s + 0 s + 5 s + 1 s ("k8s/web.yaml":30)
+
+Workload "orders" (event source mapping) in "infra/queue.tf"
+  PASS T4  visibility 190 s covers 185 s ("infra/queue.tf":3)
+
+Assumptions
+  - The gunicorn and uvicorn versions are taken from "requirements.txt".
+  - The container's working directory is taken to be ".".
+  - Endpoint removal needs time to propagate; AWS's EKS guide suggests a preStop
+    of 10 s. tripcurve checks a delay exists, not that it is enough.
+  - In-process drains of Python servers are not read; counted as 0 s.
+  - Green never means zero-downtime: the SIGTERM race and the deregistration
+    delay are outside these rules.
+
+All checks passed (9), 1 not applicable.
+Green does not mean zero-downtime: see Assumptions.
+
+[exit 0]

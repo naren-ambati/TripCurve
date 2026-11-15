@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "tool": {
+    "name": "tripcurve",
+    "version": "0.1.0"
+  },
+  "checked": {
+    "path": ".",
+    "filesRead": 3
+  },
+  "workloads": [
+    {
+      "name": "a",
+      "kind": "Deployment",
+      "namespace": "shop",
+      "file": "k8s/web.yaml",
+      "line": 2,
+      "results": [
+        {
+          "rule": "T1",
+          "kind": "N/A",
+          "headline": "headline of N/A",
+          "chain": [
+            {
+              "label": "idle close",
+              "valueType": "value",
+              "value": 12,
+              "unit": "s",
+              "source": {
+                "type": "file",
+                "file": "k8s/a.yaml",
+                "line": 7,
+                "basis": "declared"
+              },
+              "confidence": "read"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "notChecked": [],
+  "assumptions": [
+    "Green never means zero-downtime: the SIGTERM race and the deregistration delay are outside these rules."
+  ],
+  "waivers": [],
+  "unchecked": [],
+  "configErrors": [],
+  "summary": {
+    "failed": 0,
+    "warning": 0,
+    "unresolved": 0,
+    "versionDependent": 0,
+    "notEvaluated": 0,
+    "waived": 0,
+    "notApplicable": 1,
+    "passed": 0,
+    "outcome": "NoChecksApply",
+    "clean": true,
+    "waivedDates": [],
+    "exitCode": 0
+  }
+}

@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hooks
+spec:
+  template:
+    spec:
+      containers:
+        - name: exec-sleep
+          image: x
+          lifecycle:
+            preStop:
+              exec:
+                command: ["sleep", "5"]
+        - name: shell-sleep
+          image: x
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh", "-c", "sleep 12"]
+        - name: sleep-handler
+          image: x
+          lifecycle:
+            preStop:
+              sleep:
+                seconds: 3
+        - name: shell-with-more
+          image: x
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh", "-c", "sleep 12 && kill 1"]
+        - name: shell-extra-word
+          image: x
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh", "-c", "sleep 12", "extra"]
+        - name: bash
+          image: x
+          lifecycle:
+            preStop:
+              exec:
+                command: ["bash", "-c", "sleep 12"]
+        - name: variable
+          image: x
+          lifecycle:
+            preStop:
+              exec:
+                command: ["sleep", "$DELAY"]
+        - name: http
+          image: x
+          lifecycle:
+            preStop:
+              httpGet:
+                path: /drain
+                port: 8080
+        - name: two-handlers
+          image: x
+          lifecycle:
+            preStop:
+              sleep:
+                seconds: 3
+              exec:
+                command: ["sleep", "3"]
+        - name: negative-sleep
+          image: x
+          lifecycle:
+            preStop:
+              sleep:
+                seconds: -1
+        - name: huge
+          image: x
+          lifecycle:
+            preStop:
+              exec:
+                command: ["sleep", "99999999999999999999"]
+        - name: none
+          image: x

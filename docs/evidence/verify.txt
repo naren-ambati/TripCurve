@@ -1,0 +1,210 @@
+
+> tripcurve@0.1.0 verify
+> npm run typecheck && npm run lint && npm run test:coverage && npm run measure:selftest && npm run build && npm run timed-check
+
+
+> tripcurve@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> tripcurve@0.1.0 lint
+> biome check .
+
+
+> tripcurve@0.1.0 test:coverage
+> vitest run --coverage
+
+
+ RUN  v5.1.0 <repo>/.worktrees/final
+      Coverage enabled with v8
+
+
+ Test Files  141 passed (141)
+      Tests  13115 passed (13115)
+   Start at  22:39:06
+   Duration  270.30s (tests 91%, import 8%, transform 1%)
+
+[34m % [39m[2mCoverage report from [22m[33mv8[39m
+
+=============================== Coverage summary ===============================
+Statements   : 94.62% ( 8361/8836 )
+Branches     : 89.56% ( 7462/8331 )
+Functions    : 98.67% ( 1121/1136 )
+Lines        : 96.74% ( 7321/7567 )
+================================================================================
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------------|---------|----------|---------|---------|-------------------
+All files          |   94.62 |    89.56 |   98.67 |   96.74 |                   
+ src               |   97.82 |    81.81 |     100 |     100 |                   
+  analyse.ts       |   97.82 |    81.81 |     100 |     100 | 60-62             
+ src/core          |   96.01 |    95.13 |   94.23 |    97.9 |                   
+  provenance.ts    |   91.52 |    94.04 |     100 |   97.77 | 156               
+  safe-text.ts     |   95.83 |    91.78 |   82.35 |   96.47 | 32-35,44          
+ src/evaluate      |   93.43 |    89.42 |   95.23 |   93.81 |                   
+  rule-engine.ts   |     100 |       50 |     100 |     100 | 43                
+  ...own-common.ts |   86.66 |    82.35 |     100 |   83.33 | 44,86-89          
+  t1.ts            |   89.74 |    90.81 |     100 |   92.85 | 54,63,162,234,251 
+  t2.ts            |     100 |    94.11 |     100 |     100 | ...13,121,218,244 
+  t3.ts            |   93.25 |    87.95 |   77.77 |   92.94 | ...57-160,232,249 
+  t4.ts            |   94.23 |     87.5 |     100 |   93.61 | 107,113,150       
+ src/kb            |   95.95 |    94.18 |     100 |   97.94 |                   
+  ...ledge-base.ts |   97.64 |    90.54 |     100 |     100 | ...92,216,234-236 
+  schema.ts        |   95.21 |    94.77 |     100 |   95.85 | ...62,387,501,507 
+  ...n-interval.ts |   95.83 |    95.28 |     100 |     100 | ...09,126,188,251 
+ src/link          |    89.9 |     83.3 |   97.95 |   92.57 |                   
+  ...onfig-link.ts |   97.59 |    90.78 |     100 |   98.55 | 111               
+  link.ts          |    88.5 |    78.98 |     100 |   91.12 | ...25,389,549,553 
+  source-link.ts   |   85.55 |    82.22 |   93.33 |   89.49 | ...96-497,503,561 
+  ...aform-link.ts |     100 |    96.77 |     100 |     100 | 158,228           
+ src/parse/config  |   93.69 |    86.56 |     100 |   96.37 |                   
+  read-config.ts   |   93.57 |    86.56 |     100 |   96.29 | ...27-328,393-396 
+ src/parse/iac     |      96 |    91.51 |   98.95 |   98.11 |                   
+  hcl-arith.ts     |   98.55 |    97.36 |     100 |     100 | 73                
+  hcl-lexer.ts     |   96.71 |    94.76 |     100 |   98.92 | 153,186           
+  model.ts         |   93.33 |      100 |   83.33 |   92.85 | 146               
+  read-cfn.ts      |   96.65 |    91.55 |     100 |   97.64 | ...97,444-445,562 
+  read-hcl.ts      |   94.91 |    92.81 |     100 |   97.93 | 215,334,344       
+  read-iac.ts      |   97.75 |    93.97 |     100 |   98.73 | 143               
+  ...aform-json.ts |   92.68 |    81.39 |     100 |   97.08 | 73,106,267        
+ src/parse/intake  |    93.9 |     86.5 |   96.26 |   96.06 |                   
+  classify.ts      |   97.14 |    93.24 |   95.65 |   98.75 | 176               
+  intake.ts        |   95.68 |    89.83 |   93.47 |   95.74 | ...01,303-312,396 
+  read-file.ts     |   81.94 |     62.5 |     100 |      90 | 59,81-83,91,119   
+  walk.ts          |   89.15 |    76.66 |     100 |   92.95 | ...31-132,145-146 
+  ...-documents.ts |   94.92 |    83.14 |     100 |   97.53 | ...08,424,540-541 
+ src/parse/k8s     |   97.34 |    95.22 |   98.64 |   98.91 |                   
+  ...kubernetes.ts |   97.32 |    95.22 |   98.64 |   98.89 | 306,661,895,1018  
+ src/parse/node    |   92.39 |    87.92 |    98.8 |   95.95 |                   
+  ast-helpers.ts   |   88.88 |    84.09 |     100 |     100 | 12-14,22,38-52    
+  ...ode-drains.ts |   87.59 |       84 |   97.05 |   93.62 | ...97,645,701,762 
+  ...-node-pins.ts |   95.78 |    96.12 |     100 |   97.36 | 107,206-207,316   
+  ...ode-source.ts |   93.32 |    88.75 |   98.93 |   96.14 | ...1388-1389,1393 
+  ...de-version.ts |    95.8 |    87.87 |     100 |   98.33 | 198-199           
+  ...-libraries.ts |     100 |       75 |     100 |     100 | 24                
+ src/parse/python  |   96.48 |    92.56 |     100 |   98.29 |                   
+  flags.ts         |   97.36 |    93.29 |     100 |   98.21 | 165-166,359       
+  ...erfile-env.ts |   95.09 |    87.67 |     100 |     100 | ...06,113,121,135 
+  ...orn-config.ts |   98.82 |    97.05 |     100 |     100 | 74-95             
+  read-pins.ts     |   96.56 |    93.33 |     100 |   97.82 | 201-202,244-245   
+  ...hon-server.ts |   93.47 |    89.42 |     100 |   95.79 | ...51-253,256-257 
+  shell-words.ts   |   98.18 |    96.42 |     100 |     100 | 40                
+ src/report        |   96.26 |    87.13 |     100 |   96.74 |                   
+  assemble.ts      |    90.9 |    71.42 |     100 |   92.42 | 69-70,81-82,99    
+  human.ts         |   96.02 |     86.6 |     100 |   96.35 | ...35-648,651-666 
+  json.ts          |   95.55 |    84.04 |     100 |   95.23 | 91,151            
+  layout.ts        |   98.27 |    95.45 |     100 |     100 | 92                
+  sarif.ts         |   96.69 |    91.17 |     100 |   97.29 | 125,146,334       
+  summarize.ts     |   97.72 |    97.77 |     100 |   97.46 | 206-207           
+  words.ts         |     100 |       50 |     100 |     100 | 33                
+ src/resolve       |   95.74 |    90.12 |     100 |    96.9 |                   
+  idle-close.ts    |   98.05 |    91.57 |     100 |   97.91 | 77,87             
+  lb-idle.ts       |   94.05 |     92.3 |     100 |   95.74 | 106-108,310,332   
+  node-ranges.ts   |   91.81 |    86.91 |     100 |   92.15 | ...65,171,175,214 
+  node-version.ts  |   97.91 |     93.1 |     100 |   97.61 | 92                
+  python-server.ts |   95.78 |    89.43 |     100 |   97.05 | ...12,845,851,876 
+  ...on-version.ts |    97.5 |    91.04 |     100 |     100 | ...03-107,128,131 
+  queue.ts         |     100 |    85.41 |     100 |     100 | ...23,155-159,173 
+  resolve.ts       |   97.77 |    94.21 |     100 |     100 | ...30,165,173,247 
+  shutdown.ts      |   92.72 |    84.88 |     100 |   93.68 | ...25,242,281,285 
+  terraform-lb.ts  |    91.3 |    85.71 |     100 |     100 | 54-55,59          
+ src/waive         |   97.38 |    94.52 |     100 |     100 |                   
+  apply.ts         |   96.85 |    92.61 |     100 |     100 | ...92,295,310,423 
+  read-waiver.ts   |   98.01 |    96.47 |     100 |     100 | ...01-103,127,151 
+-------------------|---------|----------|---------|---------|-------------------
+
+> tripcurve@0.1.0 measure:selftest
+> node measure/selftest.mjs
+
+ok   closes 300 ms after the response: {"idleCloseMs":304,"serverHeader":null}
+ok   closes 1200 ms after the response: {"idleCloseMs":1202,"serverHeader":null}
+ok   replies after 500 ms, closes 300 ms later (times from the response, not the request): {"idleCloseMs":302,"serverHeader":null}
+ok   header split across two writes: {"idleCloseMs":301,"serverHeader":null}
+ok   lower-case content-length, as real servers send it: {"idleCloseMs":302,"serverHeader":null}
+ok   Content-Length and Transfer-Encoding both present: {"idleCloseMs":null,"error":"ambiguous length: Content-Length and Transfer-Encoding"}
+ok   two Content-Length headers: {"idleCloseMs":null,"error":"ambiguous length: more than one Content-Length"}
+ok   extra bytes after the body: {"idleCloseMs":null,"error":"bytes after the response: the reply was not one complete response"}
+ok   extra bytes after the body, sent later: {"idleCloseMs":null,"error":"bytes after the response: the reply was not one complete response"}
+ok   never closes (cap 800 ms): {"idleCloseMs":null,"error":"timed out: still open after 800 ms"}
+ok   Connection: close reply: {"idleCloseMs":null,"error":"not kept alive: the reply says Connection: close"}
+ok   Connection: keep-alive, close reply: {"idleCloseMs":null,"error":"not kept alive: the reply says Connection: close"}
+ok   HTTP/1.0 reply: {"idleCloseMs":null,"error":"not HTTP/1.1 200: \"HTTP/1.0 200 OK\""}
+ok   404 reply: {"idleCloseMs":null,"error":"not HTTP/1.1 200: \"HTTP/1.1 404 Not Found\""}
+ok   chunked reply (no length): {"idleCloseMs":null,"error":"no content-length"}
+ok   body cut short, then close: {"idleCloseMs":null,"error":"closed before the response was complete"}
+ok   reset after the response: {"idleCloseMs":null,"error":"ECONNRESET"}
+ok   close: Connection: close and FIN at once: {"closesAfterResponse":true,"connectionCloseHeader":true,"closeMs":1,"serverHeader":null}
+ok   close: lower-case header, token list: {"closesAfterResponse":true,"connectionCloseHeader":true,"closeMs":1,"serverHeader":null}
+ok   close: header present but the server never closes (cap 600 ms): {"closesAfterResponse":false,"connectionCloseHeader":true,"closeMs":null,"serverHeader":null}
+ok   close: no header, FIN 300 ms later (time is from the response): {"closesAfterResponse":true,"connectionCloseHeader":false,"closeMs":302,"serverHeader":null}
+ok   close: no header and never closes: {"closesAfterResponse":false,"connectionCloseHeader":false,"closeMs":null,"serverHeader":null}
+ok   close: header split across two writes: {"closesAfterResponse":true,"connectionCloseHeader":true,"closeMs":102,"serverHeader":null}
+ok   close: 404 reply: {"error":"not HTTP/1.1 200: \"HTTP/1.1 404 Not Found\""}
+ok   close: HTTP/1.0 reply: {"error":"not HTTP/1.1 200: \"HTTP/1.0 200 OK\""}
+ok   close: body cut short, then close: {"error":"closed before the response was complete"}
+ok   close: reset after the response: {"error":"ECONNRESET"}
+ok   close: extra bytes after the body: {"error":"bytes after the response: the reply was not one complete response"}
+ok   close: no content-length: {"error":"no content-length"}
+ok   close: nothing sent, never closes (cap 600 ms): {"error":"timed out before the response was complete (600 ms)"}
+selftest: all cases passed
+
+> tripcurve@0.1.0 build
+> node -e "fs.rmSync('dist',{recursive:true,force:true})" && tsc -p tsconfig.build.json
+
+
+> tripcurve@0.1.0 timed-check
+> node scripts/timed-check.mjs
+
+timed check: demo 0.40 s fastest of 3 (runs 0.41, 0.40, 0.41; budget under 2 s) on Mac17,3, Apple M5, Node v22.23.2, 2026-11-15
+timed check: tree 3.15 s fastest of 3 (runs 3.31, 3.15, 3.16; budget under 30 s) on Mac17,3, Apple M5, Node v22.23.2, 2026-11-15
+timed check: within budget on the recorded machine
+test/parse/iac-cfn-hostile.test.ts:62:7 lint/style/useTemplate  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  i Template literals are preferred over string concatenation.
+  
+    60 │       '{"Fn::GetAtt": ["Q", "Arn"]}',
+    61 │       '!GetAtt [Q, Arn]',
+  > 62 │       'Fn::GetAtt: [Q, Arn]'.replace(/^/, '{') + '}',
+       │       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    63 │     ]) {
+    64 │       const m = find(readTf({ 't.yaml': base(src) }), 'aws_lambda_event_source_mapping', 'M');
+  
+  i Template literals are easier to read than a chain of + operators and quotes, and they avoid mistakes with spaces and escaped quotes.
+  
+  i Unsafe fix: Use a template literal.
+  
+     60  60 │         '{"Fn::GetAtt": ["Q", "Arn"]}',
+     61  61 │         '!GetAtt [Q, Arn]',
+     62     │ - ······'Fn::GetAtt:·[Q,·Arn]'.replace(/^/,·'{')·+·'}',
+         62 │ + ······`${'Fn::GetAtt:·[Q,·Arn]'.replace(/^/,·'{')}}`,
+     63  63 │       ]) {
+     64  64 │         const m = find(readTf({ 't.yaml': base(src) }), 'aws_lambda_event_source_mapping', 'M');
+  
+
+test/report/sarif.test.ts:517:29 lint/style/useTemplate  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  i Template literals are preferred over string concatenation.
+  
+    515 │     const { results } = sarifOf({
+    516 │       results: [wf(hostile, [finding('UNRESOLVED', 'T1', hostile, 'h')], 'k8s/a.yaml')],
+  > 517 │       unchecked: [unchecked(evil + '.yaml', 'parse-error', 2)],
+        │                             ^^^^^^^^^^^^^^
+    518 │       waiverRecords: [entry({ ...VALID_ENTRY, workload: evil, reason: 'r' }, 4)],
+    519 │     });
+  
+  i Template literals are easier to read than a chain of + operators and quotes, and they avoid mistakes with spaces and escaped quotes.
+  
+  i Unsafe fix: Use a template literal.
+  
+    515 515 │       const { results } = sarifOf({
+    516 516 │         results: [wf(hostile, [finding('UNRESOLVED', 'T1', hostile, 'h')], 'k8s/a.yaml')],
+    517     │ - ······unchecked:·[unchecked(evil·+·'.yaml',·'parse-error',·2)],
+        517 │ + ······unchecked:·[unchecked(`${evil}.yaml`,·'parse-error',·2)],
+    518 518 │         waiverRecords: [entry({ ...VALID_ENTRY, workload: evil, reason: 'r' }, 4)],
+    519 519 │       });
+  
+
+Checked 282 files in 175ms. No fixes applied.
+Found 2 infos.
+
+[exit 0]
