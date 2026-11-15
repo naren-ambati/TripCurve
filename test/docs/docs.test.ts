@@ -587,14 +587,14 @@ describe('review B22-M1: the command has no subcommand, and no published text sh
   });
 });
 
-describe('review B22-M6: the CHANGELOG has one entry per bolt, B0 to B30, in order', () => {
+describe('review B22-M6: the CHANGELOG has one entry per bolt, B0 to B31, in order', () => {
   const text = read('CHANGELOG.md');
   const ids = [...text.matchAll(/^- \*\*B(\d+)\b/gm)].map((m) => Number(m[1]));
-  it('the entries are B0, B1, ... B30 once each, in this order', () => {
-    expect(ids).toEqual(Array.from({ length: 31 }, (_, i) => i));
+  it('the entries are B0, B1, ... B31 once each, in this order', () => {
+    expect(ids).toEqual(Array.from({ length: 32 }, (_, i) => i));
   });
   it('can fail: a missing, repeated or misplaced entry is not the sequence', () => {
-    const want = Array.from({ length: 31 }, (_, i) => i);
+    const want = Array.from({ length: 32 }, (_, i) => i);
     expect(want.filter((n) => n !== 18)).not.toEqual(want);
     expect([...want, 21]).not.toEqual(want);
     expect([...want.slice(0, 5), 7, 6, ...want.slice(7)]).not.toEqual(want);

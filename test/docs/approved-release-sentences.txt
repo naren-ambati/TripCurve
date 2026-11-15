@@ -489,16 +489,11 @@ after the first, GitHub created an analysis at 2026-11-15T05:42:42Z (tool tripcu
 The fix has not yet been run on GitHub.
 the same condition was reported once as `ENOTCONN`, in the hosted macOS run of 2026-11-15 (`docs/evidence/gh-macos-enotconn.txt`;
 on the second, the Action's self-test succeeded again (43686256564) and the verify workflow failed its macOS job in one closed-pipe test (43686256521;
-the measurement is made robust in B28, not yet re-run on GitHub (`docs/evidence/gh-macos-run3.txt`) | pass on the first push;
-a CPU-time ratio on short samples, made robust in B28 and not yet re-run on GitHub).
-a CPU-time ratio, made robust in B28 and not yet re-run on GitHub), and they were not tried on a pull request, from a fork or in a private repository.
-then a CPU-time ratio read 2.006 against a limit of 2, made robust in B28 and not yet re-run on GitHub);
 Status: **written, checked locally, and run on GitHub.** Its self-test ran on all three pushes of 2026-11-15, runs 43682221183, 43686256564 and 43690003381, and all three jobs succeeded each time (B25, B27;
 the verify workflow ran in runs 43682221175 and 43686256521, the second and third failing their macOS job in one test each, unrelated to the Action, see B27 and B28);
 It ran on all three pushes of 2026-11-15 in the `upload` job of `.github/workflows/action-selftest.yml` (runs 43682221183, 43686256564 and 43690003381, all successful);
 **The SARIF upload is opt-in and has run on all three pushes of 2026-11-15.** `action.yml` contains the standard code-scanning upload step.
 The GitHub Action, the hosted workflow and the SARIF upload ran on all three pushes of 2026-11-15: every job succeeded on the first (runs 43682221175 and 43682221183);
-that run's macOS job failed one CPU-time ratio test instead, made robust in B28 and not yet re-run on GitHub;
 tripcurve is not published to npm, so there is no `npm install tripcurve`:
 **B29, the container image and the 0.1.0 tag (2026-11-15).** The maintainer chose not to publish to npm.
 the usage example in `docs/action.md` names it.
@@ -510,15 +505,10 @@ it refuses a tag that is not the package version or not on `main`, never overwri
 The tarball gap of row 5b does not apply to the image: its runtime tree is installed from the shrinkwrap and its advisory check inside the image found 0 vulnerabilities (`docs/lookups-b29.txt`) | `Dockerfile`;
 *Decided on 2026-11-15 (B29).** The maintainer chose a container image and a tagged Action over npm (row 15), so publishing to npm and reserving the name are closed as not wanted.
 Enabling the SARIF upload anywhere but this repository's own self-test stays with whoever adopts the Action.
-it is distributed as a GitHub Action ref and, once the release workflow has run, as a container image;
 not on npm.** The source is at https://github.com/naren-ambati/TripCurve.
 an Action ref, and a container image published from the tag;
 not npm)
-The `v0.1.1` tag makes the Action usable as `naren-ambati/TripCurve@v0.1.1` and starts the release workflow, which builds, smoke-tests and pushes the image `ghcr.io/naren-ambati/tripcurve:0.1.1`;
-`v0.1.0` stays a valid Action ref with no image.
-The commands below work once the release workflow has pushed the image;
 *In GitHub Actions:** `uses: naren-ambati/TripCurve@v0.1.1` (see [docs/action.md](docs/action.md)).
-*tripcurve 0.1.1 is tagged `v0.1.1` on 2026-11-15 and ships as the GitHub Action ref `naren-ambati/TripCurve@v0.1.1` and as a container image, `ghcr.io/naren-ambati/tripcurve:0.1.1`, which the release workflow publishes from that tag (B30 records whether that push happened).
 0.1.0 was tagged the same day (`v0.1.0`, a valid Action ref) but its release run was refused by the registry, so no `0.1.0` image exists;
 0.1.1 is the same code with the release workflow corrected (B30).** A bolt is one build step: B7 is build step 7.
 **B30, the release workflow corrected and 0.1.1 (2026-11-15).** The first release run (tag `v0.1.0`, run 43745004839) passed its guards, build and smoke test, logged in, uploaded every layer, and was then refused the tagged manifest with `denied`.
@@ -526,9 +516,19 @@ The workflow now builds with `--provenance=false --sbom=false`, so a plain image
 The Action's ref is `naren-ambati/TripCurve@v0.1.1`, the 0.1.1 tag (B30, 2026-11-15;
 `v0.1.0` also exists and works as a ref, but its release run published no image);
 # Release checklist: tripcurve 0.1.1 (tagged 2026-11-15;
-publish the Action | **decided by the maintainer on 2026-11-15: no npm.** 0.1.1 is distributed as the Action ref `naren-ambati/TripCurve@v0.1.1` and as a container image, `ghcr.io/naren-ambati/tripcurve:0.1.1`, which `.github/workflows/release.yml` builds, smoke-tests and pushes when the `v0.1.1` tag lands.
-The first release run (`v0.1.0`) created the package public and linked to the repository, then was refused the tagged manifest (B30, `docs/evidence/gh-release-run1.txt`);
-its release run created the GHCR package (public, linked to the repository) and was refused the manifest push, so B30 corrects the workflow and tags `v0.1.1`;
 tripcurve 0.1.1 is tagged (2026-11-15) as a GitHub Action ref, and its container image is published by the release workflow from that tag (B29, B30), not on npm;
-The GHCR package `tripcurve` exists with public visibility, created by the first release run of 2026-11-15, whose own push was refused (B30);
 not read further), no `0.1.0` tag, and nothing pullable (`docs/evidence/gh-release-run1.txt`).
+*Status: 0.1.1, released on 2026-11-15 as a container image and a GitHub Action ref;
+The image `ghcr.io/naren-ambati/tripcurve:0.1.1` (digest `sha256:d9325ace…`, linux/amd64) was pushed by the release workflow from the `v0.1.1` tag (run 43747680278) and pulled back without a login, where it passed the same seven smoke checks (`docs/evidence/gh-release-run2.txt`).
+The Action is `naren-ambati/TripCurve@v0.1.1` (`v0.1.0` also exists as a ref;
+its release run was refused, so it has no image).
+*tripcurve 0.1.1 is released on 2026-11-15 as the GitHub Action ref `naren-ambati/TripCurve@v0.1.1` and as the container image `ghcr.io/naren-ambati/tripcurve:0.1.1` (digest `sha256:d9325ace…`), pushed by the release workflow from the `v0.1.1` tag and pulled back without a login (B31).
+the registry lists the one tag `0.1.1`;
+(`docs/evidence/gh-release-run2.txt`;
+publish the Action | **decided by the maintainer on 2026-11-15: no npm.** 0.1.1 is distributed as the Action ref `naren-ambati/TripCurve@v0.1.1` and as the container image `ghcr.io/naren-ambati/tripcurve:0.1.1`, pushed by `.github/workflows/release.yml` from the `v0.1.1` tag on 2026-11-15 (run 43747680278) and pulled back without a login (B31, `docs/evidence/gh-release-run2.txt`).
+The first release run (`v0.1.0`) created the package public and linked to the repository, then was refused the tagged manifest (B30, `docs/evidence/gh-release-run1.txt`).
+its release run created the GHCR package (public, linked to the repository) and was refused the manifest push, so B30 corrected the workflow and tagged `v0.1.1`, whose release run published the image (B31).
+the fifth push's release run was refused by the registry (B30) and the sixth's published the image (the complete run list is in `docs/evidence/gh-release-run2.txt`) | pass on the first push;
+the fourth, fifth and sixth pushes passed every verify and self-test job, and the sixth's release run published the image (`docs/evidence/gh-release-run2.txt`, which lists every run);
+**B31, the image published (2026-11-15).** The `v0.1.1` push (7f6b32a) ran green on every job: verify (run 43747679973, Linux 22.12.0/24/26 and macOS;
+the macOS job runs B28's measurement), the Action self-test (43747679994) and the release workflow (43747680278: guards, build without attestations, smoke test, login, push).

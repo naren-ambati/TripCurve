@@ -1,0 +1,60 @@
+# The v0.1.1 push (7f6b32a, B30) and its three runs, and the published image (read with the GitHub REST API, the GHCR registry API and an unauthenticated docker pull, 2026-11-15T18:50:05Z)
+
+$ gh api repos/naren-ambati/TripCurve/actions/runs?head_sha=7f6b32a...
+43747680278 release push completed success
+43747679994 action-selftest push completed success
+43747679973 verify push completed success
+
+$ gh api repos/naren-ambati/TripCurve/actions/runs/43747680278/jobs   (release, job image: steps; numbers 9 to 14 are the runner's own post-steps and are not listed)
+1 Set up job: success
+2 Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1: success
+3 Run actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1: success
+4 The tag must be the package version, on a commit that is on main: success
+5 Build the image: success
+6 Smoke-test the image (no network): success
+7 Log in to GHCR: success
+8 Push the image as <version>, never over a published one: success
+15 Post Run actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1: success
+16 Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1: success
+17 Complete job: success
+
+$ gh api repos/naren-ambati/TripCurve/actions/runs/43747679973/jobs   (verify)
+job verify (ubuntu-latest, 24): success
+job verify (ubuntu-latest, 22.12.0): success
+job verify (macos-latest, 22.12.0): success
+job verify (ubuntu-latest, 26): success
+
+$ gh api repos/naren-ambati/TripCurve/actions/runs/43747679994/jobs   (action-selftest)
+job clean: success
+job upload: success
+job failing: success
+
+$ docker logout ghcr.io; docker pull ghcr.io/naren-ambati/tripcurve:0.1.1   (2026-11-15T18:48:17Z, no login)
+Status: Downloaded newer image for ghcr.io/naren-ambati/tripcurve:0.1.1
+digest ghcr.io/naren-ambati/tripcurve@sha256:d9325ace945b6c33faeb061c0c9de83ae775759f674b7f16e8b9902a341009e8  linux/amd64  9 layers  size 65194888
+
+$ node scripts/docker-smoke.mjs ghcr.io/naren-ambati/tripcurve:0.1.1   -> 7 of 7 checks passed (on this machine, the pulled linux/amd64 image under emulation)
+
+$ GET ghcr.io/v2/naren-ambati/tripcurve/tags/list -> {"name":"naren-ambati/tripcurve","tags":["0.1.1"]}
+$ gh api /user/packages/container/tripcurve -> visibility public, versions 2
+  sha256:d9325ace... tags ["0.1.1"] 2026-11-15T18:36:41Z
+  sha256:ac10d16d... tags []        2026-11-15T18:08:35Z   (left by the refused v0.1.0 run; untagged, not pullable by tag)
+
+# Every workflow run of the repository so far (read with the GitHub REST API, 2026-11-15T18:51:16Z); newest first
+
+$ gh api repos/naren-ambati/TripCurve/actions/runs?per_page=30
+total_count 14
+43747680278  release  push  7f6b32a  completed success  created 2026-11-15T18:36:09Z
+43747679994  action-selftest  push  7f6b32a  completed success  created 2026-11-15T18:36:09Z
+43747679973  verify  push  7f6b32a  completed success  created 2026-11-15T18:36:09Z
+43745004839  release  push  aad0179  completed failure  created 2026-11-15T18:08:05Z
+43745004826  verify  push  aad0179  completed success  created 2026-11-15T18:08:05Z
+43745004821  action-selftest  push  aad0179  completed success  created 2026-11-15T18:08:05Z
+43691731036  action-selftest  push  4e32157  completed success  created 2026-11-15T07:50:28Z
+43691730963  verify  push  4e32157  completed success  created 2026-11-15T07:50:28Z
+43690003393  verify  push  2d85663  completed failure  created 2026-11-15T07:27:10Z
+43690003381  action-selftest  push  2d85663  completed success  created 2026-11-15T07:27:10Z
+43686256564  action-selftest  push  9e2206b  completed success  created 2026-11-15T06:37:02Z
+43686256521  verify  push  9e2206b  completed failure  created 2026-11-15T06:37:02Z
+43682221183  action-selftest  push  cf55f77  completed success  created 2026-11-15T05:42:22Z
+43682221175  verify  push  cf55f77  completed success  created 2026-11-15T05:42:22Z
