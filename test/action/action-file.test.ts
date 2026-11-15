@@ -1,4 +1,4 @@
-// The Action definition, checked as a file. It has never run on GitHub.
+// The Action definition, checked as a file (its hosted run is .github/workflows/action-selftest.yml).
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';

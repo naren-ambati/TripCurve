@@ -1,0 +1,27 @@
+# The first hosted runs, push cf55f77 to main, read with the GitHub REST API on 2026-11-15T05:51:54Z
+
+$ gh run view 43682221175 --repo naren-ambati/TripCurve
+verify  event push  commit cf55f77  completed success  started 2026-11-15T05:42:22Z  finished 2026-11-15T05:50:56Z
+https://github.com/naren-ambati/TripCurve/actions/runs/43682221175
+  job verify (ubuntu-latest, 24): success  (2026-11-15T05:42:25Z to 2026-11-15T05:47:57Z)
+  job verify (ubuntu-latest, 26): success  (2026-11-15T05:42:25Z to 2026-11-15T05:50:55Z)
+  job verify (ubuntu-latest, 22.12.0): success  (2026-11-15T05:42:26Z to 2026-11-15T05:48:51Z)
+  job verify (macos-latest, 22.12.0): success  (2026-11-15T05:42:26Z to 2026-11-15T05:48:56Z)
+
+$ gh run view 43682221183 --repo naren-ambati/TripCurve
+action-selftest  event push  commit cf55f77  completed success  started 2026-11-15T05:42:22Z  finished 2026-11-15T05:42:50Z
+https://github.com/naren-ambati/TripCurve/actions/runs/43682221183
+  job clean: success  (2026-11-15T05:42:26Z to 2026-11-15T05:42:42Z)
+  job upload: success  (2026-11-15T05:42:25Z to 2026-11-15T05:42:49Z)
+  job failing: success  (2026-11-15T05:42:26Z to 2026-11-15T05:42:43Z)
+
+# The push and every workflow run of the repository (read with the GitHub REST API, 2026-11-15T06:20:47Z)
+
+$ gh api repos/naren-ambati/TripCurve/commits?sha=main   (every commit on main: sha, author, committer date)
+cf55f77  naren-ambati  2026-11-15T05:42:00Z  B24: no stack trace when the reader of the output closes early
+6809df0  naren-ambati  2026-11-15T05:30:20Z  tripcurve 0.1.0 (unreleased): the CLI, the Action and the evidence
+
+$ gh api repos/naren-ambati/TripCurve/actions/runs   (every workflow run the repository has, newest first)
+total_count 2
+43682221183  action-selftest  push  cf55f77  run_attempt 1  completed success  created 2026-11-15T05:42:22Z
+43682221175  verify  push  cf55f77  run_attempt 1  completed success  created 2026-11-15T05:42:22Z

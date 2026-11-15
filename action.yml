@@ -1,5 +1,5 @@
-# The tripcurve GitHub Action. Written and checked as a file only: it has never run on
-# GitHub. The SARIF upload is opt-in (`upload-sarif: "true"`), off by default.
+# The tripcurve GitHub Action. Checked as a file by test/action/ and run on GitHub by
+# .github/workflows/action-selftest.yml (first run 2026-11-15, B25). The SARIF upload is opt-in (`upload-sarif: "true"`), off by default.
 # All shell logic is in action/run.sh. No input is ever interpolated into a script body: each one
 # arrives as an environment variable.
 name: tripcurve

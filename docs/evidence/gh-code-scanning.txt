@@ -1,0 +1,18 @@
+# GitHub code scanning after the first hosted run of the Action's self-test (read with the GitHub REST API, 2026-11-15T05:44:44Z)
+
+$ gh api repos/naren-ambati/TripCurve/code-scanning/analyses
+created 2026-11-15T05:42:42Z  tool tripcurve 0.1.0  results 6  rules 7  ref refs/heads/main  commit cf55f77
+
+$ gh api repos/naren-ambati/TripCurve/code-scanning/alerts?state=open
+#6  T4  error  infra/queue.tf:3  T4 FAIL: visibility 60 s is less than 6 x 30 s + 5 s = 185 s
+#5  T3  warning  k8s/web.yaml:30  T3 UNRESOLVED: no graceful-timeout ceiling known for a Node server
+#4  T1  error  k8s/web.yaml:17  T1 FAIL: idle close 6 s is not longer than LB idle 60 s
+#3  T3  note  k8s/api.yaml:2  T3 NOT EVALUATED: T2 failed for this workload
+#2  T2  error  k8s/api.yaml:2  T2 FAIL: no drain delay before SIGTERM
+#1  T1  error  k8s/api.yaml:21  T1 FAIL: idle close 2 s is not longer than LB idle 60 s
+
+$ gh run view 43682221183 (action-selftest, push cf55f77)
+action-selftest completed success 2026-11-15T05:42:22Z
+  job clean: success
+  job upload: success
+  job failing: success

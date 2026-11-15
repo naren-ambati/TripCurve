@@ -1,0 +1,16 @@
+# verify (ubuntu-latest, Node 22.12.0), job 132715089699 of run 43682221175: the summary lines of the hosted log (read with the GitHub REST API, 2026-11-15T05:53:31Z; colour codes removed)
+
+  node-version: 22.12.0
+Acquiring 22.12.0 - x64 from https://github.com/actions/node-versions/releases/download/22.12.0-12152383658/node-22.12.0-linux-x64.tar.gz
+added 66 packages, and audited 67 packages in 2s
+##[group]Run npm run verify
+npm run verify
+Checked 283 files in 369ms. No fixes applied.
+ ✓ test/parse/node-version.test.ts (23 tests) 68ms
+ ✓ test/cli/node-versions.e2e.test.ts (14 tests) 4037ms
+ Test Files  142 passed (142)
+      Tests  13111 passed | 14 skipped (13125)
+All files          |   94.62 |    89.54 |   98.67 |   96.74 |
+  node-version.ts  |   97.91 |     93.1 |     100 |   97.61 | 92
+selftest: all cases passed
+timed check: skipped (not the recorded machine: found "no sysctl answer", recorded "Mac17,3, Apple M5")

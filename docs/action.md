@@ -1,6 +1,6 @@
 # The tripcurve GitHub Action
 
-Status: **written and checked as files only. It has never run on GitHub.** The first hosted run is prepared (B19) and waits for the push; publishing it waits for the maintainer's go. Licence: decided by the maintainer before release.
+Status: **written, checked locally, and run once on GitHub.** Its self-test ran on the first push, on 2026-11-15, in run 43682221183, and all three jobs succeeded (B25; the verify workflow ran in run 43682221175); publishing the Action for others waits for the maintainer's go. Licence: decided by the maintainer before release.
 
 The Action is a composite Action defined in `action.yml`; all its shell logic is in `action/run.sh`, which is tested without GitHub (`test/action/`).
 
@@ -88,7 +88,7 @@ The SARIF file is still written when the report run exits 1, so findings can be 
 - No input is ever written into a script body. `action.yml` passes the four inputs as environment variables (`TRIPCURVE_PATH`, `TRIPCURVE_CONFIG`, `TRIPCURVE_FORMAT`, `TRIPCURVE_SARIF_FILE`) and the script quotes them. A test fails if a `run:` body contains `${{`.
 - The Action requests no token and prints no secret. `permissions: contents: read` is enough, unless `upload-sarif` is `true` (see below).
 - Third-party Actions are pinned to full commit SHAs, looked up read-only on 2026-11-12 (`docs/lookups-b9.txt`). `actions/setup-node` v7.1.0 and `github/codeql-action/upload-sarif` v4.39.3.
-- Hosted-runner details, such as what Node 22.12 setup needs, are unverified.
+- Hosted-runner details beyond what the self-test asserts are unverified.
 
 ## The SARIF upload is opt-in
 
@@ -103,11 +103,11 @@ To enable it, the calling workflow needs:
 
 Paths in the SARIF are relative to the directory that was checked (`SRCROOT`), so with a `path` other than `.` they do not match files in the repository; see `docs/ci-and-sarif.md`.
 
-The upload is an external write to a repository's code-scanning data. The upload has never run: it is exercised for the first time by the `upload` job of `.github/workflows/action-selftest.yml` after the push. Tests check the condition, the default and that it is the only conditional step.
+The upload is an external write to a repository's code-scanning data. It ran once, on 2026-11-15, in the `upload` job of `.github/workflows/action-selftest.yml` (run 43682221183): GitHub created an analysis at 2026-11-15T05:42:42Z (tool tripcurve 0.1.0, 6 results, 7 rules) and six alerts are open (`docs/evidence/gh-code-scanning.txt`). Tests check the condition, the default and that it is the only conditional step.
 
 ## The self-test workflow
 
-`.github/workflows/action-selftest.yml` (prepared in B19; it has never run) runs the repository's own Action with `uses: ./` in three jobs:
+`.github/workflows/action-selftest.yml` (prepared in B19; first run on 2026-11-15, run 43682221183, all three jobs succeeded) runs the repository's own Action with `uses: ./` in three jobs:
 
 | Job | Runs on | Asserts |
 | --- | --- | --- |
@@ -119,8 +119,8 @@ The assertions read the outputs through `env:`, never through `${{ }}` inside a 
 
 ## Local dry run
 
-`action/dry-run.sh [fixture]` runs the Action's two steps against a copy of a fixture repository in a temporary workspace, with `actions/setup-node` skipped and `npm ci` stubbed so nothing touches the network. Example: `action/dry-run.sh demo` exits 1, as the Action would. It simulates the three self-test jobs (`demo-fixed`, `demo`, and `demo` with `DRY_RUN_UPLOAD_SARIF=true`; `DRY_RUN_SARIF_FILE` sets the `sarif-file` input), checking the exit code, the outputs and the SARIF file. It never runs the upload: it only evaluates the step's condition and prints whether the step would run, marked NOT SIMULATED, because uploading is an external write.
+`action/dry-run.sh [fixture]` runs the Action's two steps against a copy of a fixture repository in a temporary workspace, with `actions/setup-node` skipped and `npm ci` stubbed so nothing touches the network. Example: `action/dry-run.sh demo` exits 1, as the Action would. It simulates the three self-test jobs (`demo-fixed`, `demo`, and `demo` with `DRY_RUN_UPLOAD_SARIF=true`; `DRY_RUN_SARIF_FILE` sets the `sarif-file` input; `DRY_RUN_ACTION_PATH` names the Action checkout to build and run, by default this repository, and the tests pass a scratch copy so the build step does not empty this `dist/`), checking the exit code, the outputs and the SARIF file. It never runs the upload: it only evaluates the step's condition and prints whether the step would run, marked NOT SIMULATED, because uploading is an external write.
 
 ## Not tested
 
-Anything on GitHub itself: the runner, `actions/setup-node`, composite-step output handling (for example that `steps.build.outputs.exit-code` is readable after the build step failed), the `always()` condition on the upload step, the repository-visibility expression, and the SARIF upload. The first hosted run (after the push) is the check.
+What the first hosted run (2026-11-15, run 43682221183) did not check: a pull request, a fork and a private repository were not tried, because the run was a push to a public repository. The result of the upload was read from the repository's code-scanning page (the analysis and six alerts), not from the job, which cannot tell a failed upload from the expected failed check. No job fails the build step, so whether `steps.build.outputs.exit-code` is readable after a failed build is still untested. Runner details beyond the self-test's assertions are unverified.

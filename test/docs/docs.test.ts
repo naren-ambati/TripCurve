@@ -215,8 +215,9 @@ describe('the README', () => {
     expect(readme).not.toMatch(/!\[[^\]]*\]\((?!docs\/screenshots\/[A-Za-z0-9_-]+\.png\))[^)]*\)/);
     expect(readme).not.toMatch(/shields\.io|badge|build passing|ci passing/i);
   });
-  it('says where the source will be, that it is not on npm, and never claims a hosted run', () => {
-    expect(readme).toContain('The source will be at https://github.com/naren-ambati/TripCurve.');
+  it('says where the source is, that it is not on npm, and claims only the recorded hosted runs', () => {
+    expect(readme).toContain('The source is at https://github.com/naren-ambati/TripCurve.');
+    expect(readme).not.toContain('will be at');
     expect(readme).toContain('tripcurve is not published to npm.');
     expect(readme).not.toMatch(
       /is (now )?public|has been published|CI (is )?(green|passing)|ran green/i,
@@ -456,12 +457,36 @@ describe("review B15-4: the checks fail on the reviewer's cases (m7)", () => {
     // a bare number elsewhere in the file is not enough: 22 appears in research.md, not as 22 s
     expect(numberProblems('It closes at 22 s (`docs/research.md` section 2).')).toHaveLength(1);
   });
-  it('the docs that mention the Action or hosted CI say it has not run', () => {
-    for (const f of NEW_DOCS) {
-      const text = read(f);
-      if (/GitHub Action|hosted (CI|workflow)/.test(text)) {
-        expect(text, f).toMatch(/never run|has not run|not run|never ran|have never run/);
+  it('review B25: no page says the Action or the hosted workflows have not run, or that the first run is pending', () => {
+    const stale =
+      /has never run|have never run|had never run|(?:Action|workflows?|upload) (?:has|have|had) not (?:been )?run|never run on GitHub|not run on GitHub|no hosted (?:CI )?run|no upload before|pending the push|waits for the push|after the push|will be at|not run on a hosted runner|Nothing has run on GitHub/i;
+    const hits: string[] = [];
+    for (const f of ALL_DOCS) {
+      for (const line of read(f).split('\n')) {
+        // only the two logs may keep the old wording, as dated history on a line that names B25 and the date
+        const history =
+          /^(?:CHANGELOG|BUILD-NOTES)\.md$/.test(f) &&
+          /B25/.test(line) &&
+          line.includes('2026-11-15');
+        if (stale.test(line) && !history) {
+          hits.push(`${f}: ${line.slice(0, 80)}`);
+        }
       }
+    }
+    expect(hits).toEqual([]);
+  });
+  it('review B25: the pages that mention the Action or hosted CI cite the two hosted runs of 2026-11-15', () => {
+    for (const f of [
+      'README.md',
+      'docs/action.md',
+      'docs/ci-and-sarif.md',
+      'docs/security.md',
+      'docs/release-checklist.md',
+    ]) {
+      const text = read(f);
+      expect(text, f).toMatch(/GitHub Action|hosted (CI|workflow)/);
+      expect(text, f).toContain('43682221175');
+      expect(text, f).toContain('43682221183');
     }
   });
   it('the knowledge-base guide lists the optional entry fields and when each is needed', () => {
@@ -562,14 +587,14 @@ describe('review B22-M1: the command has no subcommand, and no published text sh
   });
 });
 
-describe('review B22-M6: the CHANGELOG has one entry per bolt, B0 to B24, in order', () => {
+describe('review B22-M6: the CHANGELOG has one entry per bolt, B0 to B25, in order', () => {
   const text = read('CHANGELOG.md');
   const ids = [...text.matchAll(/^- \*\*B(\d+)\b/gm)].map((m) => Number(m[1]));
-  it('the entries are B0, B1, ... B24 once each, in this order', () => {
-    expect(ids).toEqual(Array.from({ length: 25 }, (_, i) => i));
+  it('the entries are B0, B1, ... B25 once each, in this order', () => {
+    expect(ids).toEqual(Array.from({ length: 26 }, (_, i) => i));
   });
   it('can fail: a missing, repeated or misplaced entry is not the sequence', () => {
-    const want = Array.from({ length: 25 }, (_, i) => i);
+    const want = Array.from({ length: 26 }, (_, i) => i);
     expect(want.filter((n) => n !== 18)).not.toEqual(want);
     expect([...want, 21]).not.toEqual(want);
     expect([...want.slice(0, 5), 7, 6, ...want.slice(7)]).not.toEqual(want);

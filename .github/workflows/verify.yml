@@ -1,5 +1,5 @@
-# Runs the same one command the maintainer runs locally. Prepared in B19; it has not run on GitHub yet
-# (it first runs after the push). On Linux the timed check skips (no sysctl) and says so; on a
+# Runs the same one command the maintainer runs locally. Prepared in B19; first run on GitHub on
+# 2026-11-15 (B25), every job green. On Linux the timed check skips (no sysctl) and says so; on a
 # machine that is not the recorded one it also skips; the budgets are only enforced on the maintainer's laptop.
 name: verify
 

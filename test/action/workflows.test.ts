@@ -1,4 +1,4 @@
-// The hosted workflow files, checked as files (B19). None has run on GitHub yet.
+// The hosted workflow files, checked as files (B19; first run on GitHub 2026-11-15, B25).
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';

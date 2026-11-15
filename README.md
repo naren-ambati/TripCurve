@@ -9,7 +9,7 @@ tripcurve is a command-line checker. It reads the files of a repository (Kuberne
 
 Where a setting is not written down, tripcurve fills in the default from a sourced, dated knowledge base, and prints where every number came from. Where it cannot establish a number, it says UNRESOLVED instead of guessing. The rules are in [docs/rules.md](docs/rules.md).
 
-**Status: not released.** The source will be at https://github.com/naren-ambati/TripCurve. tripcurve is not published to npm. `package.json` stays `"private": true` and `"license": "UNLICENSED"`. This README describes the code in this checkout, built bolt by bolt (see [CHANGELOG.md](CHANGELOG.md), "0.1.0 (unreleased)").
+**Status: not released.** The source is at https://github.com/naren-ambati/TripCurve. tripcurve is not published to npm. `package.json` stays `"private": true` and `"license": "UNLICENSED"`. This README describes the code in this checkout, built bolt by bolt (see [CHANGELOG.md](CHANGELOG.md), "0.1.0 (unreleased)").
 
 ## What it looks like
 
@@ -150,11 +150,11 @@ A clean run means the rules tripcurve checks hold for the files it read. It does
 
 ## Test evidence
 
-Everything below was run on the maintainer's machine (Mac17,3, Apple M5, macOS) on a fresh checkout of this repository on 2026-11-15, except where a row names an earlier date, after two independent black-box testing passes whose findings were fixed first (`docs/evidence/black-box-testing.md`). Each screenshot shows the command's real output, excerpted only where the image says so; the full transcripts are in `docs/evidence/`. Nothing in this section was run on GitHub.
+Everything below was run on the maintainer's machine (Mac17,3, Apple M5, macOS) on a fresh checkout of this repository on 2026-11-15, except where a row names an earlier date, after two independent black-box testing passes whose findings were fixed first (`docs/evidence/black-box-testing.md`). Each screenshot shows the command's real output, excerpted only where the image says so; the full transcripts are in `docs/evidence/`. The two hosted rows were run by GitHub on its own runners on the first push, 2026-11-15, not on that machine.
 
 | Check | What it covers | Result |
 |---|---|---|
-| `npm run verify` | typecheck (tests included), Biome, 13,115 tests in 141 files with 96.74% line coverage, the measurement self-test, the build, the timed check (`docs/evidence/verify-summary.txt`) | pass |
+| `npm run verify` | typecheck (tests included), Biome, 13,115 tests in 141 files with 96.74% line coverage, the measurement self-test, the build, the timed check, as recorded at B23 (`docs/evidence/verify-summary.txt`); B24 and B25 added tests, so a checkout today runs 13,127 tests in 142 files | pass |
 | Demo, first run | the three-step demo before the fix: 4 failed, 1 unresolved, exit 1 (`docs/evidence/demo-first.txt`); run from inside `demo/` it is byte-equal to `demo/expected/first-run.txt` (`docs/evidence/node-matrix.txt`) | pass |
 | Demo, after the fix | nine PASS and one not-applicable, exit 0 (`docs/evidence/demo-fixed.txt`); run from inside `demo-fixed/` it is byte-equal to `demo/expected/after-fix.txt` (`docs/evidence/node-matrix.txt`) | pass |
 | Four real repositories | trimmed copies of public MIT repositories under `test/fixtures/real/`, each judged by hand against the real files: one real T2 failure, one real T4 failure, one T4 pass, the rest honest UNRESOLVED (`docs/evidence/real-*.txt`) | pass |
@@ -163,6 +163,8 @@ Everything below was run on the maintainer's machine (Mac17,3, Apple M5, macOS) 
 | Node releases | the full suite and the demo on Node 22.12.0 (the oldest supported), 24.22.3 and 26.13.1; Node 20 and 18 refused with the fixed message, exit 2 (`docs/evidence/node-matrix.txt`) | pass |
 | Measurement lanes | the pinned lane of 2026-11-12: 110 of 110 measurable cases within tolerance on a quiet host; 36 entries measured, 9 not measurable locally (AWS and Kubernetes defaults, documented), 3 deferred (old Node lines, labelled unmeasured) (`measure/results/2026-11-12-lanes-pinned-b15.txt`); the case list as of 2026-11-15 is in `docs/evidence/lanes-list.txt` (a listing; nothing started) | pass |
 | Supply chain | `npm audit`: 0 vulnerabilities for the checkout; every dependency pinned with an integrity hash in `npm-shrinkwrap.json`; a consumer of the packed tarball would not be clean, which is why the package stays private (`docs/evidence/audit.txt`, `docs/security.md`) | pass, with the stated caveat |
+| Hosted verify | `npm run verify` on GitHub's runners after the first push (commit `cf55f77`): Ubuntu with Node 22.12.0, 24 and 26 and macOS with Node 22.12.0, all four jobs succeeded in run 43682221175; this was the first run of the suite on Linux, where the Node 22.12.0 job reports 142 test files, 13,111 tests passed and 14 skipped, and the timed check skipped because it is not the recorded machine (`docs/evidence/gh-hosted-runs.txt`, `docs/evidence/gh-linux-verify.txt`) | pass |
+| Hosted Action self-test and SARIF upload | run 43682221183: the jobs `clean`, `failing` and `upload` all succeeded; the `upload` job sent the demo's SARIF to GitHub code scanning, which created an analysis at 2026-11-15T05:42:42Z (tool tripcurve 0.1.0, 6 results, 7 rules) and six open alerts at the demo's files and lines (`docs/evidence/gh-hosted-runs.txt`, `docs/evidence/gh-code-scanning.txt`) | pass |
 | GitHub Action | dry runs of the composite steps on `demo-fixed` (exit 0, SARIF written) and `demo` (exit 1, SARIF still written); the upload step is off by default (`docs/evidence/action-dry-fixed.txt`, `docs/evidence/action-dry-demo.txt`) | pass |
 | Docs | every command in the docs run as written and compared with its claimed output (`docs/evidence/black-box-testing.md`) | pass |
 
@@ -183,6 +185,22 @@ Everything below was run on the maintainer's machine (Mac17,3, Apple M5, macOS) 
 ![The measurement lanes' cases](docs/screenshots/lanes.png)
 
 ![tripcurve --explain T1](docs/screenshots/explain.png)
+
+![The hosted verify run](docs/screenshots/gh-verify.png)
+
+*The verify run on GitHub (run 43682221175): four jobs, Linux and macOS.*
+
+![The hosted Action self-test run](docs/screenshots/gh-action-selftest.png)
+
+*The Action self-test run on GitHub (run 43682221183): clean, failing and upload.*
+
+![The code-scanning transcript](docs/screenshots/gh-code-scanning.png)
+
+*The analysis and the six open alerts that the upload created, as read from the GitHub REST API.*
+
+![The hosted run facts](docs/screenshots/gh-hosted.png)
+
+*The two runs and their jobs, as read from the GitHub REST API.*
 
 ## Documentation
 

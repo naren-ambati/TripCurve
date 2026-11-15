@@ -1,4 +1,3 @@
-*Status: not released.** The source will be at https://github.com/naren-ambati/TripCurve.
 Every released Node line keeps 5 s until v27.
 ## Install from a checkout
 tripcurve is not published to npm.
@@ -11,7 +10,6 @@ The licence is decided by the maintainer before release.
 what must be true before the maintainer's go is in `docs/release-checklist.md`.
 **B8, measurement lanes.** `npm run verify:measure` (pinned lane) and `node measure/lanes.mjs latest`: every entry has a script run or a stated reason, nothing is retried, and a lookup failure stops the lane.
 **B9, the GitHub Action.** A composite Action built from its own checkout, with pinned third-party SHAs, inputs passed as environment variables, and the SARIF upload disabled.
-It has never run on GitHub.
 (`BUILD-NOTES.md`, "B9 GitHub Action";
 `docs/action.md`)
 **B10, the demo repository and end-to-end test.** `demo/` and `demo-fixed/` with byte-exact expected output, and a timed check that is the last step of `npm run verify`.
@@ -19,7 +17,6 @@ Measuring them needs Rosetta 2 installed by the maintainer, or an x64 or Linux h
 **B15, documentation and release checks.** The README, the rules reference, how defaults were measured, how to add a knowledge-base entry, CI and SARIF, the security note, this changelog and the release checklist (`docs/release-checklist.md`), with a test that checks the docs' diagrams, quotes and sourced numbers.
 ### Known limits of this release candidate
 (`docs/ci-and-sarif.md`)
-The Action and the hosted workflow have never run on GitHub.
 (`docs/action.md`)
 (`docs/release-checklist.md`)
 # The tripcurve GitHub Action
@@ -33,7 +30,6 @@ The SARIF file is still written when the report run exits 1, so findings can be 
 `action.yml` passes the four inputs as environment variables (`TRIPCURVE_PATH`, `TRIPCURVE_CONFIG`, `TRIPCURVE_FORMAT`, `TRIPCURVE_SARIF_FILE`) and the script quotes them.
 The Action requests no token and prints no secret.
 `actions/setup-node` v7.1.0 and `github/codeql-action/upload-sarif` v4.39.3.
-Hosted-runner details, such as what Node 22.12 setup needs, are unverified.
 `action/dry-run.sh [fixture]` runs the Action's two steps against a copy of a fixture repository in a temporary workspace, with `actions/setup-node` skipped and `npm ci` stubbed so nothing touches the network.
 It is the path tested by the release-quality dry run (metric 5, `docs/release-checklist.md`).
 get the evidence (a dated lookup, or the runtime installed into `.cache/`);
@@ -57,8 +53,6 @@ Does every claim in the printed basis correspond to a recorded run (a release, a
 The release-quality dry run (metric 5)
 # CI and SARIF
 How to run tripcurve in CI, and how to read its SARIF output so that a gate cannot be fooled.
-**The GitHub Action has never run on GitHub.** `action.yml` and `action/run.sh` are tested without GitHub (`test/action/`), and a local dry run (`action/dry-run.sh`) exercises both steps, but nothing hosted has been tried.
-(`.github/workflows/verify.yml`)
 The Action's name and ref are set at release;
 (`docs/action.md`, "Usage")
 ## Using the Action
@@ -74,7 +68,6 @@ that is the repository root when the repository is checked out into the workspac
 (`action/run.sh`;
 A result from standard input has no file, so it has no `physicalLocation`, and GitHub code scanning cannot show it.
 whether GitHub's viewer decodes `{{` back to `{` has not been checked.
-**The Action has not run on a hosted runner**, so runner details (what Node 22.12 setup needs, whether a failed step's outputs are kept) are unverified.
 (`docs/action.md`, "Not tested")
 No ALB, no cluster, no CI runner and no Linux host was involved;
 `measure/selftest.mjs` checks the client against fake servers with known behaviour, and runs inside `npm run verify`.
@@ -126,7 +119,6 @@ An alias, a git, file, link or workspace spec, a pre-release, an `overrides`, `r
 **HTTP protocol of uvicorn.** The shutdown runs were made on a plain install (h11).
 **Pins** (minor 4): a `package-lock.json` entry whose `name` is not the package (an npm alias) is UNRESOLVED;
 The GitHub API reports the licence as NOASSERTION.
-A SARIF consumer that validates against the official schema is the real test, and that happens only after the maintainer's go (no upload before then).
 GitHub code scanning cannot show such a result.
 tripcurve has no published documentation address yet, so there is no address to put there and none is invented.
 SARIF 3.49.13 says `help` is for the case where "help information is not available at a URI").
@@ -136,7 +128,6 @@ whether GitHub's viewer decodes `{{` back to `{` is unverified.
 then `SRCROOT` is the repository root and GitHub resolves each path against it.
 `npm run verify` ends with a labelled step, `npm run timed-check` (`scripts/timed-check.mjs`), after `npm run build`.
 The two figures in each row are from two full `npm run verify` runs on 2026-11-12 (the three runs inside them were 0.23, 0.23, 0.23 s both times for the demo, and 1.75, 1.86, 1.76 s and 1.80, 1.77, 1.78 s for the tree).
-**The hosted workflow** (a checked file that has never run) would run on Linux, so the step would be skipped there.
 The budgets are therefore enforced only where the maintainer runs `npm run verify` locally.
 A YAML file is a candidate when a template key (`AWSTemplateFormatVersion`, `Transform`, `Resources`) is a key of the top-level mapping of a document, at the indentation that document's first line of content uses (so a template whose keys are all indented is read, while a nested `Resources:` in a Helm values file, a Serverless Framework file, a Compose file or a workflow is not a candidate);
 (Maintainer decision to confirm before release: a link to a JSON file nothing names could instead be ignored when it dangles.)
@@ -174,7 +165,6 @@ Precision fixtures green | **done locally** | the gunicorn sync worker, `--threa
 ### `npm run verify`: done locally
 `npm run verify` runs the typecheck (the typecheck configuration includes `test/`), Biome, the unit, golden and end-to-end tests with the 80% line-coverage floor, the measurement self-test, the build and the timed check.
 Verbatim from `docs/release-check-run-b15.txt`:
-anywhere else it prints `skipped` and passes, so the hosted Linux workflow will not enforce them.
 ### The pinned lane (`npm run verify:measure`): done locally
 `test/report/sarif-validate.test.ts` and `test/report/sarif.test.ts` passed (177 tests, `docs/release-check-run-b15.txt`);
 they are also part of `npm run verify`.
@@ -188,15 +178,12 @@ The CI workflow and the Action install with `--ignore-scripts`, so `fsevents`'s 
 *Deferred and not measured (3).** A release must never read these as measured.
 Measuring them needs Rosetta 2 installed by the maintainer, or an x64 or arm64 Linux host.
 *Release blockers.** An entry with the basis `to be measured` is a release blocker and fails the lane.
-The GitHub Action, the hosted workflow and the SARIF upload have never run on GitHub;
-runner details are unverified.
 (`docs/action.md`;
 Whether GitHub's viewer decodes the doubled braces `{{` in SARIF messages back to `{` has not been checked.
 the first group blocks the release.
 2 | The go: publish to npm and publish the Action;
 3 | `npm audit`: 3 moderate findings (`minimatch` through `ts-morph`).
 4 | "No install scripts": is a dev-only optional package (`fsevents`) with an install script acceptable when the production tree has none?
-7 | The Action's name and ref (`<owner>/tripcurve@<sha>`), its first hosted run, and when to enable the upload step;
 10 | The three old-Node trap entries: install Rosetta 2 (`softwareupdate --install-rosetta --agree-to-license`), provide an x64 or arm64 Linux host, or release with them deferred and unmeasured.
 Stars and push dates come from the GitHub REST API (`pushed_at`).
 Measured numbers come from local experiments on one 10-core macOS laptop, not on an ALB or a CI runner.
@@ -232,7 +219,6 @@ A Node server that imports any npm package gives UNRESOLVED rather than FAIL, be
 What tripcurve does and does not do with the files it reads, what the GitHub Action does, and the one thing a reviewer must watch: **a pull request can add a waiver.** Dates are 2026.
 **It never sends credentials anywhere.** There is nowhere to send them: no network, and the Action requests no token (below).
 ## The GitHub Action
-The Action has never run on GitHub (`docs/action.md`, [ci-and-sarif.md](ci-and-sarif.md)).
 Its design, as checked by tests without GitHub:
 **It builds from its own checkout.** tripcurve itself is built from the Action's checkout and is never fetched from a registry at run time.
 After a release the maintainer may replace the build with an exact pinned version of tripcurve.
@@ -280,21 +266,17 @@ its URL, size and SHA-256 are in `docs/release-check-run-b16.txt`.
 It declares JSON Schema draft-04, which plain `ajv` 8 does not load, so the check used `ajv-draft-04` with `ajv-formats`, installed with `--ignore-scripts` in a scratch folder outside the repository (none of them is a dependency of tripcurve);
 the script and its real output are in `docs/release-check-run-b16.txt`.
 `npm run verify` keeps using the hand-written validator for the subset tripcurve emits (`test/support/sarif-validate.ts`), so the day-to-day check does not depend on the downloaded schema.
-What was not checked: how GitHub's code scanning reads the file, which waits for the maintainer's go.
 ## Compatibility across Node releases
 On 2026-11-12 (B16) the full test suite, the build and the demo were run with each of four official darwin-arm64 binaries first on `PATH` (the binaries are cached in `.cache/node/`), and the unsupported-Node message was checked on two older releases.
 Each row is one run of `node ./node_modules/vitest/vitest.mjs run`, then `npm run build`, then `node ../dist/cli/main.js .` inside `demo/`;
 Raw output: `docs/release-check-run-b16.txt`.
 one 4x step straddled a one-off cost jump (a V8 string or heap step), and the same tests passed on the other three releases.
-Linux cannot be run on the build host, so "macOS and Linux" rests on the source audit below and on the first hosted Linux run, which waits for the maintainer's go.
 Rosetta 2 for the three old-Node entries (10) | **decided (2026-11-12): not installed**, because installing system software is not done;
 Reporting a vulnerability (9) | **decided (2026-11-12): once the repository is public, reports go through GitHub's private vulnerability reporting for the repository;
 The licence (1) | **left as the maintainer said**: decided by the maintainer before release;
-*Not decidable here, so still open.** Each is an external write that waits for the maintainer's explicit go: publish to npm, reserve the name `tripcurve`, the first hosted CI run, and enabling the SARIF upload.
 (above, "npm audit")
 The official SARIF schema was applied once, on 2026-11-12, to the goldens and the demo output, not to a real upload.
 1 | The licence for tripcurve: decided by the maintainer before release | B15 (all) | **open**: decided by the maintainer before release |
-whether the `exit-code` output survives a failed step on GitHub (untested) | B9 | **open**: the name and ref, the first hosted run and the upload step are external writes that wait for the maintainer's go |
 9 | A channel for reporting a vulnerability, decided at release (none exists without a remote) | B15 | **decided (2026-11-12)**: GitHub private vulnerability reporting once the repository is public;
 The v0.1.0 definition asks for a script on every entry | B13 | **decided (2026-11-12)**: Rosetta 2 is not installed;
 23 | The `{{` and `}}` doubling of braces in SARIF messages (SARIF 3.11.5): untested on GitHub's viewer | B7 | **decided (2026-11-12)**: keep, as SARIF 3.11.5 requires;
@@ -339,9 +321,7 @@ the upload step runs only when it is `true` and a SARIF file was written, and it
 `.github/workflows/verify.yml` becomes a matrix (Ubuntu with Node 22.12.0, 24 and 26;
 A new `.github/workflows/action-selftest.yml` runs the Action on `demo-fixed` (clean), `demo` (failing) and `demo` with the upload (public repositories only).
 `action/dry-run.sh` simulates the three scenarios and never the upload.
-Nothing has run on GitHub yet;
 `docs/release-checklist.md`, rows 12 to 14)
-It has never run on GitHub.** The first hosted run is prepared (B19) and waits for the push;
 `upload-sarif` | `false` | The string `true` (compared without regard to case, as GitHub's `==` does) uploads the SARIF file to GitHub code scanning after the check, including after a failed check.
 Any other value, or no SARIF file written, skips the upload.
 See "The SARIF upload is opt-in".
@@ -361,40 +341,21 @@ A workflow that is not a pull request from a fork: a fork's token is read-only (
 `with: upload-sarif: "true"`.
 see `docs/ci-and-sarif.md`.
 The upload is an external write to a repository's code-scanning data.
-The upload has never run: it is exercised for the first time by the `upload` job of `.github/workflows/action-selftest.yml` after the push.
 ## The self-test workflow
 `.github/workflows/action-selftest.yml` (prepared in B19;
-it has never run) runs the repository's own Action with `uses: ./` in three jobs:
 `upload` | `demo`, with `upload-sarif: "true"` and `continue-on-error: true` | the same as `failing`;
 the job has `security-events: write` and runs only for a public repository (`github.event.repository.visibility == 'public'`) and for a push or a same-repository pull request |
 Because the Action step has `continue-on-error`, the `upload` job cannot tell a failed upload from the expected failed check: it shows that the SARIF file was written and the step failed with exit code 1, and the result of the upload is read from the log of the upload step and from the repository's code-scanning page.
 Example: `action/dry-run.sh demo` exits 1, as the Action would.
 It never runs the upload: it only evaluates the step's condition and prints whether the step would run, marked NOT SIMULATED, because uploading is an external write.
-Anything on GitHub itself: the runner, `actions/setup-node`, composite-step output handling (for example that `steps.build.outputs.exit-code` is readable after the build step failed), the `always()` condition on the upload step, the repository-visibility expression, and the SARIF upload.
-The first hosted run (after the push) is the check.
-Its first hosted run is prepared (B19, `.github/workflows/action-selftest.yml`) and waits for the push;
-publishing it waits for the maintainer's go.
-**The hosted verify workflow** (`.github/workflows/verify.yml`) is a checked file that has never run.
-It is prepared (B19) to run `npm run verify` on Ubuntu with Node 22.12.0, 24 and 26 and on macOS with Node 22.12.0, and it first runs after the push.
-**The SARIF upload is opt-in and has never run.** `action.yml` contains the standard code-scanning upload step.
 It is off by default and runs only when the input `upload-sarif` is `true` and a SARIF file was written;
 To enable it, set `upload-sarif: "true"` and give the job `permissions: security-events: write`;
 it needs a public repository or one with GitHub code security, and it is expected not to work for a pull request from a fork.
 Uploading is an external write to a repository's code-scanning data.
 (`docs/action.md`, "The SARIF upload is opt-in")
-12 | The hosted CI workflow runs | **prepared in B19;
-first run pending the push**: `.github/workflows/verify.yml` runs `npm run verify` on Ubuntu (Node 22.12.0, 24, 26) and macOS (Node 22.12.0);
-a hosted run is an external action | `docs/ci-and-sarif.md`;
 `test/action/workflows.test.ts` |
-13 | The GitHub Action runs on a hosted runner | **prepared in B19;
-first run pending the push**: `.github/workflows/action-selftest.yml` runs the Action on `demo-fixed` (clean) and `demo` (failing);
-it has never run | `docs/action.md`, "The self-test workflow" and "Not tested" |
-14 | SARIF upload to code scanning | **prepared in B19;
-first run pending the push**: the upload is opt-in (`upload-sarif: "true"`, default off) and the `upload` job of the self-test enables it only on a public repository;
-uploading is an external write and has never run | `docs/action.md`, "The SARIF upload is opt-in";
 The SARIF upload is off by default, and turning it on (`upload-sarif: "true"`) needs `security-events: write` in the calling job.
 tripcurve is not published to npm, so there is no `npm install tripcurve`.
-tripcurve is not published to npm, and there has been no hosted CI run and no hosted run of the GitHub Action.
 Release definition item | Status | Evidence or reason |
 the command name `npm run verify`;
 the Action builds from its own checkout;
@@ -418,7 +379,6 @@ reopened for the packed tarball by B21, see row 5b: the audit is NOT clean for a
 **B20, publication clean-up (2026-11-14).** Every file that would be published stands on its own: design-process references, home and scratch paths and personal identifiers are removed, 12 measurement records say `<repo>` instead of an absolute path, and `package.json` carries `repository`, `homepage`, `bugs`, `keywords` and `author` (`private: true` and `license: UNLICENSED` unchanged).
 A test (`test/docs/publication.test.ts`) scans every published file, and the local export script refuses to run on any hit.
 The release checklist and this changelog carry re-run, dated figures and one entry per bolt, B0 to B22.
-The tarball audit caveat is stated in `docs/security.md`, `docs/release-checklist.md` (row 5b) and here: the audit is clean for a clone followed by `npm ci` and for the tree that the hosted workflows would install (they have never run), and NOT clean for a fresh install of the packed tarball;
 the package is private and not published to npm.
 `npm audit` is clean only because of the `minimatch` override, which was checked by one call and the test suite, not on every `ts-morph` code path (see the release checklist row 5b for the tarball caveat).
 `npm audit` is NOT clean for a fresh install of the packed tarball: npm `overrides` do not ship, and ts-morph 28.0.0 (the newest) pulls `minimatch` 10.2.6 (4 moderate advisories).
@@ -432,7 +392,6 @@ must be clean before any npm publish** | 4 moderate findings, `minimatch` 10.2.6
 the package is private and not published to npm, so no such consumer exists today;
 6 | Pinned shrinkwrap with no install scripts | **done locally, with one finding, open maintainer decision** | exact direct pins and integrity hashes on all 123 packages of the shrinkwrap;
 The shrinkwrap (then the lock file), `npm ls` and SARIF-gate checks are in `docs/release-check-run-b15.txt`;
-The audit is clean (0 vulnerabilities) for every way this repository is used: a `git clone` followed by `npm ci` from `npm-shrinkwrap.json`, and the tree that the hosted workflows would install (they have never run).
 registry reads only, in scratch folders): `npm audit` in the checkout printed `found 0 vulnerabilities`;
 `npm pack` and `npm install --ignore-scripts` of that tarball into a fresh project, then `npm audit`, printed `4 moderate severity vulnerabilities`, with `npm ls minimatch` showing `minimatch@10.2.6` under `@ts-morph/common@0.29.0` under `ts-morph@28.0.0`.
 The shrinkwrap (`npm-shrinkwrap.json`) has 123 packages, all with integrity hashes (counted again on 2026-11-14, B22).
@@ -443,14 +402,12 @@ The shrinkwrap pins each version and records an integrity hash that `npm ci` che
 That does not protect against a compromised version that was already locked: a bad release pinned in `npm-shrinkwrap.json` is installed as pinned, and the hash only proves it is the release that was locked.
 The CI and Action install every package the shrinkwrap requires for the platform (development dependencies included;
 One dev-only optional package in the shrinkwrap (`fsevents`, through vitest) is flagged as having an install script;
-The audit is clean (0 vulnerabilities) for every way this repository is used: a `git clone` followed by `npm ci`, and the tree that the hosted workflows would install (they have never run).
 The shrinkwrap (`npm-shrinkwrap.json`) has 123 packages, all with integrity hashes;
 (`docs/release-checklist.md`, "The shrinkwrap")
 **B22, documentation corrections and two small code items (2026-11-14).** A `check` subcommand is no longer written anywhere: the command has none, and a test fails on a published text that shows one.
 The B15 figures (263 files, 123 test files, 12,614 tests) are history, kept in `docs/release-check-run-b15.txt`.
 Verbatim from the second run (`npm run verify`, exit 0):
-Nothing in this section was run on GitHub.
-`npm run verify` | typecheck (tests included), Biome, 13,115 tests in 141 files with 96.74% line coverage, the measurement self-test, the build, the timed check (`docs/evidence/verify-summary.txt`) | pass |
+`npm run verify` | typecheck (tests included), Biome, 13,115 tests in 141 files with 96.74% line coverage, the measurement self-test, the build, the timed check, as recorded at B23 (`docs/evidence/verify-summary.txt`);
 Node releases | the full suite and the demo on Node 22.12.0 (the oldest supported), 24.22.3 and 26.13.1;
 Supply chain | `npm audit`: 0 vulnerabilities for the checkout;
 every dependency pinned with an integrity hash in `npm-shrinkwrap.json`;
@@ -461,3 +418,79 @@ the upload step is off by default (`docs/evidence/action-dry-fixed.txt`, `docs/e
 ![The Action's dry runs](docs/screenshots/action.png)
 **B23, test evidence (2026-11-15).** The README gains a "Test evidence" section: a table of every check run on a fresh checkout after the black-box testing, with verbatim screenshots under `docs/screenshots/` and the full transcripts under `docs/evidence/` (the verify summary, the demo before and after the fix, the four real repositories, the JSON and SARIF outputs and the official-schema validation, the Node release matrix, the dependency scan and the tarball listing, the Action's dry runs, the measurement lanes' case list).
 The README's no-badge rule now allows a local screenshot under `docs/screenshots/` and still refuses any other image.
+*Status: not released.** The source is at https://github.com/naren-ambati/TripCurve.
+The two hosted rows were run by GitHub on its own runners on the first push, 2026-11-15, not on that machine.
+Hosted verify | `npm run verify` on GitHub's runners after the first push (commit `cf55f77`): Ubuntu with Node 22.12.0, 24 and 26 and macOS with Node 22.12.0, all four jobs succeeded in run 43682221175;
+this was the first run of the suite on Linux, where the Node 22.12.0 job reports 142 test files, 13,111 tests passed and 14 skipped, and the timed check skipped because it is not the recorded machine (`docs/evidence/gh-hosted-runs.txt`, `docs/evidence/gh-linux-verify.txt`) | pass |
+Hosted Action self-test and SARIF upload | run 43682221183: the jobs `clean`, `failing` and `upload` all succeeded;
+the `upload` job sent the demo's SARIF to GitHub code scanning, which created an analysis at 2026-11-15T05:42:42Z (tool tripcurve 0.1.0, 6 results, 7 rules) and six open alerts at the demo's files and lines (`docs/evidence/gh-hosted-runs.txt`, `docs/evidence/gh-code-scanning.txt`) | pass |
+![The hosted verify run](docs/screenshots/gh-verify.png)
+The verify run on GitHub (run 43682221175): four jobs, Linux and macOS.*
+![The hosted Action self-test run](docs/screenshots/gh-action-selftest.png)
+The Action self-test run on GitHub (run 43682221183): clean, failing and upload.*
+The analysis and the six open alerts that the upload created, as read from the GitHub REST API.*
+![The hosted run facts](docs/screenshots/gh-hosted.png)
+The two runs and their jobs, as read from the GitHub REST API.*
+The source was pushed to https://github.com/naren-ambati/TripCurve on 2026-11-15, where the hosted workflow and the GitHub Action's self-test ran once and every job succeeded (B25).
+When it was written it had not run on GitHub;
+When it was written nothing had run on GitHub;
+The tarball audit caveat is stated in `docs/security.md`, `docs/release-checklist.md` (row 5b) and here: the audit is clean for a clone followed by `npm ci` and for the tree that the hosted workflows would install (they first ran later, on 2026-11-15, B25), and NOT clean for a fresh install of the packed tarball;
+Ubuntu with Node 22.12.0, 24 and 26 and macOS with Node 22.12.0, the first run of the suite on Linux) and `action-selftest` (run 43682221183;
+`clean`, `failing` and `upload`).
+The `upload` job sent the demo's SARIF to code scanning: 6 results, 7 rules and six open alerts.
+The README's test evidence, the release checklist and the pages that said "never run" are corrected, and three transcripts and four screenshots are added under `docs/evidence/` and `docs/screenshots/`.
+The package is still not published to npm.
+the hosted Linux run of 2026-11-15 ran the verify suite (B25).
+The Action and the hosted workflow had not run on GitHub when B24 was built;
+Status: **written, checked locally, and run once on GitHub.** Its self-test ran on the first push, on 2026-11-15, in run 43682221183, and all three jobs succeeded (B25;
+the verify workflow ran in run 43682221175);
+publishing the Action for others waits for the maintainer's go.
+Hosted-runner details beyond what the self-test asserts are unverified.
+It ran once, on 2026-11-15, in the `upload` job of `.github/workflows/action-selftest.yml` (run 43682221183): GitHub created an analysis at 2026-11-15T05:42:42Z (tool tripcurve 0.1.0, 6 results, 7 rules) and six alerts are open (`docs/evidence/gh-code-scanning.txt`).
+first run on 2026-11-15, run 43682221183, all three jobs succeeded) runs the repository's own Action with `uses: ./` in three jobs:
+What the first hosted run (2026-11-15, run 43682221183) did not check: a pull request, a fork and a private repository were not tried, because the run was a push to a public repository.
+The result of the upload was read from the repository's code-scanning page (the analysis and six alerts), not from the job, which cannot tell a failed upload from the expected failed check.
+Runner details beyond the self-test's assertions are unverified.
+**The GitHub Action ran on GitHub once, on 2026-11-15.** `action.yml` and `action/run.sh` are tested without GitHub (`test/action/`), and a local dry run (`action/dry-run.sh`) exercises both steps.
+The self-test (`.github/workflows/action-selftest.yml`) ran on the first push in run 43682221183, and the jobs `clean`, `failing` and `upload` all succeeded;
+`docs/evidence/gh-hosted-runs.txt`)
+**The hosted verify workflow** (`.github/workflows/verify.yml`) ran on the first push, on 2026-11-15, in run 43682221175: `npm run verify` succeeded on Ubuntu with Node 22.12.0, 24 and 26 and on macOS with Node 22.12.0, the first run of the suite on Linux.
+(`.github/workflows/verify.yml`;
+**The SARIF upload is opt-in and has run once.** `action.yml` contains the standard code-scanning upload step.
+On 2026-11-15 the `upload` job of the self-test enabled it, and GitHub created an analysis with 6 results and 7 rules (`docs/evidence/gh-code-scanning.txt`).
+**Runner details beyond the self-test's assertions are unverified**: the self-test (run 43682221183) asserts the exit code, the SARIF file and its version after a failed step, but it ran only as a push to a public repository, not as a pull request, from a fork or in a private repository.
+**The hosted workflow** runs on Linux, so the step is skipped there (the Node 22.12.0 Linux job of run 43682221175 on 2026-11-15 printed `timed check: skipped`).
+none of it was run on Linux (the hosted Linux run of 2026-11-15, run 43682221175, ran the verify suite, not these timings).
+12 | The hosted CI workflow runs | **done 2026-11-15**: `.github/workflows/verify.yml` ran on the first push;
+run 43682221175 succeeded on Ubuntu (Node 22.12.0, 24, 26) and macOS (Node 22.12.0), the first run of the suite on Linux | `docs/evidence/gh-hosted-runs.txt`;
+`docs/ci-and-sarif.md`;
+13 | The GitHub Action runs on a hosted runner | **done 2026-11-15**: `.github/workflows/action-selftest.yml` ran on the first push, run 43682221183: `clean` (`demo-fixed`), `failing` and `upload` (`demo`) all succeeded | `docs/evidence/gh-hosted-runs.txt`;
+`docs/action.md`, "The self-test workflow" and "Not tested" |
+14 | SARIF upload to code scanning | **done 2026-11-15**: the `upload` job of run 43682221183 uploaded the demo's SARIF and GitHub created an analysis (tool tripcurve 0.1.0, 6 results, 7 rules) and six open alerts;
+the upload stays opt-in (`upload-sarif: "true"`, default off) | `docs/evidence/gh-code-scanning.txt`;
+`docs/action.md`, "The SARIF upload is opt-in";
+anywhere else it prints `skipped` and passes, so the hosted Linux jobs do not enforce them (the Node 22.12.0 Linux job printed `timed check: skipped`).
+The audit is clean (0 vulnerabilities) for every way this repository is used: a `git clone` followed by `npm ci` from `npm-shrinkwrap.json`, and the tree that the hosted workflows install (the same shrinkwrap;
+the audit itself was run locally, not on GitHub).
+*Linux: run once, on GitHub.** Every local run above is darwin-arm64.
+The suite ran on Linux for the first time on 2026-11-15, in the hosted verify run 43682221175 (Ubuntu with Node 22.12.0, 24 and 26), and every job succeeded;
+*Not decidable here, so still open.** Each is an external write that waits for the maintainer's explicit go: publish to npm, reserve the name `tripcurve`, and enable the SARIF upload anywhere but this repository's own self-test (the hosted CI run and that self-test's upload were done on 2026-11-15, rows 12 to 14).
+the hosted Linux run of 2026-11-15 (run 43682221175) is the first running.
+The GitHub Action, the hosted workflow and the SARIF upload ran once, on 2026-11-15, and every job succeeded (runs 43682221175 and 43682221183);
+they were not tried on a pull request, from a fork or in a private repository, and runner details beyond the self-test's assertions are unverified.
+7 | The Action's name and ref (`<owner>/tripcurve@<sha>`) and when to enable the upload step elsewhere;
+the hosted run is done |
+The Action ran on GitHub once, on 2026-11-15 (self-test run 43682221183;
+the verify workflow ran in run 43682221175) (`docs/action.md`, [ci-and-sarif.md](ci-and-sarif.md)).
+The audit is clean (0 vulnerabilities) for every way this repository is used: a `git clone` followed by `npm ci`, and the tree that the hosted workflows install (the same shrinkwrap;
+One test race fixed: the Action's local dry run (`action/dry-run.sh`, new `DRY_RUN_ACTION_PATH`) now builds in a scratch copy, so it no longer empties this checkout's `dist/` while `npm pack --dry-run` reads it in another test.
+`DRY_RUN_ACTION_PATH` names the Action checkout to build and run, by default this repository, and the tests pass a scratch copy so the build step does not empty this `dist/`), checking the exit code, the outputs and the SARIF file.
+**B25, the first hosted runs recorded (2026-11-15).** The source was pushed to https://github.com/naren-ambati/TripCurve on 2026-11-15 as two commits (`6809df0`, `cf55f77`);
+GitHub ran both workflows on that push, the repository's only two runs, and every job passed on that first attempt: `verify` (run 43682221175;
+GitHub's code scanning read the demo's file on 2026-11-15 (run 43682221183: an analysis with 6 results and 7 rules, six alerts;
+the goldens were not uploaded.
+the first hosted run and the `exit-code` output after a failed check step were checked on 2026-11-15 (run 43682221183;
+no job fails the build step, so that case is still untested) | B9 | **open**: the name and ref and the upload elsewhere are external writes that wait for the maintainer's go;
+A SARIF consumer that validates against the official schema is the real test: GitHub code scanning accepted the demo's SARIF on 2026-11-15 (run 43682221183: an analysis with 6 results and 7 rules;
+the goldens were validated against the official schema once, locally (B16), and never uploaded.
+B25 | closed | review 2: FIX-FIRST items fixed before merge, the stale `limits.md` upload sentence among them (`BUILD-NOTES.md`, "B25") |

@@ -13,7 +13,7 @@ Every check is marked one of:
 
 Updated in bolt B16 on 2026-11-12: rows 5, 6, 7 and 18, the "Compatibility across Node releases" section, the platform audit, and the maintainer questions that were decided (the "Decided on 2026-11-12" section). Row 17 and B14 are not touched here, because B14 is built in parallel. The raw record of B16 is `docs/release-check-run-b16.txt`.
 
-The state of `main` when this was written (2026-11-13): every bolt B0 to B17 is merged (B16 by the change that holds this text). (Status given by the main session.) Updated in B22 (2026-11-14): B0 to B21 are merged; B22, the change that holds this update, awaits its independent review, and the figures under "What ran" are from a run on 2026-11-14.
+The state of `main` when this was written (2026-11-13): every bolt B0 to B17 is merged (B16 by the change that holds this text). (Status given by the main session.) Updated in B22 (2026-11-14): B0 to B21 are merged; B22, the change that holds this update, awaited its independent review, and the figures under "What ran" are from a run on 2026-11-14. Updated in B25 (2026-11-15): B0 to B24 are merged and reviewed, and rows 12 to 14 are done.
 
 ## The release checks
 
@@ -28,12 +28,12 @@ The state of `main` when this was written (2026-11-13): every bolt B0 to B17 is 
 | 6 | Pinned shrinkwrap with no install scripts | **done locally, with one finding, open maintainer decision** | exact direct pins and integrity hashes on all 123 packages of the shrinkwrap; one dev-only optional package is flagged; see "The shrinkwrap" below |
 | 7 | Schema-valid SARIF | **done as the build-plan fallback; deviation from the acceptance criterion recorded** | The acceptance criterion asks for validation against a repo-kept schema; the schema is not vendored because its licence (OASIS IPR Policy, RF on RAND Terms Mode, read 2026-11-13, `docs/lookups-b16.txt`) is not MIT, Apache-2.0 or BSD. Instead, one-off on 2026-11-12: every SARIF golden and the SARIF of `demo/` and `demo-fixed/` validate against the official SARIF 2.1.0 JSON schema (`docs/release-check-run-b16.txt`); see "SARIF validity" below |
 | 8 | The docs | **done locally** (written in B15) | README, rules, how defaults were measured, add an entry, CI and SARIF, security, CHANGELOG, this page; `test/docs/docs.test.ts` checks diagrams, quotes and sourced numbers |
-| 9 | Every bolt's review closed | **done for B0 to B21** (see "Reviews" below); **B22's review is pending** | see "Reviews" below |
+| 9 | Every bolt's review closed | **done for B0 to B25** (see "Reviews" below; updated 2026-11-15) | see "Reviews" below |
 | 10 | Release-quality dry run (metric 5): a fresh session adds an entry using only the docs | **done 2026-11-13: partial success** (the maintainer reviews it; it may want a re-run against the fixed guide) | `docs/add-a-knowledge-base-entry.md`, section 9; the record is below, "The metric-5 dry run (2026-11-13)" |
 | 11 | A fresh re-check of the npm name | **done locally on 2026-11-12; repeat on the day of the go** | `npm view tripcurve` returned 404 at 2026-11-12T20:21Z (`docs/lookups-b15.txt`) |
-| 12 | The hosted CI workflow runs | **prepared in B19; first run pending the push**: `.github/workflows/verify.yml` runs `npm run verify` on Ubuntu (Node 22.12.0, 24, 26) and macOS (Node 22.12.0); it has never run; a hosted run is an external action | `docs/ci-and-sarif.md`; `test/action/workflows.test.ts` |
-| 13 | The GitHub Action runs on a hosted runner | **prepared in B19; first run pending the push**: `.github/workflows/action-selftest.yml` runs the Action on `demo-fixed` (clean) and `demo` (failing); it has never run | `docs/action.md`, "The self-test workflow" and "Not tested" |
-| 14 | SARIF upload to code scanning | **prepared in B19; first run pending the push**: the upload is opt-in (`upload-sarif: "true"`, default off) and the `upload` job of the self-test enables it only on a public repository; uploading is an external write and has never run | `docs/action.md`, "The SARIF upload is opt-in"; `docs/lookups-b19.txt` |
+| 12 | The hosted CI workflow runs | **done 2026-11-15**: `.github/workflows/verify.yml` ran on the first push; run 43682221175 succeeded on Ubuntu (Node 22.12.0, 24, 26) and macOS (Node 22.12.0), the first run of the suite on Linux | `docs/evidence/gh-hosted-runs.txt`; `docs/evidence/gh-linux-verify.txt`; `docs/ci-and-sarif.md`; `test/action/workflows.test.ts` |
+| 13 | The GitHub Action runs on a hosted runner | **done 2026-11-15**: `.github/workflows/action-selftest.yml` ran on the first push, run 43682221183: `clean` (`demo-fixed`), `failing` and `upload` (`demo`) all succeeded | `docs/evidence/gh-hosted-runs.txt`;  `docs/action.md`, "The self-test workflow" and "Not tested" |
+| 14 | SARIF upload to code scanning | **done 2026-11-15**: the `upload` job of run 43682221183 uploaded the demo's SARIF and GitHub created an analysis (tool tripcurve 0.1.0, 6 results, 7 rules) and six open alerts; the upload stays opt-in (`upload-sarif: "true"`, default off) | `docs/evidence/gh-code-scanning.txt`;  `docs/action.md`, "The SARIF upload is opt-in"; `docs/lookups-b19.txt` |
 | 15 | Publish to npm; publish the Action | **cannot run before the maintainer's go** | |
 | 16 | The licence | **open maintainer decision**: decided by the maintainer before release | no LICENSE file exists, and a test checks that |
 | 17 | The real-repository check (B14) | **done locally on 2026-11-12; review closed (MERGE)**: four trimmed copies of public MIT repositories were run, and every result was judged against the real files. No wrong verdict was found; every run is UNRESOLVED or not clean, and the gaps are documented as known limits. | `test/fixtures/real/README.md` (selection criteria, results table, the synthetic fixtures for shapes with no real repository); `test/e2e/real-repos.e2e.test.ts`; `docs/limits.md`, "Real-repository check" |
@@ -78,7 +78,7 @@ Notes on that output:
 
 - The 13,115 tests include the docs tests (`test/docs/docs.test.ts`), which check this page's own claims about commands, bolts and the shrinkwrap.
 - "Found 2 infos" are two Biome style suggestions in test files from earlier bolts (`test/parse/iac-cfn-hostile.test.ts` and `test/report/sarif.test.ts`), not errors and not from this bolt; no rule was relaxed.
-- The timed check enforces its budgets only on the recorded machine (`Mac17,3`, `Apple M5`); anywhere else it prints `skipped` and passes, so the hosted Linux workflow will not enforce them. (`docs/limits.md`, "The timed check and the demo")
+- The timed check enforces its budgets only on the recorded machine (`Mac17,3`, `Apple M5`); anywhere else it prints `skipped` and passes, so the hosted Linux jobs do not enforce them (the Node 22.12.0 Linux job printed `timed check: skipped`). (`docs/limits.md`, "The timed check and the demo")
 - The coverage floor is 80% of lines on the core pipeline code and was not lowered. (`vitest.config.ts`)
 
 ### The pinned lane (`npm run verify:measure`): done locally
@@ -103,7 +103,7 @@ The raw lane output is `measure/results/2026-11-12-lanes-pinned-b15.txt` and `me
 
 ## npm audit
 
-The audit is clean (0 vulnerabilities) for every way this repository is used: a `git clone` followed by `npm ci` from `npm-shrinkwrap.json`, and the tree that the hosted workflows would install (they have never run). It is NOT clean for a consumer who installs the packed tarball: npm `overrides` do not ship, and a shrinkwrap entry outside the dependent's declared range is dropped (`@ts-morph/common` 0.29.0 declares `minimatch ^10.0.1`; ts-morph 28.0.0 is the newest). The package is private and not published to npm, so no such consumer exists; before any npm publish this must be closed by a ts-morph release that allows minimatch 11 or by replacing ts-morph.
+The audit is clean (0 vulnerabilities) for every way this repository is used: a `git clone` followed by `npm ci` from `npm-shrinkwrap.json`, and the tree that the hosted workflows install (the same shrinkwrap; the audit itself was run locally, not on GitHub). It is NOT clean for a consumer who installs the packed tarball: npm `overrides` do not ship, and a shrinkwrap entry outside the dependent's declared range is dropped (`@ts-morph/common` 0.29.0 declares `minimatch ^10.0.1`; ts-morph 28.0.0 is the newest). The package is private and not published to npm, so no such consumer exists; before any npm publish this must be closed by a ts-morph release that allows minimatch 11 or by replacing ts-morph.
 
 Rerun in B22 at 2026-11-15T03:51Z (2026-11-14 local; registry reads only, in scratch folders): `npm audit` in the checkout printed `found 0 vulnerabilities`; `npm pack` and `npm install --ignore-scripts` of that tarball into a fresh project, then `npm audit`, printed `4 moderate severity vulnerabilities`, with `npm ls minimatch` showing `minimatch@10.2.6` under `@ts-morph/common@0.29.0` under `ts-morph@28.0.0`.
 
@@ -141,7 +141,7 @@ The shrinkwrap (`npm-shrinkwrap.json`) has 123 packages, all with integrity hash
 - all 12 `test/golden/report-*.sarif.txt` files and the live SARIF of `demo/` and `demo-fixed/` validated; four deliberately broken copies of a golden (a missing `version`, an unknown top-level property, a result level outside the enum, a suppression kind outside the enum) were rejected, so the check can fail;
 - the script and its real output are in `docs/release-check-run-b16.txt`.
 
-`npm run verify` keeps using the hand-written validator for the subset tripcurve emits (`test/support/sarif-validate.ts`), so the day-to-day check does not depend on the downloaded schema. The one-off check should be repeated on the day of the maintainer's go, because the schema file is read from `main` of the `sarif-spec` repository. What was not checked: how GitHub's code scanning reads the file, which waits for the maintainer's go. (`docs/limits.md`, "SARIF validation"; `docs/ci-and-sarif.md`)
+`npm run verify` keeps using the hand-written validator for the subset tripcurve emits (`test/support/sarif-validate.ts`), so the day-to-day check does not depend on the downloaded schema. The one-off check should be repeated on the day of the maintainer's go, because the schema file is read from `main` of the `sarif-spec` repository. GitHub's code scanning read the demo's file on 2026-11-15 (run 43682221183: an analysis with 6 results and 7 rules, six alerts; `docs/evidence/gh-code-scanning.txt`); the goldens were not uploaded. (`docs/limits.md`, "SARIF validation"; `docs/ci-and-sarif.md`)
 
 ## The metric-5 dry run (2026-11-13)
 
@@ -176,7 +176,7 @@ The unsupported-Node message, run on 2026-11-12 with the older binary first on `
 | 20.20.2 | `tripcurve needs Node 22.12.0 or later; this is Node 20.20.2.` then `Nothing was checked.` | 2 |
 | 18.20.8 | `tripcurve needs Node 22.12.0 or later; this is Node 18.20.8.` then `Nothing was checked.` | 2 |
 
-**Not run: Linux.** Every run above is darwin-arm64. Linux cannot be run on the build host, so "macOS and Linux" rests on the source audit below and on the first hosted Linux run, which waits for the maintainer's go.
+**Linux: run once, on GitHub.** Every local run above is darwin-arm64. The suite ran on Linux for the first time on 2026-11-15, in the hosted verify run 43682221175 (Ubuntu with Node 22.12.0, 24 and 26), and every job succeeded; the source audit below was written before that run.
 
 ### Platform audit of `src/` (B16, 2026-11-12)
 
@@ -210,7 +210,7 @@ The maintainer said on 2026-11-12 that small things are decided by the build ses
 | Reporting a vulnerability (9) | **decided (2026-11-12): once the repository is public, reports go through GitHub's private vulnerability reporting for the repository; until then there is no public channel**; written in `docs/security.md`, "Reporting a vulnerability" |
 | The licence (1) | **left as the maintainer said**: decided by the maintainer before release; no LICENSE file |
 
-**Not decidable here, so still open.** Each is an external write that waits for the maintainer's explicit go: publish to npm, reserve the name `tripcurve`, the first hosted CI run, and enabling the SARIF upload. The licence (1) also stays with the maintainer. Everything else in the maintainer-questions table is decided or done.
+**Not decidable here, so still open.** Each is an external write that waits for the maintainer's explicit go: publish to npm, reserve the name `tripcurve`, and enable the SARIF upload anywhere but this repository's own self-test (the hosted CI run and that self-test's upload were done on 2026-11-15, rows 12 to 14). The licence (1) also stays with the maintainer. Everything else in the maintainer-questions table is decided or done.
 
 ## Entries that must be named
 
@@ -268,7 +268,10 @@ Every bolt gets one independent read-only adversarial review, with a second pass
 | B19 | closed | review: MERGE; the follow-ups were applied (`BUILD-NOTES.md`) |
 | B20 | closed | review 2: MERGE (`BUILD-NOTES.md`) |
 | B21 | closed | review 2: MERGE; the two minor items it left are B22's (`BUILD-NOTES.md`) |
-| B22 | pending | built 2026-11-14; its independent review has not run yet |
+| B22 | closed | review: MERGE (`BUILD-NOTES.md`, "B22") |
+| B23 | closed | review 2: MERGE; review 1 fixed the lanes row and found the closed-pipe trace that became B24 (`BUILD-NOTES.md`, "B23") |
+| B24 | closed | review: MERGE (`BUILD-NOTES.md`, "B24") |
+| B25 | closed | review 2: FIX-FIRST items fixed before merge, the stale `limits.md` upload sentence among them (`BUILD-NOTES.md`, "B25") |
 
 Minor findings carried, not fixed, each recorded in `BUILD-NOTES.md`: B10 (`--runs=3` and `--cli=x` with an `=` are silently ignored by the timed check, and cannot fake a pass), B12 (two clauses of `couldBeCfnFlow` overlap, so neither is pinned by its own test).
 
@@ -280,8 +283,8 @@ None is hidden; each is stated where it matters:
 - The old-Node `headersTimeout` trap is from changelogs, not measured. (`docs/rules.md`)
 - The `minimatch` override was checked by one call and by the test suite, not on every `ts-morph` code path. (above, "npm audit")
 - Linux values are inferred, not measured; every measurement is darwin-arm64. (`docs/how-defaults-were-measured.md`)
-- Nothing was run on Linux: the source audit of B16 found no host-dependent code, but that is reading, not running. (above, "Platform audit of `src/`")
-- The GitHub Action, the hosted workflow and the SARIF upload have never run on GitHub; runner details are unverified. (`docs/action.md`; `docs/ci-and-sarif.md`)
+- Locally nothing was run on Linux: the source audit of B16 found no host-dependent code, but that is reading, not running; the hosted Linux run of 2026-11-15 (run 43682221175) is the first running. (above, "Platform audit of `src/`")
+- The GitHub Action, the hosted workflow and the SARIF upload ran once, on 2026-11-15, and every job succeeded (runs 43682221175 and 43682221183); they were not tried on a pull request, from a fork or in a private repository, and runner details beyond the self-test's assertions are unverified. (`docs/action.md`; `docs/ci-and-sarif.md`)
 - Whether GitHub's viewer decodes the doubled braces `{{` in SARIF messages back to `{` has not been checked. (`docs/ci-and-sarif.md`)
 - The official SARIF schema was applied once, on 2026-11-12, to the goldens and the demo output, not to a real upload. (above, "SARIF validity")
 - The release-quality dry run (metric 5) was run once, on 2026-11-13, against the guide before its B16 fixes; it has not been re-run against the fixed guide. (row 10)
@@ -299,7 +302,7 @@ Collected from `BUILD-NOTES.md` and the decision register, each with the bolt it
 | 4 | "No install scripts": is a dev-only optional package (`fsevents`) with an install script acceptable when the production tree has none? | B1 | **decided (2026-11-13)**: accept. `fsevents` is an optional, dev-only macOS dependency of the test tooling; it is not in the production tree (0 install scripts there), and every install here runs with `--ignore-scripts` |
 | 5 | SARIF: vendor the official schema (OASIS IPR terms), or keep the subset validator | B6, B7 | **decided (2026-11-12)**: not vendored (build-plan fallback, licence not MIT, Apache-2.0 or BSD); the B16 one-off validation is the v0.1 check; a recorded deviation from |
 | 6 | SARIF `helpUri` per rule, once a public location exists | B7 | **decided (2026-11-12)**: not in v0.1; optional in SARIF |
-| 7 | The Action's name and ref (`<owner>/tripcurve@<sha>`), its first hosted run, and when to enable the upload step; whether the `exit-code` output survives a failed step on GitHub (untested) | B9 | **open**: the name and ref, the first hosted run and the upload step are external writes that wait for the maintainer's go |
+| 7 | The Action's name and ref (`<owner>/tripcurve@<sha>`) and when to enable the upload step elsewhere; the first hosted run and the `exit-code` output after a failed check step were checked on 2026-11-15 (run 43682221183; no job fails the build step, so that case is still untested) | B9 | **open**: the name and ref and the upload elsewhere are external writes that wait for the maintainer's go; the hosted run is done |
 | 8 | The metric-5 dry run: run it, and review the result | B15 | **done (2026-11-13)**: partial success; the friction it found is fixed in B16 (see "The metric-5 dry run" above); the maintainer may re-run it against the fixed guide |
 | 9 | A channel for reporting a vulnerability, decided at release (none exists without a remote) | B15 | **decided (2026-11-12)**: GitHub private vulnerability reporting once the repository is public; no public channel until then |
 | 10 | The three old-Node trap entries: install Rosetta 2 (`softwareupdate --install-rosetta --agree-to-license`), provide an x64 or arm64 Linux host, or release with them deferred and unmeasured. The v0.1.0 definition asks for a script on every entry | B13 | **decided (2026-11-12)**: Rosetta 2 is not installed; the entries stay DEFERRED and labelled unmeasured (a Should item) |

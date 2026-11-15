@@ -8,7 +8,8 @@
 #     be simulated. The script only evaluates the step's condition (upload-sarif is the exact string
 #     "true" and the check step set a sarif-file output) and prints whether the step would run.
 # Environment: DRY_RUN_UPLOAD_SARIF (the upload-sarif input, default false), DRY_RUN_SARIF_FILE (the
-# sarif-file input, default tripcurve.sarif).
+# sarif-file input, default tripcurve.sarif), DRY_RUN_ACTION_PATH (the Action checkout to build and run,
+# default this repository; the tests pass a scratch copy so the build step does not empty this dist/).
 # Usage: action/dry-run.sh [fixture-dir]   (default: test/fixtures/report/demo, which fails)
 # Exits with the code the Action step would have: 0, or the CLI's first non-zero code.
 set -uo pipefail
@@ -33,7 +34,7 @@ STUB
 chmod +x "$tmp/bin/npm"
 
 export PATH="$tmp/bin:$PATH"
-export GITHUB_ACTION_PATH="$root" GITHUB_WORKSPACE="$tmp/workspace" GITHUB_OUTPUT="$tmp/output"
+export GITHUB_ACTION_PATH="${DRY_RUN_ACTION_PATH:-$root}" GITHUB_WORKSPACE="$tmp/workspace" GITHUB_OUTPUT="$tmp/output"
 : > "$GITHUB_OUTPUT"
 
 echo "[dry-run] step build"

@@ -1,5 +1,5 @@
-# Runs the repository's own Action (`uses: ./`) against the demo fixtures. Prepared in B19; it has
-# not run on GitHub yet (it first runs after the push). Assertions read outputs through env, never
+# Runs the repository's own Action (`uses: ./`) against the demo fixtures. Prepared in B19; first run
+# on GitHub on 2026-11-15 (B25), all three jobs green. Assertions read outputs through env, never
 # through ${{ }} inside a run body.
 name: action-selftest
 

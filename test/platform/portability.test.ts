@@ -1,7 +1,7 @@
 // B16 (macOS and Linux): a source scan for the code patterns that make a result depend on the host,
 // and one behaviour test of the directory walk order. Linux itself cannot be run on the build host
-// (darwin-arm64), so this is evidence by reading and scanning, not by running on Linux; the first hosted Linux
-// run (after the maintainer's go) is the real check.
+// (darwin-arm64), so this is evidence by reading and scanning, not by running on Linux; the hosted Linux run of
+// 2026-11-15 (verify run 43682221175, B25) is the running check.
 //
 // What it checks, in `src/` only, outside comments:
 //   1. no locale-dependent call (`localeCompare`, `toLocale*`, `Intl`), no `process.platform`, no `os` module in
